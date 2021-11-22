@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/bottom_category"
+        android:enabled="true"
+        android:icon="@drawable/category"
+        android:title=""
+        app:labelVisibilityMode="unlabeled"/>
+    <item
+        android:id="@+id/bottom_search"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_search_24"
+        android:title=""
+        app:labelVisibilityMode="unlabeled"/>
+    <item
+        android:id="@+id/bottom_home"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_home_24"
+        android:title=""
+        app:labelVisibilityMode="unlabeled"/>
+    <item
+        android:id="@+id/bottom_myinfo"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_person_24"
+        android:title=""
+        app:labelVisibilityMode="unlabeled"/>
+    <item
+        android:id="@+id/bottom_cart"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_shopping_cart_24"
+        android:title=""
+        app:labelVisibilityMode="unlabeled"/>
+</menu>

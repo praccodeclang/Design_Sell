@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    //바텀 네비게이션 아이콘
+    <item
+        android:id="@+id/home"
+        android:enabled="true"
+        android:icon="@drawable/under1"
+        android:title=""/>
+    <item
+        android:id="@+id/searchUser"
+        android:enabled="true"
+        android:icon="@drawable/under2"
+        android:title=""/>
+    <item
+        android:id="@+id/addDiary"
+        android:enabled="true"
+        android:icon="@drawable/under3"
+        android:title=""/>
+    <item
+        android:id="@+id/directMsg"
+        android:enabled="true"
+        android:icon="@drawable/under4"
+        android:title=""/>
+    <item
+        android:id="@+id/sns"
+        android:enabled="true"
+        android:icon="@drawable/under5"
+        android:title=""/>
+</menu>

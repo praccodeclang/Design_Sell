@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <EditText
+        android:id="@+id/et_searchText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="10dp"
+        android:hint="검색어를 입력하세요."
+        android:paddingVertical="10dp"
+        android:textColor="@color/black"
+        android:drawableStart="@drawable/ic_baseline_search_24"
+        android:focusedByDefault="false"
+        android:drawableTint="@color/black"
+        android:background="@drawable/searchview_background"/>
+    <ListView
+        android:id="@+id/lv_search"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</LinearLayout>
