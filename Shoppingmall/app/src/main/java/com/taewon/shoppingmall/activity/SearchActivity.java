@@ -4,29 +4,25 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SearchView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.taewon.shoppingmall.R;
-import com.taewon.shoppingmall.adapter.SearchAdapter;
+import com.taewon.shoppingmall.adapter.SearchWordAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class SearchActivity extends AppCompatActivity {
     private EditText et_searchText;
     private List<String> list;
     private ArrayList<String> arrayList;
     private ListView lv_search;
-    private SearchAdapter searchAdapter;
+    private SearchWordAdapter searchWordAdapter;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,8 +38,8 @@ public class SearchActivity extends AppCompatActivity {
         lv_search = findViewById(R.id.lv_search);
         settingList();
         arrayList.addAll(list);
-        searchAdapter = new SearchAdapter(SearchActivity.this, list);
-        lv_search.setAdapter(searchAdapter);
+        searchWordAdapter = new SearchWordAdapter(SearchActivity.this, list);
+        lv_search.setAdapter(searchWordAdapter);
 
     }
 
@@ -72,7 +68,7 @@ public class SearchActivity extends AppCompatActivity {
         lv_search.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                et_searchText.setText(searchAdapter.getItem(position));
+                et_searchText.setText(searchWordAdapter.getItem(position));
             }
         });
 
@@ -105,7 +101,7 @@ public class SearchActivity extends AppCompatActivity {
                 }
             }
         }
-        searchAdapter.notifyDataSetChanged();
+        searchWordAdapter.notifyDataSetChanged();
     }
 
     @Override

@@ -13,14 +13,14 @@ import com.taewon.shoppingmall.R;
 
 import java.util.List;
 
-public class SearchAdapter extends BaseAdapter {
+public class SearchWordAdapter extends BaseAdapter {
 
     private Context context;
     private List<String> list;
     private LayoutInflater inflater;
     private MyHolder viewHolder;
 
-    public SearchAdapter(Context context, List<String> list){
+    public SearchWordAdapter(Context context, List<String> list){
         this.context = context;
         this.list = list;
         this.inflater = LayoutInflater.from(context);
@@ -48,7 +48,6 @@ public class SearchAdapter extends BaseAdapter {
 
             viewHolder = new MyHolder();
             viewHolder.label = (TextView)convertView.findViewById(R.id.label);
-
             convertView.setTag(viewHolder);
         }
         else{

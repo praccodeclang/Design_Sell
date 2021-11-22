@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.content.Intent;
@@ -13,26 +12,24 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-import android.widget.ViewFlipper;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.taewon.shoppingmall.R;
-import com.taewon.shoppingmall.User;
-import com.taewon.shoppingmall.adapter.AdsViewPagerAdapter2;
 import com.taewon.shoppingmall.adapter.AdsViewPagerAdapter;
 import com.taewon.shoppingmall.item.AdsItem;
 
@@ -53,15 +50,22 @@ public class MainActivity extends AppCompatActivity {
 
     //ads
     ViewPager2 vp_adsViewPager;
-//    AdsViewPagerAdapter pagerAdapter;
-    AdsViewPagerAdapter2 pagerAdapter;
+    AdsViewPagerAdapter pagerAdapter;
     Timer adsTimer;
-
-    //ads2
-    ViewFlipper vf_adsFlipper;
     ArrayList<AdsItem> adsItems;
-
     int currentAdsPage = 0;
+
+    //leftDrawer
+    LinearLayout li_2d_detail_category;
+    LinearLayout li_3d_detail_category;
+    LinearLayout li_plan_detail_category;
+    ImageView iv_2dDetail;
+    ImageView iv_3dDetail;
+    ImageView iv_planDetail;
+    Animation leftDrawerAnim;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,34 +74,17 @@ public class MainActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         storage = FirebaseStorage.getInstance();
         adsItems = new ArrayList<>();
+        leftDrawerAnim = new AlphaAnimation(0, 1);
+        leftDrawerAnim.setDuration(1000);
+
         initViews();
         initListeners();
         initAds();
     }
     private void initAds(){
-//        pagerAdapter = new AdsViewPagerAdapter(this, adsItems);
-        pagerAdapter = new AdsViewPagerAdapter2(MainActivity.this, adsItems);
+        pagerAdapter = new AdsViewPagerAdapter(MainActivity.this, adsItems);
         vp_adsViewPager.setAdapter(pagerAdapter);
 
-        Handler handler = new Handler();
-        Runnable Update = new Runnable() {
-            @Override
-            public void run() {
-                if(currentAdsPage == (adsItems.size())){
-                    currentAdsPage = 0;
-                }
-                vp_adsViewPager.setCurrentItem(currentAdsPage++, true);
-            }
-        };
-        adsTimer = new Timer();
-        adsTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                handler.post(Update);
-            }
-        }, 500, 3000);
-
-        //Ads2
         DatabaseReference dataRef = database.getReference();
         dataRef.child("Ads").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
@@ -117,6 +104,23 @@ public class MainActivity extends AppCompatActivity {
                         adsItems.add(item);
                     }
                     pagerAdapter.notifyDataSetChanged();
+                    Handler handler = new Handler();
+                    Runnable Update = new Runnable() {
+                        @Override
+                        public void run() {
+                            if(currentAdsPage == (adsItems.size())){
+                                currentAdsPage = 0;
+                            }
+                            vp_adsViewPager.setCurrentItem(currentAdsPage++, true);
+                        }
+                    };
+                    adsTimer = new Timer();
+                    adsTimer.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            handler.post(Update);
+                        }
+                    }, 500, 3000);
                 }
             }
         });
@@ -129,7 +133,17 @@ public class MainActivity extends AppCompatActivity {
         wrap_layout = findViewById(R.id.wrap_layout);
         bottomNavigationView = findViewById(R.id.bottomnav_bottom_menu);
         vp_adsViewPager = findViewById(R.id.vp_adsViewPager);
-        vf_adsFlipper = findViewById(R.id.vf_adsFlipper);
+        li_2d_detail_category = findViewById(R.id.li_2d_detail_category);
+        li_3d_detail_category = findViewById(R.id.li_3d_detail_category);
+        li_plan_detail_category = findViewById(R.id.li_plan_detail_category);
+        iv_2dDetail = findViewById(R.id.iv_2dDetail);
+        iv_3dDetail = findViewById(R.id.iv_3dDetail);
+        iv_planDetail = findViewById(R.id.iv_planDetail);
+
+        li_2d_detail_category.setVisibility(View.GONE);
+        li_3d_detail_category.setVisibility(View.GONE);
+        li_plan_detail_category.setVisibility(View.GONE);
+
     }
 
     private void initListeners(){
@@ -183,28 +197,130 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //왼쪽 드로워 레이아웃
+        drawerLayout.findViewById(R.id.iv_leftDrawerCancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                drawerLayout.closeDrawer(GravityCompat.START);
+            }
+        });
         drawerLayout.findViewById(R.id.li_2dCategory).setOnClickListener(new View.OnClickListener() {
             //2d 카테고리
             @Override
             public void onClick(View v) {
-
+                if(li_2d_detail_category.getVisibility() == View.GONE){
+                    li_2d_detail_category.setVisibility(View.VISIBLE);
+                    iv_2dDetail.setImageResource(R.drawable.ic_baseline_arrow_drop_down_24);
+                }
+                else{
+                    li_2d_detail_category.setVisibility(View.GONE);
+                    iv_2dDetail.setImageResource(R.drawable.ic_baseline_arrow_right_24);
+                }
             }
         });
         drawerLayout.findViewById(R.id.li_3dCategory).setOnClickListener(new View.OnClickListener() {
             //3d 카테고리
             @Override
             public void onClick(View v) {
-
+                if(li_3d_detail_category.getVisibility() == View.GONE){
+                    li_3d_detail_category.setVisibility(View.VISIBLE);
+                    iv_3dDetail.setImageResource(R.drawable.ic_baseline_arrow_drop_down_24);
+                }
+                else{
+                    li_3d_detail_category.setVisibility(View.GONE);
+                    iv_3dDetail.setImageResource(R.drawable.ic_baseline_arrow_right_24);
+                }
             }
         });
         drawerLayout.findViewById(R.id.li_plannerCategory).setOnClickListener(new View.OnClickListener() {
             //기획자 카테고리
             @Override
             public void onClick(View v) {
+                if(li_plan_detail_category.getVisibility() == View.GONE){
+                    li_plan_detail_category.setVisibility(View.VISIBLE);
+                    iv_planDetail.setImageResource(R.drawable.ic_baseline_arrow_drop_down_24);
+                }
+                else{
+                    li_plan_detail_category.setVisibility(View.GONE);
+                    iv_planDetail.setImageResource(R.drawable.ic_baseline_arrow_right_24);
+                }
+            }
+        });
+        drawerLayout.findViewById(R.id.tv_2d_character).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
             }
         });
+        drawerLayout.findViewById(R.id.tv_2d_background).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        drawerLayout.findViewById(R.id.tv_2d_animation).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        drawerLayout.findViewById(R.id.tv_3d_character).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        drawerLayout.findViewById(R.id.tv_3d_animation).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        drawerLayout.findViewById(R.id.tv_3d_background).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        drawerLayout.findViewById(R.id.tv_3d_modeling).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        drawerLayout.findViewById(R.id.tv_plan_gameIdea).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        drawerLayout.findViewById(R.id.tv_plan_bgMusic).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        drawerLayout.findViewById(R.id.tv_plan_levelDesign).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        drawerLayout.findViewById(R.id.tv_plan_effectSound).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+
+
         //오른쪽 드로워 레이아웃
+        drawerLayout.findViewById(R.id.iv_rightDrawerCancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                drawerLayout.closeDrawer(GravityCompat.END);
+            }
+        });
         drawerLayout.findViewById(R.id.li_salesRegistrationBtn).setOnClickListener(new View.OnClickListener() {
             //판매등록
             @Override

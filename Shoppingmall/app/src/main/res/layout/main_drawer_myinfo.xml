@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginVertical="10dp">
         <ImageView
+            android:id="@+id/iv_rightDrawerCancel"
             android:layout_width="50dp"
             android:layout_height="30dp"
             android:src="@drawable/ic_baseline_cancel_24"

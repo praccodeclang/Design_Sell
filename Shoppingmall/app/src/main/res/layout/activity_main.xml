@@ -165,12 +165,6 @@
                     android:id="@+id/vp_adsViewPager"
                     android:layout_width="match_parent"
                     android:layout_height="300dp"/>
-                <ViewFlipper
-                    android:id="@+id/vf_adsFlipper"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                </ViewFlipper>
             </LinearLayout>
         </ScrollView>
         <com.google.android.material.bottomnavigation.BottomNavigationView
