@@ -4,22 +4,44 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSnapHelper;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.EditText;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -29,11 +51,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.taewon.shoppingmall.R;
+import com.taewon.shoppingmall.User;
 import com.taewon.shoppingmall.adapter.AdsViewPagerAdapter;
+import com.taewon.shoppingmall.adapter.BoardRecyclerAdapter;
+import com.taewon.shoppingmall.adapter.NewestRecyclerAdapter;
 import com.taewon.shoppingmall.item.AdsItem;
+import com.taewon.shoppingmall.item.BoardItem;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -47,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
     EditText et_search;
     LinearLayout wrap_layout;
     BottomNavigationView bottomNavigationView;
+    //topDesigner
+    TableRow tr_topRatedDesigners;
 
     //ads
     ViewPager2 vp_adsViewPager;
@@ -62,8 +93,16 @@ public class MainActivity extends AppCompatActivity {
     ImageView iv_2dDetail;
     ImageView iv_3dDetail;
     ImageView iv_planDetail;
-    Animation leftDrawerAnim;
 
+
+    ArrayList<BoardItem> boardItems;
+    //Newest2D
+    RecyclerView rv_newest2D;
+    BoardRecyclerAdapter boardRecyclerAdapter2D;
+
+    //Newest3D
+    RecyclerView rv_newest3D;
+    BoardRecyclerAdapter boardRecyclerAdapter3D;
 
 
     @Override
@@ -74,12 +113,12 @@ public class MainActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         storage = FirebaseStorage.getInstance();
         adsItems = new ArrayList<>();
-        leftDrawerAnim = new AlphaAnimation(0, 1);
-        leftDrawerAnim.setDuration(1000);
-
+        boardItems = new ArrayList<>();
         initViews();
         initListeners();
         initAds();
+//        setTodayDesigner();
+        setNewest();
     }
     private void initAds(){
         pagerAdapter = new AdsViewPagerAdapter(MainActivity.this, adsItems);
@@ -127,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initViews(){
+        tr_topRatedDesigners = findViewById(R.id.tr_topRatedDesigners);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         et_search = findViewById(R.id.et_search);
         et_search.clearFocus();
@@ -144,6 +184,64 @@ public class MainActivity extends AppCompatActivity {
         li_3d_detail_category.setVisibility(View.GONE);
         li_plan_detail_category.setVisibility(View.GONE);
 
+        rv_newest2D = findViewById(R.id.rv_newest2D);
+        rv_newest3D = findViewById(R.id.rv_newest3D);
+    }
+
+    private void setNewest(){
+        boardRecyclerAdapter2D = new BoardRecyclerAdapter(MainActivity.this, boardItems);
+        rv_newest2D.setAdapter(boardRecyclerAdapter2D);
+        DatabaseReference ref = database.getReference("Board/");
+        ref.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    BoardItem item = snapshot.getValue(BoardItem.class);
+                    boardItems.add(item);
+                }
+                GridLayoutManager manager = new GridLayoutManager(MainActivity.this, 3, LinearLayoutManager.VERTICAL, false);
+                rv_newest2D.setLayoutManager(manager);
+                SnapHelper snapHelper = new LinearSnapHelper();
+                snapHelper.attachToRecyclerView(rv_newest2D);
+                boardRecyclerAdapter2D.notifyDataSetChanged();
+                Log.d("여기까지?", "완료");
+            }
+        });
+    }
+    private void setTodayDesigner(){
+        DatabaseReference ref = database.getReference("Users");
+        ref.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                ArrayList<User> users = new ArrayList<>();
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Log.d("snapshot", snapshot.getValue().toString());
+                    User user = snapshot.getValue(User.class);
+                    users.add(user);
+                }
+//                for(User user : users){
+//
+//                    LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//                    View view = inflater.inflate(R.layout.user_profile_layout, tr_topRatedDesigners, true);
+//                    ImageView imageView = view.findViewById(R.id.iv_userProfile);
+//                    TextView textView = view.findViewById(R.id.tv_userName);
+//                    StorageReference storageRef = storage.getReference(user.getPhotoUrl());
+//                    storageRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//                        @Override
+//                        public void onSuccess(Uri uri) {
+//                            Glide.with(MainActivity.this)
+//                                    .load(uri)
+//                                    .override(imageView.getMeasuredWidth(), imageView.getMeasuredHeight())
+//                                    .apply(new RequestOptions().circleCrop())
+//                                    .into(imageView);
+//                            textView.setTextColor(Color.parseColor("#000000"));
+//                            textView.setText(user.getUsername());
+//                        }
+//                    });
+//                    //여기부터 시작.
+//                }
+            }
+        });
     }
 
     private void initListeners(){
@@ -356,7 +454,12 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
+        findViewById(R.id.btn_insertTest).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                insertBoardTest();
+            }
+        });
     }
 
     private void openCategoryDrawer(){
@@ -368,6 +471,31 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout.openDrawer(GravityCompat.END);
         wrap_layout.setClickable(false);
         wrap_layout.setEnabled(false);
+    }
+
+    private void insertBoardTest(){
+        DatabaseReference ref = database.getReference("Board/");
+        DatabaseReference upload = ref.push();
+
+        StorageReference storageRef = storage.getReference("Board");
+        Drawable drawable = getDrawable(R.drawable.example);
+        Bitmap bitmap = ((BitmapDrawable)drawable).getBitmap();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, bos);
+
+        storageRef.child(upload.getKey()).putBytes(bos.toByteArray()).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                List<String> imgs = new ArrayList<>();
+                List<String> tags = new ArrayList<>();
+                imgs.add("Posts/ads1.jpg");
+                tags.add("2d");
+                tags.add("2d 배경");
+                tags.add("2d 디자인");
+                BoardItem item = new BoardItem(mAuth.getUid(),"김태원","3번째", "@@@@@@@@", imgs, tags);
+                upload.setValue(item);
+            }
+        });
     }
 
     //register

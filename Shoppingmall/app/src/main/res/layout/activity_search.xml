@@ -10,6 +10,8 @@
         android:paddingHorizontal="10dp"
         android:hint="검색어를 입력하세요."
         android:paddingVertical="10dp"
+        android:imeOptions="actionGo"
+        android:singleLine="true"
         android:textColor="@color/black"
         android:drawableStart="@drawable/ic_baseline_search_24"
         android:focusedByDefault="false"

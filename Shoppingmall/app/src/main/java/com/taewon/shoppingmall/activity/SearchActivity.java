@@ -1,12 +1,15 @@
 package com.taewon.shoppingmall.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,7 +43,6 @@ public class SearchActivity extends AppCompatActivity {
         arrayList.addAll(list);
         searchWordAdapter = new SearchWordAdapter(SearchActivity.this, list);
         lv_search.setAdapter(searchWordAdapter);
-
     }
 
     private void initViews(){
@@ -64,11 +66,22 @@ public class SearchActivity extends AppCompatActivity {
                 search(text);
             }
         });
+        et_searchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                Intent intent = new Intent(SearchActivity.this, MainActivity2.class);
+                intent.putExtra("category", et_searchText.getText().toString());
+                startActivity(intent);
+                return false;
+            }
+        });
 
         lv_search.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                et_searchText.setText(searchWordAdapter.getItem(position));
+                Intent intent = new Intent(SearchActivity.this, MainActivity2.class);
+                intent.putExtra("category", searchWordAdapter.getItem(position));
+                startActivity(intent);
             }
         });
 
@@ -76,15 +89,15 @@ public class SearchActivity extends AppCompatActivity {
 
 
     private void settingList(){
-        list.add("2D");
-        list.add("2D 캐릭터");
-        list.add("2D 배경");
-        list.add("2D 애니메이션");
-        list.add("3D");
-        list.add("3D 캐릭터");
-        list.add("3D 배경");
-        list.add("3D 애니메이션");
-        list.add("3D 모델링");
+        list.add("2d");
+        list.add("2d 캐릭터");
+        list.add("2d 배경");
+        list.add("2d 애니메이션");
+        list.add("3d");
+        list.add("3d 캐릭터");
+        list.add("3d 배경");
+        list.add("3d 애니메이션");
+        list.add("3d 모델링");
         list.add("게임 기획");
         list.add("레벨 디자인");
     }

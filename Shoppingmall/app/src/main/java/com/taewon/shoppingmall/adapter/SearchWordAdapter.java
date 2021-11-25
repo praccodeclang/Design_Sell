@@ -1,6 +1,7 @@
 package com.taewon.shoppingmall.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,8 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.taewon.shoppingmall.R;
+import com.taewon.shoppingmall.activity.MainActivity2;
+import com.taewon.shoppingmall.activity.SearchActivity;
 
 import java.util.List;
 
