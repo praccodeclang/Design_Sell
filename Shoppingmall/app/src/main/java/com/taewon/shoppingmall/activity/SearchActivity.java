@@ -10,114 +10,107 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.taewon.shoppingmall.R;
 import com.taewon.shoppingmall.adapter.SearchWordAdapter;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class SearchActivity extends AppCompatActivity {
-    private EditText et_searchText;
-    private List<String> list;
     private ArrayList<String> arrayList;
+    /* access modifiers changed from: private */
+    public EditText et_searchText;
+    private List<String> list;
     private ListView lv_search;
-    private SearchWordAdapter searchWordAdapter;
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    /* access modifiers changed from: private */
+    public SearchWordAdapter searchWordAdapter;
+
+    /* access modifiers changed from: protected */
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
+        setContentView((int) R.layout.activity_search);
         init();
         initViews();
         initListeners();
     }
 
-    private void init(){
-        list = new ArrayList<>();
-        arrayList = new ArrayList<>();
-        lv_search = findViewById(R.id.lv_search);
+    private void init() {
+        this.list = new ArrayList();
+        this.arrayList = new ArrayList<>();
+        this.lv_search = (ListView) findViewById(R.id.lv_search);
         settingList();
-        arrayList.addAll(list);
-        searchWordAdapter = new SearchWordAdapter(SearchActivity.this, list);
-        lv_search.setAdapter(searchWordAdapter);
+        this.arrayList.addAll(this.list);
+        SearchWordAdapter searchWordAdapter2 = new SearchWordAdapter(this, this.list);
+        this.searchWordAdapter = searchWordAdapter2;
+        this.lv_search.setAdapter(searchWordAdapter2);
     }
 
-    private void initViews(){
-        et_searchText = findViewById(R.id.et_searchText);
+    private void initViews() {
+        this.et_searchText = (EditText) findViewById(R.id.et_searchText);
     }
-    private void initListeners(){
-        et_searchText.addTextChangedListener(new TextWatcher() {
-            @Override
+
+    private void initListeners() {
+        this.et_searchText.addTextChangedListener(new TextWatcher() {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
-            @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
             }
 
-            @Override
             public void afterTextChanged(Editable s) {
-                String text = et_searchText.getText().toString();
-                search(text);
+                SearchActivity.this.search(SearchActivity.this.et_searchText.getText().toString());
             }
         });
-        et_searchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
+        this.et_searchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 Intent intent = new Intent(SearchActivity.this, MainActivity2.class);
-                intent.putExtra("category", et_searchText.getText().toString());
-                startActivity(intent);
+                intent.putExtra("category", SearchActivity.this.et_searchText.getText().toString());
+                intent.putExtra("BoardItems", SearchActivity.this.getIntent().getSerializableExtra("BoardItems"));
+                SearchActivity.this.startActivity(intent);
+                SearchActivity.this.finish();
                 return false;
             }
         });
-
-        lv_search.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        this.lv_search.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Intent intent = new Intent(SearchActivity.this, MainActivity2.class);
-                intent.putExtra("category", searchWordAdapter.getItem(position));
-                startActivity(intent);
+                intent.putExtra("category", SearchActivity.this.searchWordAdapter.getItem(position));
+                intent.putExtra("BoardItems", SearchActivity.this.getIntent().getSerializableExtra("BoardItems"));
+                SearchActivity.this.startActivity(intent);
+                SearchActivity.this.finish();
             }
         });
-
     }
 
-
-    private void settingList(){
-        list.add("2d");
-        list.add("2d 캐릭터");
-        list.add("2d 배경");
-        list.add("2d 애니메이션");
-        list.add("3d");
-        list.add("3d 캐릭터");
-        list.add("3d 배경");
-        list.add("3d 애니메이션");
-        list.add("3d 모델링");
-        list.add("게임 기획");
-        list.add("레벨 디자인");
+    private void settingList() {
+        this.list.add("2d");
+        this.list.add("2d 캐릭터");
+        this.list.add("2d 배경");
+        this.list.add("2d 애니메이션");
+        this.list.add("3d");
+        this.list.add("3d 캐릭터");
+        this.list.add("3d 배경");
+        this.list.add("3d 애니메이션");
+        this.list.add("3d 모델링");
+        this.list.add("게임 기획");
+        this.list.add("레벨 디자인");
     }
 
-    private void search(String text){
-        list.clear();
-        if(text.isEmpty()){
-            list.addAll(arrayList);
-        }
-        else{
-            for(int i=0; i< arrayList.size(); i++){
-                if(arrayList.get(i).contains(text)){
-                    list.add(arrayList.get(i));
+    /* access modifiers changed from: private */
+    public void search(String text) {
+        this.list.clear();
+        if (text.isEmpty()) {
+            this.list.addAll(this.arrayList);
+        } else {
+            for (int i = 0; i < this.arrayList.size(); i++) {
+                if (this.arrayList.get(i).contains(text)) {
+                    this.list.add(this.arrayList.get(i));
                 }
             }
         }
-        searchWordAdapter.notifyDataSetChanged();
+        this.searchWordAdapter.notifyDataSetChanged();
     }
 
-    @Override
     public void onBackPressed() {
         super.onBackPressed();
         finish();

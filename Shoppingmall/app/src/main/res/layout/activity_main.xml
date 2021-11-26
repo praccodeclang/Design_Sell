@@ -148,13 +148,13 @@
                     android:textColor="@color/black"
                     android:fontFamily="@font/nanum_myeongjo_bold"
                     android:paddingHorizontal="10dp"
-                    android:layout_marginVertical="10dp"/>
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="30dp"/>
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_newest2D"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    ß
-                </androidx.recyclerview.widget.RecyclerView>
+                    android:layout_height="wrap_content"
+                    android:overScrollMode="never"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -163,13 +163,13 @@
                     android:textColor="@color/black"
                     android:fontFamily="@font/nanum_myeongjo_bold"
                     android:paddingHorizontal="10dp"
-                    android:layout_marginVertical="10dp"/>
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="30dp"/>
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_newest3D"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                </androidx.recyclerview.widget.RecyclerView>
+                    android:layout_height="wrap_content"
+                    android:overScrollMode="never"/>
                 <Button
                     android:id="@+id/btn_insertTest"
                     android:layout_width="wrap_content"

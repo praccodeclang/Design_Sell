@@ -1,25 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:padding="10dp"
+    android:id="@+id/li_board_wrap">
     <LinearLayout
-        android:id="@+id/li_board_wrap"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:orientation="vertical"
         android:background="@drawable/board_layout_round_rectangle">
-        <ImageView
-            android:id="@+id/iv_boardImg"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/board_layout_round_rectangle"
-            android:scaleType="fitXY"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="20dp"/>
+            android:id="@+id/tv_boardTitle"
+            android:text="title"
+            android:textColor="@color/black"
+            android:padding="10dp"
+            android:gravity="center"
+            android:textSize="24sp"
+            android:fontFamily="@font/nanum_myeongjo_bold"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp">
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:id="@+id/rv_boardImgs"
+                android:overScrollMode="never"
+                android:padding="10dp"
+                android:background="@drawable/board_layout_round_rectangle"/>
+        </LinearLayout>
+
         <LinearLayout
             android:id="@+id/li_board_profile"
             android:layout_width="match_parent"
@@ -40,25 +54,35 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
+                android:fontFamily="@font/nanum_myeongjo_regular"
                 android:text="NickName"
                 android:textColor="@color/black"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"/>
-            <ImageView
-                android:id="@+id/iv_addCart"
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottie_board_like"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:padding="5dp"
-                app:tint="@color/black"
-                android:src="@drawable/ic_baseline_shopping_cart_24"/>
+                app:lottie_autoPlay="false"
+                app:lottie_loop="false"
+                app:lottie_fileName="like.json"
+                android:padding="5dp"/>
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottie_board_addCart"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:lottie_autoPlay="false"
+                app:lottie_loop="false"
+                app:lottie_fileName="addcart.json"/>
         </LinearLayout>
         <TextView
             android:id="@+id/tv_uploadTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="10dp"
+            android:fontFamily="@font/nanum_myeongjo_regular"
             android:layout_marginHorizontal="10dp"
             android:text="1시간 전"
             android:textColor="@color/black"/>

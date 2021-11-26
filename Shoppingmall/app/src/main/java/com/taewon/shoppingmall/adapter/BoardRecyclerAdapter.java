@@ -1,42 +1,71 @@
 package com.taewon.shoppingmall.adapter;
 
+import android.animation.Animator;
+import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.taewon.shoppingmall.R;
+import com.taewon.shoppingmall.activity.BoardViewActivity;
 import com.taewon.shoppingmall.item.BoardItem;
 
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdapter.MyViewHolder> {
     Context context;
     ArrayList<BoardItem> items;
     FirebaseStorage storage;
     FirebaseDatabase database;
+    FirebaseAuth mAuth;
+
     public BoardRecyclerAdapter(Context context, ArrayList<BoardItem> items){
         this.context = context;
         this.items = items;
+        mAuth = FirebaseAuth.getInstance();
         storage = FirebaseStorage.getInstance();
         database = FirebaseDatabase.getInstance();
     }
@@ -51,10 +80,15 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         BoardItem item = items.get(position);
         StorageReference storageRef = storage.getReference();
-        DatabaseReference databaseRef = database.getReference();
-        storageRef.child("Profile/" + item.uid +"/profile.png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+        toggleLikeAnim(holder.lottie_like, item);
+
+        cartCheck(holder.lottie_board_addCart, item);
+        likeCheck(holder.lottie_like, item);
+
+        storageRef.child("Profile/" + item.getUid() +"/profile.png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
+                Log.d("게시판 프로필 가져오기", "성공");
                 Glide.with(context)
                         .load(uri)
                         .circleCrop()
@@ -62,37 +96,306 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
                         .into(holder.iv_boardUserProfile);
             }
         });
+
+        ArrayList<StorageReference> boardImgRefs = new ArrayList<>();
+        storageRef.child("Board/"+item.getBoardID()+"/").listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+            @Override
+            public void onSuccess(ListResult listResult) {
+                BoardPictureRecyclerAdapter adapter = new BoardPictureRecyclerAdapter(context, boardImgRefs);;
+                for(StorageReference item : listResult.getItems()){
+                    boardImgRefs.add(item);
+                }
+                SnapHelper helper = new LinearSnapHelper();
+                if(boardImgRefs.size() > 3){
+                    GridLayoutManager manager = new GridLayoutManager(context, 6);
+                    manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                        @Override
+                        public int getSpanSize(int position) {
+                            int gridPosition = position % 5;
+                            Log.d("GridPosition", Integer.toString(gridPosition));
+                            switch (gridPosition){
+                                case 0:
+                                case 1:
+                                case 2:
+                                    return 2;
+                                case 3:
+                                case 4:
+                                    return 3;
+                            }
+                            return 1;
+                        }
+                    });
+                    holder.rv_boardImgs.setLayoutManager(manager);
+                    try {
+                        helper.attachToRecyclerView(holder.rv_boardImgs);
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    holder.rv_boardImgs.setAdapter(adapter);
+                }
+                else{
+                    GridLayoutManager manager = new GridLayoutManager(context, 2);
+                    manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                        @Override
+                        public int getSpanSize(int position) {
+                            switch (position){
+                                case 0:
+                                case 1:
+                                    return 1;
+                                case 2:
+                                    return 2;
+                            }
+                            return 1;
+                        }
+                    });
+                    holder.rv_boardImgs.setLayoutManager(manager);
+                    try{
+                        helper.attachToRecyclerView(holder.rv_boardImgs);
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    holder.rv_boardImgs.setAdapter(adapter);
+                }
+            }
+        });
         holder.tv_nickname.setText(item.getUsername());
-        holder.tv_uploadTime.setText("1분 전");
-        //보드이미지 가져오기.
-//        storageRef.child()
+
+        //업로드 시간 텍스트 변경
+        //현재시간
+        SimpleDateFormat now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar calendar = Calendar.getInstance();
+        Date date1 = calendar.getTime();
+        now.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+        Log.d("지금 시간?", now.format(date1));
+        Log.d("업로드 시간?", item.getDateString());
+        holder.tv_uploadTime.setText(calUploadDate(now.format(date1), item.getDateString()));
+
+        holder.tv_boardTitle.setText(item.getTitle());
+        holder.li_board_wrap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, BoardViewActivity.class);
+                intent.putExtra("BoardItem", item);
+                context.startActivity(intent);
+                ((Activity)context).overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+            }
+        });
+
+        //좋아요 버튼
+        holder.lottie_like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                likeAddErase(holder.lottie_like, item);
+            }
+        });
+
+        //장바구니 버튼
+        holder.lottie_board_addCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cartAddErase(holder.lottie_board_addCart, item);
+            }
+        });
     }
 
+    private void likeCheck(LottieAnimationView lottie, BoardItem item){
+        DatabaseReference ref = database.getReference("Board/"+item.getBoardID());
+        ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if(task.isSuccessful()){
+                    BoardItem instance = task.getResult().getValue(BoardItem.class);
+                    toggleLikeAnim(lottie, instance);
+                }
+            }
+        });
+    }
+    private void likeAddErase(LottieAnimationView lottie, BoardItem item){
+        DatabaseReference ref = database.getReference("Board/"+item.getBoardID());
+        ref.runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData currentData) {
+                BoardItem boardItem = currentData.getValue(BoardItem.class);
+                if(boardItem == null){
+                    return Transaction.success(currentData);
+                }
+
+                if(boardItem.getLikeUsers().containsKey("ANpRQjoMP5dXQQZEO6iFJigeQBs2")){
+                    boardItem.setStarCount(boardItem.getStarCount() - 1);
+                    boardItem.getLikeUsers().remove("ANpRQjoMP5dXQQZEO6iFJigeQBs2");
+                }
+                else{
+                    boardItem.setStarCount(boardItem.getStarCount() + 1);
+                    boardItem.getLikeUsers().put("ANpRQjoMP5dXQQZEO6iFJigeQBs2", true);
+                }
+                currentData.setValue(boardItem);
+                return Transaction.success(currentData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
+                BoardItem value = currentData.getValue(BoardItem.class);
+                toggleLikeAnim(lottie, value);
+            }
+        });
+    }
+
+    private void cartCheck(LottieAnimationView lottie, BoardItem item){
+        DatabaseReference ref = database.getReference("Cart/ANpRQjoMP5dXQQZEO6iFJigeQBs2/"+item.getBoardID());
+        ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if(task.isSuccessful()){
+                    if(task.getResult().exists()){
+                        //이미 장바구니에 담겨있으면,
+                        toggleAddCartAnim(lottie, true);
+                    }
+                    else {
+                        //없으면,
+                        toggleAddCartAnim(lottie, false);
+                    }
+                }
+                else{// 연결실패
+
+                }
+            }
+        });
+    }
+    private void cartAddErase(LottieAnimationView lottie, BoardItem item){
+        DatabaseReference ref = database.getReference("Cart/ANpRQjoMP5dXQQZEO6iFJigeQBs2/"+item.getBoardID());
+        ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if(task.isSuccessful()){
+                    if(task.getResult().exists()){
+                        //이미 장바구니에 담겨 있다면,
+                        ref.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                toggleAddCartAnim(lottie, false);
+                                Toast.makeText(context,"장바구니에서 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                    else {
+                        ref.setValue("cart").addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                toggleAddCartAnim(lottie, true);
+                                Toast.makeText(context,"장바구니에 추가 되었습니다.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+                else{// 연결실패
+                    Toast.makeText(context,"오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+    private void toggleAddCartAnim(LottieAnimationView lottie, boolean isAdd){
+        if(isAdd){
+            ValueAnimator animator = ValueAnimator.ofFloat(0f, 0.5f).setDuration(500);
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    lottie.setProgress((Float) valueAnimator.getAnimatedValue());
+                }
+            });
+            animator.start();
+        }
+        else{
+            ValueAnimator animator = ValueAnimator.ofFloat(0.5f, 1.0f).setDuration(500);
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    lottie.setProgress((Float) valueAnimator.getAnimatedValue());
+                }
+            });
+            animator.start();
+        }
+    }
+
+    private void toggleLikeAnim(LottieAnimationView lottie, BoardItem item){
+        if(item.getLikeUsers().containsKey("ANpRQjoMP5dXQQZEO6iFJigeQBs2")){
+            ValueAnimator animator = ValueAnimator.ofFloat(0f, 0.5f).setDuration(500);
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    lottie.setProgress((Float) valueAnimator.getAnimatedValue());
+                }
+            });
+            animator.start();
+        }
+        else{
+            ValueAnimator animator = ValueAnimator.ofFloat(0.5f, 1.0f).setDuration(500);
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    lottie.setProgress((Float) valueAnimator.getAnimatedValue());
+                }
+            });
+            animator.start();
+        }
+    }
+
+    private void init(DatabaseReference ref){
+
+    }
     @Override
     public int getItemCount() {
         return items.size();
     }
 
+    private String calUploadDate(String date1, String date2){
+        Date format1;
+        Date format2;
+        try{
+            format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date1);
+            format2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date2);
+            long diffSec = (format1.getTime() - format2.getTime()) / 1000; //초 차이
+
+            long diffDays = diffSec / (24*60*60); // 일 수 차이
+            if(diffDays > 0){
+                return diffDays +"일 전";
+            }
+
+            long diffHour = (format1.getTime() - format2.getTime()) / 3600000; //시간 차이
+            if(diffHour > 0){
+                return diffHour + "시간 전";
+            }
+
+            long diffMin = (format1.getTime() - format2.getTime()) / 60000; //분 차이
+            return diffMin+"분 전";
+        }catch (Exception e){
+            e.printStackTrace();
+            Log.e("시간 에러", e.getMessage());
+        }
+        return "";
+    }
+
     public class MyViewHolder extends RecyclerView.ViewHolder{
         LinearLayout li_board_wrap;
-        ImageView iv_boardImg;
+        RecyclerView rv_boardImgs;
         ImageView iv_boardUserProfile;
         TextView tv_nickname;
         TextView tv_uploadTime;
+        TextView tv_boardTitle;
+        LottieAnimationView lottie_board_addCart;
+        LottieAnimationView lottie_like;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
+            tv_boardTitle = itemView.findViewById(R.id.tv_boardTitle);
             li_board_wrap = itemView.findViewById(R.id.li_board_wrap);
-            iv_boardImg = itemView.findViewById(R.id.iv_boardImg);
+            rv_boardImgs = itemView.findViewById(R.id.rv_boardImgs);
             iv_boardUserProfile = itemView.findViewById(R.id.iv_boardUserProfile);
             tv_nickname = itemView.findViewById(R.id.tv_nickname);
             tv_uploadTime = itemView.findViewById(R.id.tv_uploadTime);
-
-            li_board_wrap.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
+            lottie_board_addCart = itemView.findViewById(R.id.lottie_board_addCart);
+            lottie_like = itemView.findViewById(R.id.lottie_board_like);
         }
     }
 }

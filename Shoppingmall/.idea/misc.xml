@@ -21,11 +21,17 @@
         <entry key="..\:/Users/xodnj/Desktop/Shoppingmall/app/src/main/res/menu/bottom_menu.xml" value="0.2078125" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/drawable/border_layout_basic.xml" value="0.3388888888888889" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/drawable/border_layout_round_rectangle.xml" value="0.3398148148148148" />
+        <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/activity_board_view.xml" value="0.21875" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/activity_main.xml" value="0.2962962962962963" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/activity_main2.xml" value="0.25" />
+        <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/activity_splash.xml" value="0.21875" />
+        <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/board_img_item.xml" value="0.21875" />
+        <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/board_item.xml" value="0.33" />
+        <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/loading_layout.xml" value="0.1" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/main_drawer_category.xml" value="0.33" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/main_drawer_myinfo.xml" value="0.38697916666666665" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/main_viewpager_ads.xml" value="0.38697916666666665" />
+        <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/spinner_item.xml" value="0.21875" />
         <entry key="app/src/main/res/drawable/board_layout_round_rectangle.xml" value="0.15572916666666667" />
         <entry key="app/src/main/res/drawable/border_layout_round_rectangle.xml" value="0.16197916666666667" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
@@ -38,7 +44,7 @@
     </option>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_15_PREVIEW" project-jdk-name="15" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_15" project-jdk-name="15" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
