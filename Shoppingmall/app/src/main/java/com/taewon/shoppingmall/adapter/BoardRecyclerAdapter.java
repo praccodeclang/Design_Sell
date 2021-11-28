@@ -39,6 +39,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
@@ -52,7 +53,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 
 public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdapter.MyViewHolder> {
@@ -61,6 +64,7 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
     FirebaseStorage storage;
     FirebaseDatabase database;
     FirebaseAuth mAuth;
+    ArrayList<StorageReference> boardImgRefs;
 
     public BoardRecyclerAdapter(Context context, ArrayList<BoardItem> items){
         this.context = context;
@@ -79,16 +83,17 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         BoardItem item = items.get(position);
+        checkLike(holder.lottie_like, item);
+        checkCart(holder.lottie_addCart, item);
+        //like check
+        boardImgRefs = new ArrayList<>();
         StorageReference storageRef = storage.getReference();
-        toggleLikeAnim(holder.lottie_like, item);
-
-        cartCheck(holder.lottie_board_addCart, item);
-        likeCheck(holder.lottie_like, item);
-
         storageRef.child("Profile/" + item.getUid() +"/profile.png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
-                Log.d("게시판 프로필 가져오기", "성공");
+                if(((Activity)context).isFinishing()){
+                    return;
+                }
                 Glide.with(context)
                         .load(uri)
                         .circleCrop()
@@ -97,17 +102,35 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
             }
         });
 
-        ArrayList<StorageReference> boardImgRefs = new ArrayList<>();
+
+        holder.tv_nickname.setText(item.getUsername());
+
+        //업로드 시간 텍스트 변경
+        //현재시간
+        SimpleDateFormat now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Calendar calendar = Calendar.getInstance();
+        Date date1 = calendar.getTime();
+        now.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+        holder.tv_uploadTime.setText(calUploadDate(now.format(date1), item.getDateString()));
+        holder.tv_boardTitle.setText(item.getTitle());
+
+        BoardPictureRecyclerAdapter pictureRecyclerAdapter = new BoardPictureRecyclerAdapter(context, boardImgRefs);
+        holder.rv_boardImgs.setAdapter(pictureRecyclerAdapter);
+
         storageRef.child("Board/"+item.getBoardID()+"/").listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
             @Override
             public void onSuccess(ListResult listResult) {
-                BoardPictureRecyclerAdapter adapter = new BoardPictureRecyclerAdapter(context, boardImgRefs);;
+                GridLayoutManager manager;
                 for(StorageReference item : listResult.getItems()){
                     boardImgRefs.add(item);
                 }
-                SnapHelper helper = new LinearSnapHelper();
                 if(boardImgRefs.size() > 3){
-                    GridLayoutManager manager = new GridLayoutManager(context, 6);
+                    manager = new GridLayoutManager(context, 6){
+                        @Override
+                        public boolean canScrollVertically() {
+                            return false;
+                        }
+                    };
                     manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                         @Override
                         public int getSpanSize(int position) {
@@ -125,17 +148,14 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
                             return 1;
                         }
                     });
-                    holder.rv_boardImgs.setLayoutManager(manager);
-                    try {
-                        helper.attachToRecyclerView(holder.rv_boardImgs);
-                    }
-                    catch (Exception e){
-                        e.printStackTrace();
-                    }
-                    holder.rv_boardImgs.setAdapter(adapter);
                 }
                 else{
-                    GridLayoutManager manager = new GridLayoutManager(context, 2);
+                    manager = new GridLayoutManager(context, 2){
+                        @Override
+                        public boolean canScrollVertically() {
+                            return false;
+                        }
+                    };;
                     manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                         @Override
                         public int getSpanSize(int position) {
@@ -149,206 +169,60 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
                             return 1;
                         }
                     });
-                    holder.rv_boardImgs.setLayoutManager(manager);
-                    try{
-                        helper.attachToRecyclerView(holder.rv_boardImgs);
-                    }
-                    catch (Exception e){
-                        e.printStackTrace();
-                    }
-                    holder.rv_boardImgs.setAdapter(adapter);
                 }
-            }
-        });
-        holder.tv_nickname.setText(item.getUsername());
-
-        //업로드 시간 텍스트 변경
-        //현재시간
-        SimpleDateFormat now = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Calendar calendar = Calendar.getInstance();
-        Date date1 = calendar.getTime();
-        now.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
-        Log.d("지금 시간?", now.format(date1));
-        Log.d("업로드 시간?", item.getDateString());
-        holder.tv_uploadTime.setText(calUploadDate(now.format(date1), item.getDateString()));
-
-        holder.tv_boardTitle.setText(item.getTitle());
-        holder.li_board_wrap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, BoardViewActivity.class);
-                intent.putExtra("BoardItem", item);
-                context.startActivity(intent);
-                ((Activity)context).overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-            }
-        });
-
-        //좋아요 버튼
-        holder.lottie_like.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                likeAddErase(holder.lottie_like, item);
-            }
-        });
-
-        //장바구니 버튼
-        holder.lottie_board_addCart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                cartAddErase(holder.lottie_board_addCart, item);
+                holder.rv_boardImgs.setLayoutManager(manager);
+                pictureRecyclerAdapter.notifyDataSetChanged();
             }
         });
     }
 
-    private void likeCheck(LottieAnimationView lottie, BoardItem item){
-        DatabaseReference ref = database.getReference("Board/"+item.getBoardID());
-        ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+    void likeAnim(LottieAnimationView lottie, boolean isLike){
+        ValueAnimator animator;
+        if(isLike) animator = ValueAnimator.ofFloat(0f, 0.5f).setDuration(500);
+        else animator = ValueAnimator.ofFloat(0.5f, 1.0f).setDuration(500);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if(task.isSuccessful()){
-                    BoardItem instance = task.getResult().getValue(BoardItem.class);
-                    toggleLikeAnim(lottie, instance);
-                }
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                lottie.setProgress((Float) valueAnimator.getAnimatedValue());
             }
         });
-    }
-    private void likeAddErase(LottieAnimationView lottie, BoardItem item){
-        DatabaseReference ref = database.getReference("Board/"+item.getBoardID());
-        ref.runTransaction(new Transaction.Handler() {
-            @NonNull
-            @Override
-            public Transaction.Result doTransaction(@NonNull MutableData currentData) {
-                BoardItem boardItem = currentData.getValue(BoardItem.class);
-                if(boardItem == null){
-                    return Transaction.success(currentData);
-                }
-
-                if(boardItem.getLikeUsers().containsKey("ANpRQjoMP5dXQQZEO6iFJigeQBs2")){
-                    boardItem.setStarCount(boardItem.getStarCount() - 1);
-                    boardItem.getLikeUsers().remove("ANpRQjoMP5dXQQZEO6iFJigeQBs2");
-                }
-                else{
-                    boardItem.setStarCount(boardItem.getStarCount() + 1);
-                    boardItem.getLikeUsers().put("ANpRQjoMP5dXQQZEO6iFJigeQBs2", true);
-                }
-                currentData.setValue(boardItem);
-                return Transaction.success(currentData);
-            }
-
-            @Override
-            public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
-                BoardItem value = currentData.getValue(BoardItem.class);
-                toggleLikeAnim(lottie, value);
-            }
-        });
+        animator.start();
     }
 
-    private void cartCheck(LottieAnimationView lottie, BoardItem item){
-        DatabaseReference ref = database.getReference("Cart/ANpRQjoMP5dXQQZEO6iFJigeQBs2/"+item.getBoardID());
-        ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if(task.isSuccessful()){
-                    if(task.getResult().exists()){
-                        //이미 장바구니에 담겨있으면,
-                        toggleAddCartAnim(lottie, true);
-                    }
-                    else {
-                        //없으면,
-                        toggleAddCartAnim(lottie, false);
-                    }
-                }
-                else{// 연결실패
-
-                }
-            }
-        });
-    }
-    private void cartAddErase(LottieAnimationView lottie, BoardItem item){
-        DatabaseReference ref = database.getReference("Cart/ANpRQjoMP5dXQQZEO6iFJigeQBs2/"+item.getBoardID());
-        ref.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if(task.isSuccessful()){
-                    if(task.getResult().exists()){
-                        //이미 장바구니에 담겨 있다면,
-                        ref.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                toggleAddCartAnim(lottie, false);
-                                Toast.makeText(context,"장바구니에서 삭제되었습니다.", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                    else {
-                        ref.setValue("cart").addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                toggleAddCartAnim(lottie, true);
-                                Toast.makeText(context,"장바구니에 추가 되었습니다.", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                }
-                else{// 연결실패
-                    Toast.makeText(context,"오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
-    private void toggleAddCartAnim(LottieAnimationView lottie, boolean isAdd){
-        if(isAdd){
-            ValueAnimator animator = ValueAnimator.ofFloat(0f, 0.5f).setDuration(500);
-            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    lottie.setProgress((Float) valueAnimator.getAnimatedValue());
-                }
-            });
-            animator.start();
+    void checkLike(LottieAnimationView lottie, BoardItem item){
+        if(item.getLikeUsers().containsKey(mAuth.getCurrentUser().getUid())){
+            likeAnim(lottie, true);
+            return;
         }
-        else{
-            ValueAnimator animator = ValueAnimator.ofFloat(0.5f, 1.0f).setDuration(500);
-            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    lottie.setProgress((Float) valueAnimator.getAnimatedValue());
-                }
-            });
-            animator.start();
-        }
+        likeAnim(lottie, false);
     }
 
-    private void toggleLikeAnim(LottieAnimationView lottie, BoardItem item){
-        if(item.getLikeUsers().containsKey("ANpRQjoMP5dXQQZEO6iFJigeQBs2")){
-            ValueAnimator animator = ValueAnimator.ofFloat(0f, 0.5f).setDuration(500);
-            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    lottie.setProgress((Float) valueAnimator.getAnimatedValue());
-                }
-            });
-            animator.start();
-        }
-        else{
-            ValueAnimator animator = ValueAnimator.ofFloat(0.5f, 1.0f).setDuration(500);
-            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    lottie.setProgress((Float) valueAnimator.getAnimatedValue());
-                }
-            });
-            animator.start();
-        }
+    void cartAnim(LottieAnimationView lottie, boolean isAdded){
+        ValueAnimator animator;
+        if(isAdded) animator = ValueAnimator.ofFloat(0f, 0.5f).setDuration(500);
+        else animator = ValueAnimator.ofFloat(0.5f, 1.0f).setDuration(500);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                lottie.setProgress((Float) valueAnimator.getAnimatedValue());
+            }
+        });
+        animator.start();
     }
 
-    private void init(DatabaseReference ref){
-
+    void checkCart(LottieAnimationView lottie, BoardItem item){
+        if(item.getLikeUsers().containsKey(mAuth.getCurrentUser().getUid())){
+            cartAnim(lottie, true);
+            return;
+        }
+        cartAnim(lottie, false);
     }
+
     @Override
     public int getItemCount() {
         return items.size();
     }
+
 
     private String calUploadDate(String date1, String date2){
         Date format1;
@@ -384,8 +258,9 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
         TextView tv_nickname;
         TextView tv_uploadTime;
         TextView tv_boardTitle;
-        LottieAnimationView lottie_board_addCart;
+        LottieAnimationView lottie_addCart;
         LottieAnimationView lottie_like;
+        BoardItem item;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             tv_boardTitle = itemView.findViewById(R.id.tv_boardTitle);
@@ -394,8 +269,94 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
             iv_boardUserProfile = itemView.findViewById(R.id.iv_boardUserProfile);
             tv_nickname = itemView.findViewById(R.id.tv_nickname);
             tv_uploadTime = itemView.findViewById(R.id.tv_uploadTime);
-            lottie_board_addCart = itemView.findViewById(R.id.lottie_board_addCart);
+            lottie_addCart = itemView.findViewById(R.id.lottie_board_addCart);
             lottie_like = itemView.findViewById(R.id.lottie_board_like);
+
+
+            //전체 레이아웃 클릭
+            li_board_wrap.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int pos = getAdapterPosition();
+                    BoardItem item = items.get(pos);
+                    Intent intent = new Intent(context, BoardViewActivity.class);
+                    intent.putExtra("BoardItem", item);
+                    context.startActivity(intent);
+                    ((Activity)context).overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                }
+            });
+            //좋아요 버튼
+            lottie_like.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    int pos = getAdapterPosition();
+                    if(pos != RecyclerView.NO_POSITION){
+                        like(lottie_like, items.get(pos));
+                    }
+                }
+            });
+
+            //장바구니 버튼
+            lottie_addCart.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int pos = getAdapterPosition();
+                    if(pos != RecyclerView.NO_POSITION){
+                        addEraseCart(lottie_addCart, items.get(pos));
+                    }
+                }
+            });
+        }
+
+        
+        //함수
+        void like(LottieAnimationView lottie, BoardItem item){
+            //좋아요 추가 & 제거
+            boolean isContains = item.getLikeUsers().containsKey(mAuth.getCurrentUser().getUid());
+            if(isContains){
+                item.setStarCount(item.getStarCount() - 1);
+                item.getLikeUsers().remove(mAuth.getCurrentUser().getUid());
+                DatabaseReference ref = database.getReference("Board/"+item.getBoardID());
+                ref.setValue(item);
+                likeAnim(lottie, false);
+            }
+            else{
+                item.setStarCount(item.getStarCount() + 1);
+                item.getLikeUsers().put(mAuth.getCurrentUser().getUid(), true);
+                DatabaseReference ref = database.getReference("Board/" + item.getBoardID());
+                ref.setValue(item);
+                likeAnim(lottie, true);
+            }
+            notifyDataSetChanged();
+        }
+
+        void addEraseCart(LottieAnimationView lottie, BoardItem item){
+            //장바구니 추가 & 제거 11.28 여기부터 시작하세요.
+            DatabaseReference databaseRef = database.getReference("Cart/"+item.getBoardID());
+            databaseRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                    if(task.isSuccessful() && task.getResult().exists()){
+                        Map<String, Object> map = (Map<String, Object>)task.getResult().getValue();
+                        if(map == null){
+                            map = new HashMap<>();
+                        }
+
+                        if(map.keySet().contains(mAuth.getCurrentUser().getUid())){
+                            map.remove(mAuth.getCurrentUser().getUid());
+                            databaseRef.setValue(map);
+                            cartAnim(lottie, false);
+                        }
+                        else{
+                            map.put(mAuth.getCurrentUser().getUid(), true);
+                            databaseRef.setValue(map);
+                            cartAnim(lottie, true);
+                        }
+                    }
+                }
+            });
+            notifyDataSetChanged();
         }
     }
 }

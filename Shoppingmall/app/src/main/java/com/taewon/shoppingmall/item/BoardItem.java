@@ -108,4 +108,16 @@ public class BoardItem implements Serializable {
     public void setDateString(String dateString) {
         this.dateString = dateString;
     }
+
+    public void copy(BoardItem copyItem){
+        this.uid = copyItem.getUid();
+        this.title = copyItem.getTitle();
+        this.body = copyItem.getBody();
+        this.username = copyItem.getUsername();
+        this.tags = copyItem.getTags();
+        this.starCount = copyItem.getStarCount();
+        this.dateString = copyItem.getDateString();
+        this.likeUsers = copyItem.getLikeUsers();
+        this.boardID = copyItem.getBoardID();
+    }
 }

@@ -83,59 +83,10 @@
                     android:fontFamily="@font/nanum_myeongjo_bold"
                     android:paddingHorizontal="10dp"
                     android:layout_marginVertical="10dp"/>
-                <TableLayout
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_main_todayDesigner"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:stretchColumns="*">
-                    <TableRow
-                        android:id="@+id/tr_topRatedDesigners">
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:gravity="center">
-                            <ImageView
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:src="@drawable/test_profile"/>
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="이름"
-                                android:textColor="@color/black"/>
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:gravity="center">
-                            <ImageView
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:src="@drawable/test_profile"/>
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="이름"
-                                android:textColor="@color/black"/>
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:gravity="center">
-                            <ImageView
-                                android:layout_width="50dp"
-                                android:layout_height="50dp"
-                                android:src="@drawable/test_profile"/>
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="이름"
-                                android:textColor="@color/black"/>
-                        </LinearLayout>
-                    </TableRow>
-                </TableLayout>
+                    android:layout_height="wrap_content"/>
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/vp_adsViewPager"
                     android:layout_width="match_parent"

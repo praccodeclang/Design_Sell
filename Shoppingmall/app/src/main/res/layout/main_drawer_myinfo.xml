@@ -24,10 +24,12 @@
         android:orientation="vertical"
         android:layout_marginVertical="50dp">
         <ImageView
+            android:id="@+id/iv_rightDrawerUserImg"
             android:layout_width="240dp"
             android:layout_height="100dp"
             android:src="@drawable/test_profile"/>
         <TextView
+            android:id="@+id/tv_rightDrawerUserName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -38,7 +40,8 @@
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -56,13 +59,14 @@
                         android:layout_height="50dp"
                         android:src="@drawable/ic_baseline_payment_24"
                         app:tint="@color/black"/>
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="판매등록"
                         android:layout_gravity="center"
                         android:fontFamily="@font/nanum_myeongjo_bold"
-                        android:textColor="@color/black"/>
+                        android:text="판매등록"
+                        android:textColor="@color/black" />
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="0dp"
@@ -151,5 +155,28 @@
                 </LinearLayout>
             </TableRow>
         </TableLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/li_logout"
+            android:gravity="center"
+            android:layout_margin="20dp"
+            android:layout_gravity="end">
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                app:tint="#ff4400"
+                android:src="@drawable/ic_baseline_logout_24"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#ee0000"
+                android:textSize="14sp"
+                android:text="로그아웃"/>
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

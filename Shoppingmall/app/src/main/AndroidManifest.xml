@@ -12,19 +12,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:usesCleartextTraffic="true">
-        <activity
-            android:name=".activity.MainActivity"
-            android:exported="true"
-            android:windowSoftInputMode="adjustResize|adjustPan">
+        <activity android:name=".activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activity.LoginActivity"/>
+        <activity
+            android:name=".activity.MainActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize|adjustPan"/>
         <activity android:name=".activity.SearchActivity"/>
         <activity android:name=".activity.WebViewActivity"/>
         <activity android:name=".activity.MainActivity2"/>
         <activity android:name=".activity.BoardViewActivity"/>
+        <activity android:name=".activity.ProfileViewActivity"/>
     </application>
 
 </manifest>
