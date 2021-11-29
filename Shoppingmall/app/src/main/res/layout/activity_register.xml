@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/tv1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="First Start"
+        android:fontFamily="cursive"
+        android:textColor="@color/black"
+        android:textSize="32sp"
+        android:gravity="center"
+        android:padding="10dp"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#000000"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_weight="1">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            app:lottie_autoPlay="true"
+            app:lottie_fileName="register_anim.json"
+            app:lottie_loop="true" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginHorizontal="20dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="right"
+                android:gravity="left">
+                <EditText
+                    android:singleLine="true"
+                    android:id="@+id/et_registerUserName"
+                    android:background="@drawable/border_layout_round_rectangle"
+                    android:gravity="center"
+                    android:hint="이름을 입력해주세요."
+                    android:layout_width="match_parent"
+                    android:layout_weight="1"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="10dp"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginTop="10dp">
+                    <EditText android:singleLine="true"
+                        android:id="@+id/et2"
+                        android:background="@drawable/border_layout_round_rectangle"
+                        android:gravity="center"
+                        android:hint="이메일을 입력해주세요."
+                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text="\@"
+                        android:textColor="@color/black"/>
+                    <Spinner
+                        android:layout_weight="3"
+                        android:id="@+id/sp_emailSpinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:background="@drawable/border_layout_round_rectangle"
+                        android:gravity="center" />
+                </LinearLayout>
+                <EditText android:singleLine="true"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/et_registerPassword"
+                    android:hint="비밀번호를 입력해주세요."
+                    android:inputType="textPassword"
+                    android:background="@drawable/border_layout_round_rectangle"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"/>
+                <EditText android:singleLine="true"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/et_registerPasswordAgain"
+                    android:hint="비밀번호를 한 번 더 입력해주세요."
+                    android:inputType="textPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@drawable/border_layout_round_rectangle"
+                    android:gravity="center"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="비밀번호가 일치하지 않습니다."
+                    android:layout_marginBottom="5dp"
+                    android:padding="10dp"
+                    android:id="@+id/tv_passwordGuide" />
+                <EditText android:singleLine="true"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/et_registerPhone"
+                    android:hint="휴대전화 번호를 입력해주세요."
+                    android:inputType="phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:background="@drawable/border_layout_round_rectangle"
+                    android:gravity="center"/>
+                <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+                    <RadioButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="예, 디자이너입니다."
+                        android:buttonTint="@color/black"/>
+                    <RadioButton
+                        android:layout_marginTop="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="아니오, 디자이너가 아닙니다."
+                        android:buttonTint="@color/black"/>
+                </RadioGroup>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:padding="10dp"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/btn1"
+            android:text="가입하기"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:backgroundTint="#999999"
+            android:layout_marginRight="10dp"/>
+        <Button
+            android:id="@+id/btn2"
+            android:text="뒤로가기"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:backgroundTint="#999999"/>
+    </LinearLayout>
+</LinearLayout>

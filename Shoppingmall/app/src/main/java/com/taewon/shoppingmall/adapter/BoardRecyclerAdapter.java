@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -65,8 +66,7 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
     FirebaseStorage storage;
     FirebaseDatabase database;
     FirebaseAuth mAuth;
-    ArrayList<StorageReference> boardImgRefs;
-
+    BoardPictureRecyclerAdapter pictureRecyclerAdapter;
     public BoardRecyclerAdapter(Context context, ArrayList<BoardItem> items){
         this.context = context;
         this.items = items;
@@ -83,14 +83,36 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        BoardItem item = items.get(position);
+        BoardItem item = items.get(holder.getLayoutPosition());
+
+        //like check
         checkLike(holder.lottie_like, item);
         checkCart(holder.lottie_addCart, item);
-        //like check
-        boardImgRefs = new ArrayList<>();
+
+        //이미지 로드
+        ArrayList<StorageReference> boardImgRefs = new ArrayList<>();
+        StorageReference storageRef = storage.getReference();
+        storageRef.child("Board/"+item.getBoardID()+"/")
+                .listAll()
+                .addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                    @Override
+                    public void onSuccess(ListResult listResult) {
+                        for(StorageReference item : listResult.getItems()){
+                            boardImgRefs.add(item);
+                            Log.d("이미지 레퍼런스", item.getPath());
+                            if(boardImgRefs.size() == 4){
+                                break;
+                            }
+                        }
+                        pictureRecyclerAdapter = new BoardPictureRecyclerAdapter(context, boardImgRefs);
+                        holder.rv_boardImgs.setAdapter(pictureRecyclerAdapter);
+                        holder.rv_boardImgs.setLayoutManager(getGridLayoutManager(boardImgRefs.size()));
+                        pictureRecyclerAdapter.notifyDataSetChanged();
+                    }
+                });
+
 
         //유저 프로필 가져오기
-        StorageReference storageRef = storage.getReference();
         storageRef.child("Profile/" + item.getUid() +"/profile.png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
@@ -105,7 +127,7 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
             }
         });
 
-
+        //유저 이름 텍스트 변경
         holder.tv_nickname.setText(item.getUsername());
 
         //업로드 시간 텍스트 변경
@@ -117,9 +139,168 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
         holder.tv_uploadTime.setText(calUploadDate(now.format(date1), item.getDateString()));
         holder.tv_boardTitle.setText(item.getTitle());
 
-        BoardPictureRecyclerAdapter pictureRecyclerAdapter = new BoardPictureRecyclerAdapter(context, boardImgRefs);
-        holder.rv_boardImgs.setAdapter(pictureRecyclerAdapter);
+        //전체 레이아웃 클릭
+        holder.cv_board_wrap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, BoardViewActivity.class);
+                intent.putExtra("BoardItem", item);
+                context.startActivity(intent);
+                ((Activity)context).overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+            }
+        });
+        holder.rv_boardImgs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, BoardViewActivity.class);
+                intent.putExtra("BoardItem", item);
+                context.startActivity(intent);
+                ((Activity)context).overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+            }
+        });
+        //좋아요 버튼
+        holder.lottie_like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                like(holder.lottie_like, item);
+            }
+        });
 
+        //장바구니 버튼
+        holder.lottie_addCart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addEraseCart(holder.lottie_addCart, item);
+            }
+        });
+    }
+
+    private GridLayoutManager getGridLayoutManager(int size){
+        GridLayoutManager manager = new GridLayoutManager(context, 2){
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        };
+        if(size != 4){
+            manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup(){
+                @Override
+                public int getSpanSize(int position) {
+                    switch (position) {
+                        case 0:
+                        case 1:
+                            return 1;
+                        case 2:
+                            return 2;
+                    }
+                    return 0;
+                }
+            });
+        }
+        else {
+            manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    return 1;
+                }
+            });
+        }
+        return manager;
+    }
+
+    void like(LottieAnimationView lottie, BoardItem item){
+        //좋아요 추가 & 제거
+        DatabaseReference ref = database.getReference("Board/" + item.getBoardID());
+        boolean isContains = item.getLikeUsers().containsKey(mAuth.getCurrentUser().getUid());
+        if(isContains){
+            item.setStarCount(item.getStarCount() - 1);
+            item.getLikeUsers().remove(mAuth.getCurrentUser().getUid());
+            likeAnim(lottie, false);
+        }
+        else{
+            item.setStarCount(item.getStarCount() + 1);
+            item.getLikeUsers().put(mAuth.getCurrentUser().getUid(), true);
+            likeAnim(lottie, true);
+        }
+
+        ref.runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData currentData) {
+                BoardItem instance = currentData.getValue(BoardItem.class);
+                if(instance == null){
+                    return Transaction.success(currentData);
+                }
+                currentData.setValue(item);
+                return  Transaction.success(currentData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
+
+            }
+        });
+    }
+
+    void addEraseCart(LottieAnimationView lottie, BoardItem item){
+        //장바구니 추가 & 제거
+        DatabaseReference databaseRef = database.getReference("Cart/"+mAuth.getCurrentUser().getUid());
+        databaseRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if(task.isSuccessful()){
+                    Map<String, Object> map = (Map<String, Object>) task.getResult().getValue();
+                    if(map == null){
+                        Map<String, Object> instance = new HashMap<>();
+                        instance.put(item.getBoardID(), true);
+                        databaseRef.setValue(instance).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                cartAnim(lottie, true);
+                                Toast.makeText(context, "장바구니에 추가되었습니다.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                        return;
+                    }
+                    if(map.keySet().contains(item.getBoardID())){
+                        map.remove(item.getBoardID());
+                        databaseRef.setValue(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                cartAnim(lottie, false);
+                                Toast.makeText(context, "장바구니에서 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                    }
+                    else{
+                        map.put(item.getBoardID(), true);
+                        databaseRef.setValue(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                cartAnim(lottie, true);
+                                Toast.makeText(context, "장바구니에 추가되었습니다.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+
+                return;
+//                if(data.keySet().contains(item.getBoardID())){
+//                    data.remove(item.getBoardID());
+//                    cartAnim(lottie, false);
+//                }
+//                else{
+//                    data.put(item.getBoardID(), true);
+//                    databaseRef.setValue(data).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                        @Override
+//                        public void onSuccess(Void unused) {
+//                            cartAnim(lottie, true);
+//                        }
+//                    });
+//                }
+            }
+        });
     }
 
     void likeAnim(LottieAnimationView lottie, boolean isLike){
@@ -145,8 +326,8 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
 
     void cartAnim(LottieAnimationView lottie, boolean isAdded){
         ValueAnimator animator;
-        if(isAdded) animator = ValueAnimator.ofFloat(0f, 0.5f).setDuration(500);
-        else animator = ValueAnimator.ofFloat(0.5f, 1.0f).setDuration(500);
+        if(isAdded) animator = ValueAnimator.ofFloat(0f, 0.25f).setDuration(1000);
+        else animator = ValueAnimator.ofFloat(0.45f, 0.75f).setDuration(500);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
@@ -157,11 +338,23 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
     }
 
     void checkCart(LottieAnimationView lottie, BoardItem item){
-        if(item.getLikeUsers().containsKey(mAuth.getCurrentUser().getUid())){
-            cartAnim(lottie, true);
-            return;
-        }
-        cartAnim(lottie, false);
+        DatabaseReference ref = database.getReference();
+        ref.child("Cart").child(mAuth.getCurrentUser().getUid()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                Map<String, Object> dataMap = (Map<String, Object>) dataSnapshot.getValue();
+                if(dataMap == null){
+                    cartAnim(lottie, false);
+                    return;
+                }
+                if(dataMap.keySet().contains(item.getBoardID())){
+                    cartAnim(lottie, true);
+                }
+                else{
+                    cartAnim(lottie, false);
+                }
+            }
+        });
     }
 
     @Override
@@ -207,7 +400,6 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
         LottieAnimationView lottie_addCart;
         LottieAnimationView lottie_like;
         BoardItem item;
-        BoardPictureRecyclerAdapter pictureRecyclerAdapter;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             tv_boardTitle = itemView.findViewById(R.id.tv_boardTitle);
@@ -218,172 +410,6 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
             tv_uploadTime = itemView.findViewById(R.id.tv_uploadTime);
             lottie_addCart = itemView.findViewById(R.id.lottie_board_addCart);
             lottie_like = itemView.findViewById(R.id.lottie_board_like);
-
-
-            //전체 레이아웃 클릭
-            cv_board_wrap.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int pos = getAdapterPosition();
-                    if(pos != RecyclerView.NO_POSITION){
-                        BoardItem item = items.get(pos);
-                        Intent intent = new Intent(context, BoardViewActivity.class);
-                        intent.putExtra("BoardItem", item);
-                        context.startActivity(intent);
-                        ((Activity)context).overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-                    }
-                }
-            });
-            rv_boardImgs.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int pos = getAdapterPosition();
-                    if(pos != RecyclerView.NO_POSITION){
-                        BoardItem item = items.get(pos);
-                        Intent intent = new Intent(context, BoardViewActivity.class);
-                        intent.putExtra("BoardItem", item);
-                        context.startActivity(intent);
-                        ((Activity)context).overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-                    }
-                }
-            });
-            //좋아요 버튼
-            lottie_like.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int pos = getAdapterPosition();
-                    if(pos != RecyclerView.NO_POSITION){
-                        like(lottie_like, items.get(pos));
-                    }
-                }
-            });
-
-            //장바구니 버튼
-            lottie_addCart.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int pos = getAdapterPosition();
-                    if(pos != RecyclerView.NO_POSITION){
-                        addEraseCart(lottie_addCart, items.get(pos));
-                    }
-                }
-            });
-        }
-
-        
-        //함수
-        void like(LottieAnimationView lottie, BoardItem item){
-            //좋아요 추가 & 제거
-            boolean isContains = item.getLikeUsers().containsKey(mAuth.getCurrentUser().getUid());
-            if(isContains){
-                item.setStarCount(item.getStarCount() - 1);
-                item.getLikeUsers().remove(mAuth.getCurrentUser().getUid());
-                DatabaseReference ref = database.getReference("Board/"+item.getBoardID());
-                ref.setValue(item);
-                likeAnim(lottie, false);
-            }
-            else{
-                item.setStarCount(item.getStarCount() + 1);
-                item.getLikeUsers().put(mAuth.getCurrentUser().getUid(), true);
-                DatabaseReference ref = database.getReference("Board/" + item.getBoardID());
-                ref.setValue(item);
-                likeAnim(lottie, true);
-            }
-            notifyDataSetChanged();
-        }
-
-        void addEraseCart(LottieAnimationView lottie, BoardItem item){
-            //장바구니 추가 & 제거 11.28 여기부터 시작하세요.
-            DatabaseReference databaseRef = database.getReference("Cart/"+item.getBoardID());
-            databaseRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DataSnapshot> task) {
-                    if(task.isSuccessful() && task.getResult().exists()){
-                        Map<String, Object> map = (Map<String, Object>)task.getResult().getValue();
-                        if(map == null){
-                            map = new HashMap<>();
-                        }
-
-                        if(map.keySet().contains(mAuth.getCurrentUser().getUid())){
-                            map.remove(mAuth.getCurrentUser().getUid());
-                            databaseRef.setValue(map);
-                            cartAnim(lottie, false);
-                        }
-                        else{
-                            map.put(mAuth.getCurrentUser().getUid(), true);
-                            databaseRef.setValue(map);
-                            cartAnim(lottie, true);
-                        }
-                    }
-                }
-            });
-            notifyDataSetChanged();
-        }
-
-        void getBoardImg(){
-            //여기부터
-            pictureRecyclerAdapter = new BoardPictureRecyclerAdapter(context, boardImgRefs);
-            StorageReference storageRef = storage.getReference();
-            storageRef.child("Board/"+item.getBoardID()+"/").listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
-                @Override
-                public void onSuccess(ListResult listResult) {
-                    GridLayoutManager manager;
-                    for(StorageReference item : listResult.getItems()){
-                        boardImgRefs.add(item);
-                        if(boardImgRefs.size() == 5){
-                            break;
-                        }
-                    }
-                    if(boardImgRefs.size() > 3){
-                        manager = new GridLayoutManager(context, 6){
-                            @Override
-                            public boolean canScrollVertically() {
-                                return false;
-                            }
-                        };
-                        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-                            @Override
-                            public int getSpanSize(int position) {
-                                int gridPosition = position % 5;
-                                Log.d("GridPosition", Integer.toString(gridPosition));
-                                switch (gridPosition){
-                                    case 0:
-                                    case 1:
-                                    case 2:
-                                        return 2;
-                                    case 3:
-                                    case 4:
-                                        return 3;
-                                }
-                                return 1;
-                            }
-                        });
-                    }
-                    else{
-                        manager = new GridLayoutManager(context, 2){
-                            @Override
-                            public boolean canScrollVertically() {
-                                return false;
-                            }
-                        };;
-                        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-                            @Override
-                            public int getSpanSize(int position) {
-                                switch (position){
-                                    case 0:
-                                    case 1:
-                                        return 1;
-                                    case 2:
-                                        return 2;
-                                }
-                                return 1;
-                            }
-                        });
-                    }
-                    rv_boardImgs.setLayoutManager(manager);
-                    pictureRecyclerAdapter.notifyDataSetChanged();
-                }
-            });
         }
     }
 }

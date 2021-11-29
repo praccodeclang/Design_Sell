@@ -1,8 +1,13 @@
 <resources>
-    <string name="app_name">Shoppingmall</string>
+    <string name="app_name">DesignSell</string>
     <string-array name="spinner_items">
         <item>최신 순</item>
         <item>오래된 순</item>
         <item>인기 순</item>
+    </string-array>
+    <string-array name="register_spinner_items">
+        <item>gmail.com</item>
+        <item>naver.com</item>
+        <item>daum.net</item>
     </string-array>
 </resources>

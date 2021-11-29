@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -36,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText et_idText;
     EditText et_pwText;
     ImageView iv_viewPassword;
+    TextView tv_register;
     CheckBox cb_autoLogin;
 
     @Override
@@ -58,6 +60,7 @@ public class LoginActivity extends AppCompatActivity {
         et_pwText = findViewById(R.id.et_pwText);
         cb_autoLogin = findViewById(R.id.cb_autoLogin);
         iv_viewPassword = findViewById(R.id.iv_viewPassword);
+        tv_register = findViewById(R.id.tv_register);
     }
     private void initListeners(){
         findViewById(R.id.btn_login).setOnClickListener(new View.OnClickListener() {
@@ -65,6 +68,14 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //로그인
                 login(et_idText.getText().toString(), et_pwText.getText().toString());
+            }
+        });
+        tv_register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             }
         });
         iv_viewPassword.setOnTouchListener(new View.OnTouchListener() {

@@ -39,10 +39,13 @@
         <entry key="app/src/main/res/drawable/board_layout_round_rectangle.xml" value="0.15572916666666667" />
         <entry key="app/src/main/res/drawable/border_layout_round_rectangle.xml" value="0.16197916666666667" />
         <entry key="app/src/main/res/drawable/border_layout_underline.xml" value="0.15104166666666666" />
+        <entry key="app/src/main/res/layout/activity_login.xml" value="0.2078125" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_main2.xml" value="0.14583333333333334" />
+        <entry key="app/src/main/res/layout/activity_register.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_search.xml" value="0.14583333333333334" />
         <entry key="app/src/main/res/layout/board_item.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/main_drawer_category.xml" value="0.20260416666666667" />
         <entry key="app/src/main/res/layout/main_viewpager_ads.xml" value="0.14583333333333334" />
         <entry key="app/src/main/res/layout/mini_board_item.xml" value="0.16197916666666667" />
         <entry key="app/src/main/res/layout/user_profile_layout.xml" value="0.25" />
