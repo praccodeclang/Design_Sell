@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
@@ -87,6 +88,8 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
         checkCart(holder.lottie_addCart, item);
         //like check
         boardImgRefs = new ArrayList<>();
+
+        //유저 프로필 가져오기
         StorageReference storageRef = storage.getReference();
         storageRef.child("Profile/" + item.getUid() +"/profile.png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
@@ -117,63 +120,6 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
         BoardPictureRecyclerAdapter pictureRecyclerAdapter = new BoardPictureRecyclerAdapter(context, boardImgRefs);
         holder.rv_boardImgs.setAdapter(pictureRecyclerAdapter);
 
-        storageRef.child("Board/"+item.getBoardID()+"/").listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
-            @Override
-            public void onSuccess(ListResult listResult) {
-                GridLayoutManager manager;
-                for(StorageReference item : listResult.getItems()){
-                    boardImgRefs.add(item);
-                }
-                if(boardImgRefs.size() > 3){
-                    manager = new GridLayoutManager(context, 6){
-                        @Override
-                        public boolean canScrollVertically() {
-                            return false;
-                        }
-                    };
-                    manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-                        @Override
-                        public int getSpanSize(int position) {
-                            int gridPosition = position % 5;
-                            Log.d("GridPosition", Integer.toString(gridPosition));
-                            switch (gridPosition){
-                                case 0:
-                                case 1:
-                                case 2:
-                                    return 2;
-                                case 3:
-                                case 4:
-                                    return 3;
-                            }
-                            return 1;
-                        }
-                    });
-                }
-                else{
-                    manager = new GridLayoutManager(context, 2){
-                        @Override
-                        public boolean canScrollVertically() {
-                            return false;
-                        }
-                    };;
-                    manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-                        @Override
-                        public int getSpanSize(int position) {
-                            switch (position){
-                                case 0:
-                                case 1:
-                                    return 1;
-                                case 2:
-                                    return 2;
-                            }
-                            return 1;
-                        }
-                    });
-                }
-                holder.rv_boardImgs.setLayoutManager(manager);
-                pictureRecyclerAdapter.notifyDataSetChanged();
-            }
-        });
     }
 
     void likeAnim(LottieAnimationView lottie, boolean isLike){
@@ -252,7 +198,7 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
-        LinearLayout li_board_wrap;
+        CardView cv_board_wrap;
         RecyclerView rv_boardImgs;
         ImageView iv_boardUserProfile;
         TextView tv_nickname;
@@ -261,10 +207,11 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
         LottieAnimationView lottie_addCart;
         LottieAnimationView lottie_like;
         BoardItem item;
+        BoardPictureRecyclerAdapter pictureRecyclerAdapter;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             tv_boardTitle = itemView.findViewById(R.id.tv_boardTitle);
-            li_board_wrap = itemView.findViewById(R.id.li_board_wrap);
+            cv_board_wrap = itemView.findViewById(R.id.cv_board_wrap);
             rv_boardImgs = itemView.findViewById(R.id.rv_boardImgs);
             iv_boardUserProfile = itemView.findViewById(R.id.iv_boardUserProfile);
             tv_nickname = itemView.findViewById(R.id.tv_nickname);
@@ -274,22 +221,36 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
 
 
             //전체 레이아웃 클릭
-            li_board_wrap.setOnClickListener(new View.OnClickListener() {
+            cv_board_wrap.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     int pos = getAdapterPosition();
-                    BoardItem item = items.get(pos);
-                    Intent intent = new Intent(context, BoardViewActivity.class);
-                    intent.putExtra("BoardItem", item);
-                    context.startActivity(intent);
-                    ((Activity)context).overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                    if(pos != RecyclerView.NO_POSITION){
+                        BoardItem item = items.get(pos);
+                        Intent intent = new Intent(context, BoardViewActivity.class);
+                        intent.putExtra("BoardItem", item);
+                        context.startActivity(intent);
+                        ((Activity)context).overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                    }
+                }
+            });
+            rv_boardImgs.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = getAdapterPosition();
+                    if(pos != RecyclerView.NO_POSITION){
+                        BoardItem item = items.get(pos);
+                        Intent intent = new Intent(context, BoardViewActivity.class);
+                        intent.putExtra("BoardItem", item);
+                        context.startActivity(intent);
+                        ((Activity)context).overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                    }
                 }
             });
             //좋아요 버튼
             lottie_like.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
                     int pos = getAdapterPosition();
                     if(pos != RecyclerView.NO_POSITION){
                         like(lottie_like, items.get(pos));
@@ -357,6 +318,72 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
                 }
             });
             notifyDataSetChanged();
+        }
+
+        void getBoardImg(){
+            //여기부터
+            pictureRecyclerAdapter = new BoardPictureRecyclerAdapter(context, boardImgRefs);
+            StorageReference storageRef = storage.getReference();
+            storageRef.child("Board/"+item.getBoardID()+"/").listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                @Override
+                public void onSuccess(ListResult listResult) {
+                    GridLayoutManager manager;
+                    for(StorageReference item : listResult.getItems()){
+                        boardImgRefs.add(item);
+                        if(boardImgRefs.size() == 5){
+                            break;
+                        }
+                    }
+                    if(boardImgRefs.size() > 3){
+                        manager = new GridLayoutManager(context, 6){
+                            @Override
+                            public boolean canScrollVertically() {
+                                return false;
+                            }
+                        };
+                        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                            @Override
+                            public int getSpanSize(int position) {
+                                int gridPosition = position % 5;
+                                Log.d("GridPosition", Integer.toString(gridPosition));
+                                switch (gridPosition){
+                                    case 0:
+                                    case 1:
+                                    case 2:
+                                        return 2;
+                                    case 3:
+                                    case 4:
+                                        return 3;
+                                }
+                                return 1;
+                            }
+                        });
+                    }
+                    else{
+                        manager = new GridLayoutManager(context, 2){
+                            @Override
+                            public boolean canScrollVertically() {
+                                return false;
+                            }
+                        };;
+                        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                            @Override
+                            public int getSpanSize(int position) {
+                                switch (position){
+                                    case 0:
+                                    case 1:
+                                        return 1;
+                                    case 2:
+                                        return 2;
+                                }
+                                return 1;
+                            }
+                        });
+                    }
+                    rv_boardImgs.setLayoutManager(manager);
+                    pictureRecyclerAdapter.notifyDataSetChanged();
+                }
+            });
         }
     }
 }

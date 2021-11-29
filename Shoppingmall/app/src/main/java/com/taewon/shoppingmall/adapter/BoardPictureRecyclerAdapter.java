@@ -71,6 +71,7 @@ public class BoardPictureRecyclerAdapter extends RecyclerView.Adapter<BoardPictu
                     if(((Activity)context).isFinishing()){
                         return;
                     }
+                    Log.d("이미지 주소를 가져와라", task.getResult().toString());
                     Glide.with(context)
                             .load(task.getResult())
                             .error(R.drawable.ic_warning)

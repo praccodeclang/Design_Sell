@@ -7,7 +7,8 @@
     android:orientation="horizontal"
     android:elevation="10dp"
     app:contentPadding="20dp"
-    android:id="@+id/li_mini_board_wrap">
+    android:id="@+id/li_mini_board_wrap"
+    android:layout_margin="2dp">
     <ImageView
         android:id="@+id/iv_mini_board_img"
         android:layout_width="50dp"

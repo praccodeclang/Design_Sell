@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="10dp"
-    android:id="@+id/li_board_wrap">
+    android:id="@+id/cv_board_wrap"
+    android:layout_gravity="center_horizontal"
+    android:elevation="10dp"
+    android:layout_margin="5dp">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@drawable/board_layout_round_rectangle">
+        android:orientation="vertical">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -20,18 +22,19 @@
             android:padding="10dp"
             android:gravity="center"
             android:textSize="24sp"
-            android:fontFamily="@font/nanum_myeongjo_bold"/>
+            android:fontFamily="@font/nanum_myeongjo_bold"
+            android:background="@drawable/border_layout_underline"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="10dp">
+            android:background="@drawable/border_layout_underline">
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:id="@+id/rv_boardImgs"
                 android:overScrollMode="never"
-                android:padding="10dp"
-                android:background="@drawable/board_layout_round_rectangle"/>
+                android:layout_gravity="center"
+                android:padding="10dp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -87,4 +90,4 @@
             android:text="1시간 전"
             android:textColor="@color/black"/>
     </LinearLayout>
-</LinearLayout>
+</androidx.cardview.widget.CardView>

@@ -50,6 +50,7 @@ import com.taewon.shoppingmall.R;
 import com.taewon.shoppingmall.User;
 import com.taewon.shoppingmall.adapter.AdsViewPagerAdapter;
 import com.taewon.shoppingmall.adapter.BoardRecyclerAdapter;
+import com.taewon.shoppingmall.adapter.MiniBoardRecyclerAdapter;
 import com.taewon.shoppingmall.adapter.UserProfileRecyclerAdapter;
 import com.taewon.shoppingmall.dialog.LottieLoadingDialog;
 import com.taewon.shoppingmall.item.AdsItem;
@@ -99,8 +100,8 @@ public class MainActivity extends AppCompatActivity {
 
     UserProfileRecyclerAdapter userProfileRecyclerAdapter;
     AdsViewPagerAdapter pagerAdapter;
-    BoardRecyclerAdapter boardRecyclerAdapter2D;
-    BoardRecyclerAdapter boardRecyclerAdapter3D;
+    MiniBoardRecyclerAdapter boardRecyclerAdapter2D;
+    MiniBoardRecyclerAdapter boardRecyclerAdapter3D;
 
 
     RecyclerView rv_main_todayDesigner;
@@ -207,42 +208,18 @@ public class MainActivity extends AppCompatActivity {
                 // 3. Iterator를 이용해 2d 카테고리와 3d 카테고리를 분리.
                 Iterator<BoardItem> it = boardItems.iterator();
                 while (it.hasNext()) {
-                    if(items2D.size() > 3 && items3D.size() > 3){
-                        break;
-                    }
                     BoardItem item = it.next();
                     List<String> tag = item.getTags();
                     if (tag.contains("2d") || tag.contains("2d.*")) {
                         //2d
                         items2D.add(item);
-                        database.getReference("Board").child(item.getBoardID()).addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                BoardItem newItem = snapshot.getValue(BoardItem.class);
-                                newItem.setBoardID(snapshot.getKey());
-                                boardRecyclerAdapter2D.notifyDataSetChanged();
-                            }
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
                     } else if (tag.contains("3d") || tag.contains("3d ")) {
                         //3d
                         items3D.add(item);
-                        database.getReference("Board").child(item.getBoardID()).addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                BoardItem newItem = snapshot.getValue(BoardItem.class);
-                                newItem.setBoardID(snapshot.getKey());
-                                item.copy(newItem);
-                                boardRecyclerAdapter3D.notifyDataSetChanged();
-                            }
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
+                    }
 
-                            }
-                        });
+                    if(items2D.size() > 3 && items3D.size() > 3){
+                        break;
                     }
                 }
                 
@@ -261,7 +238,10 @@ public class MainActivity extends AppCompatActivity {
             // 연결에 실패했을 때.
             public void onFailure(Exception e) {
                 loadingDialog.dismiss();
-                new AlertDialog.Builder(MainActivity.this).setTitle("게시글을 불러오지 못했습니다. 다시 시도해보세요.").setMessage("").setIcon(R.drawable.ic_baseline_back_hand_24).setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                new AlertDialog.Builder(MainActivity.this).setTitle("게시글을 불러오지 못했습니다. 다시 시도해보세요.")
+                        .setMessage("")
+                        .setIcon(R.drawable.ic_baseline_back_hand_24)
+                        .setPositiveButton("다시 시도", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         getBoard();
                     }
@@ -377,14 +357,14 @@ public class MainActivity extends AppCompatActivity {
         pagerAdapter = new AdsViewPagerAdapter(this, adsItems);
         vp_adsViewPager.setAdapter(pagerAdapter);
 
-        boardRecyclerAdapter2D = new BoardRecyclerAdapter(MainActivity.this, items2D);
+        boardRecyclerAdapter2D = new MiniBoardRecyclerAdapter(MainActivity.this, items2D);
         rv_newest2D.setAdapter(boardRecyclerAdapter2D);
-        rv_newest2D.setLayoutManager(new LinearLayoutManager(MainActivity.this, RecyclerView.HORIZONTAL, false));
+        rv_newest2D.setLayoutManager(new LinearLayoutManager(MainActivity.this, RecyclerView.VERTICAL, false));
         new PagerSnapHelper().attachToRecyclerView(rv_newest2D);
 
-        boardRecyclerAdapter3D = new BoardRecyclerAdapter(MainActivity.this, items3D);
+        boardRecyclerAdapter3D = new MiniBoardRecyclerAdapter(MainActivity.this, items3D);
         rv_newest3D.setAdapter(boardRecyclerAdapter3D);
-        rv_newest3D.setLayoutManager(new LinearLayoutManager(MainActivity.this, RecyclerView.HORIZONTAL, false));
+        rv_newest3D.setLayoutManager(new LinearLayoutManager(MainActivity.this, RecyclerView.VERTICAL, false));
         new PagerSnapHelper().attachToRecyclerView(rv_newest3D);
     }
 
