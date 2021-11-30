@@ -66,11 +66,11 @@ public class User implements Serializable {
         this.coin = coin;
     }
 
-    public boolean isDesigner() {
+    public boolean getIsDesigner() {
         return isDesigner;
     }
 
-    public void setDesigner(boolean designer) {
+    public void setIsDesigner(boolean designer) {
         isDesigner = designer;
     }
 

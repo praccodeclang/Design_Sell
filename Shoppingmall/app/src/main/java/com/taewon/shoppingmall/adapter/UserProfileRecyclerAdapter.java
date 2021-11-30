@@ -50,7 +50,7 @@ public class UserProfileRecyclerAdapter extends RecyclerView.Adapter<UserProfile
 
     @Override
     public void onBindViewHolder(@NonNull UserProfileRecyclerAdapter.ViewHolder holder, int position) {
-        User item = items.get(position);
+        User item = items.get(holder.getLayoutPosition());
         StorageReference storageRef = storage.getReference();
         storageRef.child(item.getPhotoUrl()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override

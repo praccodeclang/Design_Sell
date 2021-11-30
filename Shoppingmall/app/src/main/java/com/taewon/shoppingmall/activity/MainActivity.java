@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
@@ -166,27 +167,42 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getUser(){
-        database.getReference("Users").child(mAuth.getCurrentUser().getUid()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-            @Override
-            public void onSuccess(DataSnapshot dataSnapshot) {
-                User item = dataSnapshot.getValue(User.class);
-                if(item != null){
-                    storage.getReference(item.getPhotoUrl()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
-                            Glide.with(MainActivity.this)
-                                    .load(uri)
-                                    .error(R.drawable.ic_warning)
-                                    .into(iv_rightDrawerUserImg);
-                            tv_rightDrawerUserName.setText(item.getUsername());
-                        }
-                    });
-                }
-                else{
-                    Toast.makeText(MainActivity.this, "정보를 불러오지 못했습니다.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        DatabaseReference databaseRef = database.getReference("Users").child(mAuth.getCurrentUser().getUid());
+        Log.d("CurrUserUid", mAuth.getCurrentUser().getUid());
+        databaseRef.get()
+                .addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                    @Override
+                    public void onSuccess(DataSnapshot dataSnapshot) {
+                        User item = dataSnapshot.getValue(User.class);
+                        Log.d("itemUid", item.getUid());
+                        storage.getReference(item.getPhotoUrl()).getDownloadUrl()
+                                .addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Uri> task) {
+                                        if(task.isSuccessful()){
+                                            Log.d("url", task.getResult().toString());
+                                            Glide.with(MainActivity.this)
+                                                    .load(task.getResult())
+                                                    .error(R.drawable.test_profile)
+                                                    .into(iv_rightDrawerUserImg);
+                                        }
+                                        else{
+
+                                        }
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Glide.with(MainActivity.this)
+                                        .load(R.drawable.test_profile)
+                                        .error(R.drawable.test_profile)
+                                        .into(iv_rightDrawerUserImg);
+                            }
+                        });
+                        tv_rightDrawerUserName.setText(item.getUsername());
+                    }
+                });
+
     }
 
     public void getBoard() {
@@ -258,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
                 userItems.clear();
                 for(DataSnapshot ds : dataSnapshot.getChildren()){
                     User instance = ds.getValue(User.class);
-                    if(instance.isDesigner()){
+                    if(instance.getIsDesigner()){
                         userItems.add(instance);
                     }
                     if(userItems.size() == 3){
@@ -330,7 +346,22 @@ public class MainActivity extends AppCompatActivity {
         tags.add("2d");
         tags.add("2d 배경");
         tags.add("2d 디자인");
-        upload.setValue(new BoardItem("ANpRQjoMP5dXQQZEO6iFJigeQBs2", "김태원", "3번째", "@@@@@@@@", tags, getDate()));
+
+        database.getReference("Users").child(mAuth.getCurrentUser().getUid()).get()
+                .addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                    @Override
+                    public void onSuccess(DataSnapshot dataSnapshot) {
+                        User user = dataSnapshot.getValue(User.class);
+                        upload.setValue(new BoardItem(user.getUid(), user.getUsername(), "3번째", "@@@@@@@@", tags, getDate()))
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                Toast.makeText(MainActivity.this, "글을 작성했습니다.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                });
+
     }
 
     private String getDate() {

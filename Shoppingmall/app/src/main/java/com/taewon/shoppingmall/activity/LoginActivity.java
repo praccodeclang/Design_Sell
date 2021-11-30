@@ -137,6 +137,7 @@ public class LoginActivity extends AppCompatActivity {
                         PreferenceMgr.setString(context, "id", id);
                         PreferenceMgr.setString(context, "pw", pw);
                     }
+                    mAuth.updateCurrentUser(task.getResult().getUser());
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();

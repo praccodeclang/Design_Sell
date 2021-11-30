@@ -9,7 +9,7 @@
         android:id="@+id/tv1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="First Start"
+        android:text="Sign Up"
         android:fontFamily="cursive"
         android:textColor="@color/black"
         android:textSize="32sp"
@@ -60,7 +60,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginTop="10dp">
                     <EditText android:singleLine="true"
-                        android:id="@+id/et2"
+                        android:id="@+id/et_registerEmail"
                         android:background="@drawable/border_layout_round_rectangle"
                         android:gravity="center"
                         android:hint="이메일을 입력해주세요."
@@ -116,18 +116,21 @@
                     android:background="@drawable/border_layout_round_rectangle"
                     android:gravity="center"/>
                 <RadioGroup
+                    android:id="@+id/rg_isDesignerGroup"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp">
                     <RadioButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:id="@+id/rd_yesDesigner"
                         android:text="예, 디자이너입니다."
                         android:buttonTint="@color/black"/>
                     <RadioButton
                         android:layout_marginTop="5dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:id="@+id/rd_noDesigner"
                         android:text="아니오, 디자이너가 아닙니다."
                         android:buttonTint="@color/black"/>
                 </RadioGroup>
@@ -140,7 +143,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <Button
-            android:id="@+id/btn1"
+            android:id="@+id/btn_register"
             android:text="가입하기"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -148,7 +151,7 @@
             android:backgroundTint="#999999"
             android:layout_marginRight="10dp"/>
         <Button
-            android:id="@+id/btn2"
+            android:id="@+id/btn_backpressed"
             android:text="뒤로가기"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
