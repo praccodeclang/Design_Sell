@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Adapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -45,12 +47,23 @@ public class UserProfileRecyclerAdapter extends RecyclerView.Adapter<UserProfile
     @Override
     public UserProfileRecyclerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.main_user_item, parent, false);
+        Animation animation = AnimationUtils.loadAnimation(context, R.anim.board_slide_in);
+        view.setAnimation(animation);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull UserProfileRecyclerAdapter.ViewHolder holder, int position) {
         User item = items.get(holder.getLayoutPosition());
+
+        holder.li_userProfileWrap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, ProfileViewActivity.class);
+                intent.putExtra("UserData", item);
+                context.startActivity(intent);
+            }
+        });
         StorageReference storageRef = storage.getReference();
         storageRef.child(item.getPhotoUrl()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
@@ -82,19 +95,6 @@ public class UserProfileRecyclerAdapter extends RecyclerView.Adapter<UserProfile
             li_userProfileWrap = itemView.findViewById(R.id.li_userProfileWrap);
             iv_userItemProfile = itemView.findViewById(R.id.iv_userItemProfile);
             tv_userItemNameText = itemView.findViewById(R.id.tv_userItemNameText);
-
-            li_userProfileWrap.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(context, ProfileViewActivity.class);
-                    int pos = getAdapterPosition();
-                    if(pos != Adapter.NO_SELECTION){
-                        User user = items.get(getAdapterPosition());
-                        intent.putExtra("UserData", user);
-                        context.startActivity(intent);
-                    }
-                }
-            });
         }
     }
 }

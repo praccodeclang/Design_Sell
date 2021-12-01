@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Adapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -57,6 +59,8 @@ public class MiniBoardRecyclerAdapter extends RecyclerView.Adapter<MiniBoardRecy
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.mini_board_item, parent, false);
+        Animation animation = AnimationUtils.loadAnimation(context, R.anim.board_slide_in);
+        view.setAnimation(animation);
         return new MyViewHolder(view);
     }
 

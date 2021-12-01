@@ -13,6 +13,7 @@
         android:orientation="vertical"
         android:id="@+id/wrap_layout"
         android:background="@color/white">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -36,27 +37,22 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:layout_marginHorizontal="10dp"
+                android:layout_marginHorizontal="30dp"
                 android:orientation="horizontal">
                 <EditText
                     android:id="@+id/et_search"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:singleLine="true"
-                    android:paddingHorizontal="10dp"
-                    android:imeOptions="actionGo"
-                    android:hint="검색어를 입력하세요."
-                    android:paddingVertical="10dp"
-                    android:textColor="@color/black"
+                    android:background="@drawable/searchview_background"
                     android:drawableStart="@drawable/ic_baseline_search_24"
                     android:drawableTint="@color/black"
-                    android:background="@drawable/searchview_background"/>
-
-                <ImageView
-                    android:layout_width="36dp"
-                    android:layout_height="35dp"
-                    android:src="@drawable/ic_baseline_search_24"
-                    app:tint="@color/black" />
+                    android:hint="검색어를 입력하세요."
+                    android:textSize="16sp"
+                    android:imeOptions="actionGo"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="10dp"
+                    android:singleLine="true"
+                    android:textColor="@color/black" />
             </LinearLayout>
             <ImageView
                 android:layout_width="35dp"
@@ -74,7 +70,15 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:paddingTop="20dp">
-
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="오늘의 디자이너"
+                    android:textSize="16sp"
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/nanum_myeongjo_bold"
+                    android:paddingHorizontal="10dp"
+                    android:layout_marginBottom="10dp" />
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_main_todayDesigner"
                     android:layout_width="match_parent"
@@ -97,6 +101,7 @@
                     android:id="@+id/rv_newest2D"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:layout_constrainedHeight="true"
                     android:overScrollMode="never"/>
                 <TextView
                     android:layout_width="wrap_content"
@@ -112,6 +117,7 @@
                     android:id="@+id/rv_newest3D"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:layout_constrainedHeight="true"
                     android:overScrollMode="never"/>
                 <Button
                     android:id="@+id/btn_insertTest"

@@ -54,6 +54,8 @@ public class ProfileViewActivity extends AppCompatActivity {
     FirebaseStorage storage;
     FirebaseAuth mAuth;
     ArrayList<BoardItem> mBoardItems;
+    ArrayList<BoardItem> popularItems;
+    ArrayList<BoardItem> newerItems;
 
     User user;
     @Override
@@ -78,6 +80,8 @@ public class ProfileViewActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         loadingDialog = new LottieLoadingDialog(ProfileViewActivity.this);
         mBoardItems = new ArrayList<>();
+        popularItems = new ArrayList<>();
+        newerItems = new ArrayList<>();
     }
 
     private void initViews(){
@@ -97,21 +101,17 @@ public class ProfileViewActivity extends AppCompatActivity {
         tv_userViewerName.setText(user.getUsername());
 
         rv_profile_newest_board = findViewById(R.id.rv_profile_newest_board);
-        newestBoardAdapter = new MiniBoardRecyclerAdapter(ProfileViewActivity.this, mBoardItems);
+        newestBoardAdapter = new MiniBoardRecyclerAdapter(ProfileViewActivity.this, newerItems);
         rv_profile_newest_board.setLayoutManager(new LinearLayoutManager(ProfileViewActivity.this, RecyclerView.VERTICAL, false));
         rv_profile_newest_board.setAdapter(newestBoardAdapter);
 
         rv_profile_popular_board = findViewById(R.id.rv_profile_popular_board);
-        popularBoardAdapter = new MiniBoardRecyclerAdapter(ProfileViewActivity.this, mBoardItems);
+        popularBoardAdapter = new MiniBoardRecyclerAdapter(ProfileViewActivity.this, popularItems);
         rv_profile_popular_board.setLayoutManager(new LinearLayoutManager(ProfileViewActivity.this, RecyclerView.VERTICAL, false));
         rv_profile_popular_board.setAdapter(popularBoardAdapter);
     }
 
     private void initListeners(){
-
-    }
-
-    private void setUser(){
 
     }
 
@@ -121,11 +121,14 @@ public class ProfileViewActivity extends AppCompatActivity {
             public void onSuccess(DataSnapshot dataSnapshot) {
                 // 1.데이터는 쌓인다. 청소하자.
                 mBoardItems.clear();
+                popularItems.clear();
+                newerItems.clear();
                 // 2. 가져온 보드들을 우선 모두 리스트에 정리하고,
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     BoardItem item = (BoardItem) snapshot.getValue(BoardItem.class);
                     item.setBoardID(snapshot.getKey());
-                    if(item.getUid().equals(mAuth.getCurrentUser().getUid())){
+                    if(item.getUid().equals(user.getUid())){
+                        Log.d("UID",item.getUid());
                         mBoardItems.add(item);
                     }
                 }
@@ -133,8 +136,11 @@ public class ProfileViewActivity extends AppCompatActivity {
                 // 4. 아이템들을 최신순, 인기순으로 정렬.
                 // 5. 어댑터에 리스트 데이터 구조가 바뀌었음을 알려주자.
                 Collections.sort(mBoardItems, new BoardDateComparator());
+                newerItems.addAll(mBoardItems);
                 newestBoardAdapter.notifyDataSetChanged();
+
                 Collections.sort(mBoardItems, new BoardStarCountComparator());
+                popularItems.addAll(mBoardItems);
                 popularBoardAdapter.notifyDataSetChanged();
                 // 6. 로딩창 닫기
                 loadingDialog.dismiss();

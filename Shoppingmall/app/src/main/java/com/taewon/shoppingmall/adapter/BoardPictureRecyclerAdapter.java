@@ -71,7 +71,6 @@ public class BoardPictureRecyclerAdapter extends RecyclerView.Adapter<BoardPictu
                     if(((Activity)context).isFinishing()){
                         return;
                     }
-                    Log.d("이미지 주소를 가져와라", task.getResult().toString());
                     Glide.with(context)
                             .load(task.getResult())
                             .error(R.drawable.ic_warning)
@@ -81,7 +80,6 @@ public class BoardPictureRecyclerAdapter extends RecyclerView.Adapter<BoardPictu
                 }
             }
         });
-        Log.d("보드 이미지 다운로드", "완료");
     }
 
     @Override

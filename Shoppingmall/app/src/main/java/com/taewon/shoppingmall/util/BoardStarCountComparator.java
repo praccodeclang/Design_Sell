@@ -10,9 +10,11 @@ public class BoardStarCountComparator implements Comparator<BoardItem> {
         if(item.getStarCount() > t1.getStarCount()){
             return -1;
         }
-        else if(item.getStarCount() < t1.getStarCount()){
+        else if(item.getStarCount() == t1.getStarCount()){
+            return 0;
+        }
+        else{
             return 1;
         }
-        return 0;
     }
 }

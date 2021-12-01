@@ -49,14 +49,14 @@
                 android:id="@+id/iv_boardUserProfile"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:scaleType="fitCenter"
-                app:tint="@color/black"
-                android:src="@drawable/ic_baseline_person_24"/>
+                android:scaleType="fitXY"
+                android:src="@drawable/test_profile"/>
             <TextView
                 android:id="@+id/tv_nickname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
+                android:padding="10dp"
                 android:fontFamily="@font/nanum_myeongjo_regular"
                 android:text="NickName"
                 android:textColor="@color/black"/>

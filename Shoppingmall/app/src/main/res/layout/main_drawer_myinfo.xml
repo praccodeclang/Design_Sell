@@ -7,34 +7,56 @@
     android:id="@+id/drawer_myinfo"
     android:layout_gravity="end"
     android:background="@color/white">
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="10dp">
+        android:layout_marginVertical="10dp"
+        android:orientation="horizontal">
         <ImageView
             android:id="@+id/iv_rightDrawerCancel"
             android:layout_width="50dp"
             android:layout_height="30dp"
             android:src="@drawable/ic_baseline_cancel_24"
             app:tint="@color/black"/>
-    </LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="16sp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:fontFamily="@font/nanum_myeongjo_regular"
+            android:textColor="@color/black"
+            android:text="내 정보"/>
+    </FrameLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginVertical="50dp">
-        <ImageView
-            android:id="@+id/iv_rightDrawerUserImg"
-            android:layout_width="240dp"
-            android:layout_height="100dp"
-            android:src="@drawable/test_profile"/>
+        android:id="@+id/li_rightDrawerProfile"
+        android:gravity="center">
+        <FrameLayout
+            android:layout_width="100dp"
+            android:layout_height="100dp">
+            <ImageView
+                android:id="@+id/iv_rightDrawerUserImg"
+                android:layout_gravity="center"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/test_profile"/>
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/ic_baseline_camera_alt_24"
+                android:layout_gravity="end|bottom"/>
+        </FrameLayout>
         <TextView
             android:id="@+id/tv_rightDrawerUserName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="User"
-            android:textSize="24sp"
+            android:textSize="16sp"
             android:textColor="@color/black"
             android:fontFamily="@font/nanum_myeongjo_regular" />
     </LinearLayout>
@@ -42,6 +64,31 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:paddingRight="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="20dp"
+            >
+            <com.airbnb.lottie.LottieAnimationView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_gravity="center"
+                app:lottie_loop="true"
+                app:lottie_autoPlay="true"
+                app:lottie_fileName="coin_flipping.json"/>
+            <TextView
+                android:id="@+id/tv_rightDrawerCoin"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="0"
+                android:textColor="@color/black"
+                android:textSize="14sp"/>
+        </LinearLayout>
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -5,12 +5,14 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.RotateAnimation;
 import android.widget.GridLayout;
 import android.widget.ImageView;
@@ -29,7 +31,11 @@ import androidx.recyclerview.widget.SnapHelper;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -78,13 +84,14 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.board_item, parent, false);
+        Animation animation = AnimationUtils.loadAnimation(context, R.anim.board_slide_in);
+        view.setAnimation(animation);
         return new MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         BoardItem item = items.get(holder.getLayoutPosition());
-
         //like check
         checkLike(holder.lottie_like, item);
         checkCart(holder.lottie_addCart, item);
@@ -119,10 +126,20 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
                 if(((Activity)context).isFinishing()){
                     return;
                 }
+                Log.d("URL", uri.toString());
                 Glide.with(context)
                         .load(uri)
-                        .circleCrop()
                         .apply(new RequestOptions().circleCrop())
+                        .circleCrop()
+                        .into(holder.iv_boardUserProfile);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Glide.with(context)
+                        .load(R.drawable.test_profile)
+                        .apply(new RequestOptions().circleCrop())
+                        .circleCrop()
                         .into(holder.iv_boardUserProfile);
             }
         });
@@ -400,6 +417,7 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
         LottieAnimationView lottie_addCart;
         LottieAnimationView lottie_like;
         BoardItem item;
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             tv_boardTitle = itemView.findViewById(R.id.tv_boardTitle);

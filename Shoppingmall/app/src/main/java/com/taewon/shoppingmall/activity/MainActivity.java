@@ -1,5 +1,7 @@
 package com.taewon.shoppingmall.activity;
 
+import android.animation.TypeEvaluator;
+import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -93,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout li_2d_detail_category;
     LinearLayout li_3d_detail_category;
     LinearLayout li_plan_detail_category;
+    LinearLayout li_rightDrawerProfile;
     LottieLoadingDialog loadingDialog;
 
     FirebaseDatabase database;
@@ -116,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
     ImageView iv_rightDrawerUserImg;
     TextView tv_rightDrawerUserName;
+    TextView tv_rightDrawerCoin;
 
     final Handler handler = new Handler();
     final Runnable Update = new Runnable() {
@@ -138,8 +142,6 @@ public class MainActivity extends AppCompatActivity {
 
         adsItems = new ArrayList<>();
         boardItems = new ArrayList<>();
-        items2D = new ArrayList<>();
-        items3D = new ArrayList<>();
         items2D = new ArrayList<>();
         items3D = new ArrayList<>();
         userItems = new ArrayList<>();
@@ -200,6 +202,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                         tv_rightDrawerUserName.setText(item.getUsername());
+                        tv_rightDrawerCoin.setText(Integer.toString(item.getCoin()));
                     }
                 });
 
@@ -207,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void getBoard() {
         loadingDialog.show();
-        database.getReference("Board/").limitToFirst(20).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+        database.getReference("Board/").limitToFirst(100).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             public void onSuccess(DataSnapshot dataSnapshot) {
                 // 1.데이터는 쌓인다. 청소하자.
                 boardItems.clear();
@@ -226,14 +229,18 @@ public class MainActivity extends AppCompatActivity {
                 while (it.hasNext()) {
                     BoardItem item = it.next();
                     List<String> tag = item.getTags();
-                    if (tag.contains("2d") || tag.contains("2d.*")) {
+
+                    StringBuilder tagString = new StringBuilder();
+                    for(String s : tag){
+                        tagString.append(s);
+                    }
+                    if (tagString.toString().contains("2d")) {
                         //2d
                         items2D.add(item);
-                    } else if (tag.contains("3d") || tag.contains("3d ")) {
+                    } else if (tagString.toString().contains("3d")) {
                         //3d
                         items3D.add(item);
                     }
-
                     if(items2D.size() > 3 && items3D.size() > 3){
                         break;
                     }
@@ -329,7 +336,6 @@ public class MainActivity extends AppCompatActivity {
     public void insertBoardTest() {
         DatabaseReference upload = database.getReference("Board/").push();
         StorageReference storageRef = storage.getReference("Board/");
-        new ArrayList();
         List<String> tags = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             Bitmap bitmap = ((BitmapDrawable) getDrawable(R.drawable.example)).getBitmap();
@@ -390,12 +396,24 @@ public class MainActivity extends AppCompatActivity {
 
         boardRecyclerAdapter2D = new MiniBoardRecyclerAdapter(MainActivity.this, items2D);
         rv_newest2D.setAdapter(boardRecyclerAdapter2D);
-        rv_newest2D.setLayoutManager(new LinearLayoutManager(MainActivity.this, RecyclerView.VERTICAL, false));
+        LinearLayoutManager manager1 = new LinearLayoutManager(MainActivity.this, RecyclerView.VERTICAL, false){
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        };
+        rv_newest2D.setLayoutManager(manager1);
         new PagerSnapHelper().attachToRecyclerView(rv_newest2D);
 
         boardRecyclerAdapter3D = new MiniBoardRecyclerAdapter(MainActivity.this, items3D);
         rv_newest3D.setAdapter(boardRecyclerAdapter3D);
-        rv_newest3D.setLayoutManager(new LinearLayoutManager(MainActivity.this, RecyclerView.VERTICAL, false));
+        LinearLayoutManager manager2 = new LinearLayoutManager(MainActivity.this, RecyclerView.VERTICAL, false){
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        };
+        rv_newest3D.setLayoutManager(manager2);
         new PagerSnapHelper().attachToRecyclerView(rv_newest3D);
     }
 
@@ -551,7 +569,15 @@ public class MainActivity extends AppCompatActivity {
         //오른쪽 드로워
         iv_rightDrawerUserImg = drawerLayout.findViewById(R.id.iv_rightDrawerUserImg);
         tv_rightDrawerUserName = drawerLayout.findViewById(R.id.tv_rightDrawerUserName);
+        tv_rightDrawerCoin = drawerLayout.findViewById(R.id.tv_rightDrawerCoin);
+        li_rightDrawerProfile = drawerLayout.findViewById(R.id.li_rightDrawerProfile);
+        tv_rightDrawerCoin = drawerLayout.findViewById(R.id.tv_rightDrawerCoin);
+        li_rightDrawerProfile.findViewById(R.id.li_rightDrawerProfile).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+            }
+        });
         drawerLayout.findViewById(R.id.iv_rightDrawerCancel).setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 drawerLayout.closeDrawer((int) GravityCompat.END);
@@ -588,6 +614,23 @@ public class MainActivity extends AppCompatActivity {
                 insertBoardTest();
             }
         });
+    }
+
+    private void cashCount(int cash){
+        ValueAnimator animator = new ValueAnimator();
+        animator.setObjectValues(0, cash);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            public void onAnimationUpdate(ValueAnimator animation) {
+                tv_rightDrawerCoin.setText(animation.getAnimatedValue().toString());
+            }
+        });
+        animator.setEvaluator(new TypeEvaluator<Integer>() {
+            public Integer evaluate(float fraction, Integer startValue, Integer endValue) {
+                return Math.round(startValue + (endValue - startValue) * fraction);
+            }
+        });
+        animator.setDuration(700);
+        animator.start();
     }
 
     private void logout(){

@@ -51,6 +51,7 @@ public class MainActivity2 extends AppCompatActivity {
     Spinner sp_orderSpinner;
     FirebaseStorage storage;
     TextView tv_category;
+    LottieLoadingDialog dialog;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +73,7 @@ public class MainActivity2 extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         storage = FirebaseStorage.getInstance();
         searchItemList = new ArrayList<>();
+        dialog = new LottieLoadingDialog(MainActivity2.this);
     }
 
     private void initViews() {
@@ -115,6 +117,8 @@ public class MainActivity2 extends AppCompatActivity {
     }
 
     private void getBoard(){
+        dialog.show();
+        rv_boardRecycler.setVisibility(View.VISIBLE);
         database.getReference("Board/").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             public void onSuccess(DataSnapshot dataSnapshot) {
                 // 1.데이터는 쌓인다. 청소하자.
@@ -140,10 +144,17 @@ public class MainActivity2 extends AppCompatActivity {
 
                 // 4. 어댑터에 리스트 데이터 구조가 바뀌었음을 알려주자.
                 searchedBoardRecyclerAdapter.notifyDataSetChanged();
+
+                if(searchItemList.size() < 1){
+                    rv_boardRecycler.setVisibility(View.GONE);
+                    dialog.dismiss();
+                }
+                dialog.dismiss();
             }
         }).addOnFailureListener(new OnFailureListener() {
             // 연결에 실패했을 때.
             public void onFailure(Exception e) {
+                dialog.dismiss();
                 new AlertDialog.Builder(MainActivity2.this).setTitle("게시글을 불러오지 못했습니다. 다시 시도해보세요.").setMessage("").setIcon(R.drawable.ic_baseline_back_hand_24).setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         getBoard();
