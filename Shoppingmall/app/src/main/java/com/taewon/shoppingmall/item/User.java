@@ -3,6 +3,8 @@ package com.taewon.shoppingmall.item;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 @IgnoreExtraProperties
 public class User implements Serializable {
@@ -13,6 +15,7 @@ public class User implements Serializable {
     public String phone;
     public String photoUrl;
     public String uid;
+    public Map<String, Boolean> friends;
     public User(){
 
     }
@@ -24,6 +27,16 @@ public class User implements Serializable {
         this.phone = phone;
         this.isDesigner = isDesigner;
         this.photoUrl = photoUrl;
+        this.friends = new HashMap<>();
+        this.friends.put("temp", true);
+    }
+
+    public Map<String, Boolean> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(Map<String, Boolean> friends) {
+        this.friends = friends;
     }
 
     public String getUid() {

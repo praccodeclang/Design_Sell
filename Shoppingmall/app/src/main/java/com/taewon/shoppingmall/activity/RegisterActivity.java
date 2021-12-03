@@ -166,7 +166,6 @@ public class RegisterActivity extends AppCompatActivity {
                     userInstance.setPhone(et_registerPhone.getText().toString());
                     userInstance.setIsDesigner(rd_yesDesigner.isChecked());
                     userInstance.setPhotoUrl("Profile/"+userInstance.getUid()+"/profile.png");
-
                     addUserOnDataBase(userInstance);
                 }
                 else{

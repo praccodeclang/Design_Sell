@@ -19,6 +19,7 @@
             android:gravity="center"
             android:textSize="24sp"
             android:fontFamily="@font/nanum_myeongjo_extrabold"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="300dp"
@@ -67,17 +68,28 @@
             android:padding="10dp"
             android:layout_margin="10dp">
             <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottie_boardView_price"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_gravity="center"
-                app:lottie_autoPlay="true"
                 app:lottie_fileName="coin_flipping.json"
-                app:lottie_loop="true"/>
+                app:lottie_loop="true"
+                app:lottie_autoPlay="true"/>
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottie_boardView_auction"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                app:lottie_fileName="auction.json"
+                app:lottie_loop="true"
+                app:lottie_autoPlay="true"/>
             <TextView
                 android:id="@+id/tv_boardView_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white"
+                android:text=""
+                android:layout_marginLeft="5dp"
                 android:textSize="20sp" />
         </LinearLayout>
     </LinearLayout>

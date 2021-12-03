@@ -37,17 +37,18 @@
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/mini_board_item.xml" value="0.25" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/spinner_item.xml" value="0.21875" />
         <entry key="app/src/main/res/drawable-v24/border_layout_round_buy.xml" value="0.22864583333333333" />
+        <entry key="app/src/main/res/drawable-v24/border_layout_round_buyeris_me.xml" value="0.22864583333333333" />
         <entry key="app/src/main/res/drawable-v24/border_layout_round_disable_buy.xml" value="0.22864583333333333" />
         <entry key="app/src/main/res/drawable/board_layout_round_rectangle.xml" value="0.15572916666666667" />
         <entry key="app/src/main/res/drawable/border_layout_round_icon.xml" value="0.22864583333333333" />
         <entry key="app/src/main/res/drawable/border_layout_round_rectangle.xml" value="0.16197916666666667" />
         <entry key="app/src/main/res/drawable/border_layout_underline.xml" value="0.15104166666666666" />
         <entry key="app/src/main/res/drawable/searchview_background.xml" value="0.18125" />
-        <entry key="app/src/main/res/layout/activity_board_view.xml" value="0.17" />
+        <entry key="app/src/main/res/layout/activity_board_view.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.2078125" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_main2.xml" value="0.14583333333333334" />
-        <entry key="app/src/main/res/layout/activity_profile_viewer.xml" value="0.37604166666666666" />
+        <entry key="app/src/main/res/layout/activity_profile_viewer.xml" value="0.22" />
         <entry key="app/src/main/res/layout/activity_register.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_sales_reg.xml" value="0.2125" />
         <entry key="app/src/main/res/layout/activity_search.xml" value="0.14583333333333334" />

@@ -1,5 +1,7 @@
 package com.taewon.shoppingmall.activity;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.Color;
@@ -22,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -68,6 +71,8 @@ public class BoardViewActivity extends AppCompatActivity {
 
     TextView tv_boardView_body;
     LinearLayout li_buyBtn;
+    LottieAnimationView lottie_boardView_auction;
+    LottieAnimationView lottie_boardView_price;
     TextView tv_boardView_price;
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,6 +105,7 @@ public class BoardViewActivity extends AppCompatActivity {
         rl_wrapLayout = findViewById(R.id.rl_wrapLayout);
         tv_boardView_title = findViewById(R.id.tv_boardView_title);
 
+        //릴레이티브 레이아웃 초기화 및 어댑터
         rv_boardViewImg = findViewById(R.id.rv_boardViewImg);
         pictureRecyclerAdapter = new BoardPictureRecyclerAdapter(BoardViewActivity.this, boardImgRefs);
         rv_boardViewImg.setAdapter(pictureRecyclerAdapter);
@@ -109,8 +115,44 @@ public class BoardViewActivity extends AppCompatActivity {
         iv_boardView_userImg = findViewById(R.id.iv_boardView_userImg);
         iv_boardView_userName = findViewById(R.id.iv_boardView_userName);
         tv_boardView_body = findViewById(R.id.tv_boardView_body);
+        lottie_boardView_auction = findViewById(R.id.lottie_boardView_auction);
+        lottie_boardView_price = findViewById(R.id.lottie_boardView_price);
         li_buyBtn = findViewById(R.id.li_buyBtn);
         tv_boardView_price = findViewById(R.id.tv_boardView_price);
+
+        database.getReference().child("Users").child(intentBoardItem.getUid()).get()
+                .addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                    @Override
+                    public void onSuccess(DataSnapshot dataSnapshot) {
+                        User user = dataSnapshot.getValue(User.class);
+                        writtenUser = user;
+                        storage.getReference(user.getPhotoUrl()).getDownloadUrl()
+                                .addOnCompleteListener(new OnCompleteListener<Uri>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Uri> task) {
+                                        if(task.isSuccessful()){
+                                            Log.d("url", task.getResult().toString());
+                                            Glide.with(BoardViewActivity.this)
+                                                    .load(task.getResult())
+                                                    .apply(new RequestOptions().circleCrop())
+                                                    .error(R.drawable.test_profile)
+                                                    .into(iv_boardView_userImg);
+                                        }
+                                        else{
+
+                                        }
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Glide.with(BoardViewActivity.this)
+                                        .load(R.drawable.test_profile)
+                                        .error(R.drawable.test_profile)
+                                        .into(iv_boardView_userImg);
+                            }
+                        });
+                    }
+                });
     }
 
     void initListeners(){
@@ -178,58 +220,47 @@ public class BoardViewActivity extends AppCompatActivity {
 
                     }
                 });
-    }
-
-
-
-    void refreshBoard(){
-        setViews();
-        getBoardImg();
+        li_buyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                if()
+            }
+        });
     }
 
     void setViews(){
-        database.getReference().child("Users").child(intentBoardItem.getUid()).get()
-                .addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                    @Override
-                    public void onSuccess(DataSnapshot dataSnapshot) {
-                        User user = dataSnapshot.getValue(User.class);
-                        writtenUser = user;
-                        storage.getReference(user.getPhotoUrl()).getDownloadUrl()
-                                .addOnCompleteListener(new OnCompleteListener<Uri>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Uri> task) {
-                                        if(task.isSuccessful()){
-                                            Log.d("url", task.getResult().toString());
-                                            Glide.with(BoardViewActivity.this)
-                                                    .load(task.getResult())
-                                                    .apply(new RequestOptions().circleCrop())
-                                                    .error(R.drawable.test_profile)
-                                                    .into(iv_boardView_userImg);
-                                        }
-                                        else{
-
-                                        }
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Glide.with(BoardViewActivity.this)
-                                        .load(R.drawable.test_profile)
-                                        .error(R.drawable.test_profile)
-                                        .into(iv_boardView_userImg);
-                            }
-                        });
-                    }
-                });
         boardDataRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
                 if(task.isSuccessful()){
                     Log.d("보드 키", task.getResult().getKey());
                     BoardItem item = task.getResult().getValue(BoardItem.class);
+                    if(item != null){
+                        intentBoardItem = null;
+                        intentBoardItem = item;
+                        Log.d("업데이트 된 가격", Integer.toString(intentBoardItem.getPrice()));
+                    }
                     tv_boardView_title.setText(item.getTitle());
                     tv_boardView_body.setText(item.getBody());
-                    iv_boardView_userName.setText(item.getUsername());
+
+                    //1. 내 아이템일경우,
+                    if(mAuth.getCurrentUser().getUid().equals(item.getUid())){
+                        li_boardView_profile.setEnabled(false);
+                        iv_boardView_userName.setText("내 판매 아이템");
+                        li_buyBtn.setEnabled(false);
+                        li_buyBtn.setBackground(getDrawable(R.drawable.border_layout_round_disable_buy));
+                    }
+                    else{
+                        iv_boardView_userName.setText(item.getUsername());
+                    }
+
+                    //2. 내가 가장 많은 돈을 지불했을 때
+                    if(mAuth.getCurrentUser().getUid().equals(item.getBuyerUid()))
+                    {
+                        li_buyBtn.setEnabled(false);
+                        li_buyBtn.setBackground(getDrawable(R.drawable.border_layout_round_buyeris_me));
+                    }
+
                     try{
                         startCountAnimation(Integer.parseInt(tv_boardView_price.getText().toString()), item.getPrice());
                     }
@@ -237,18 +268,22 @@ public class BoardViewActivity extends AppCompatActivity {
                         startCountAnimation(0, item.getPrice());
                     }
 //                    tv_boardView_price.setText(Integer.toString(item.getPrice()));
-                    //내 물품이거나, 이미 구매했거나, 경매 중에 내가 가장 높은 가격을 불렀다면? 구매하지 못하게 하자.
-                    if(     mAuth.getCurrentUser().getUid().equals(item.getUid()) ||
-                            mAuth.getCurrentUser().getUid().equals(item.getBuyerUid())   )
-                    {
-                        li_buyBtn.setEnabled(false);
-                        li_buyBtn.setBackground(getDrawable(R.drawable.border_layout_round_disable_buy));
-                        tv_boardView_price.setTextColor(Color.BLACK);
+
+
+                    //경매면 망치, 아니면 코인
+                    if(!item.getIsAuction()){
+                        lottie_boardView_auction.setVisibility(View.GONE);
+                        lottie_boardView_price.setVisibility(View.VISIBLE);
+                    }
+                    else{
+                        lottie_boardView_auction.setVisibility(View.VISIBLE);
+                        lottie_boardView_price.setVisibility(View.GONE);
                     }
                 }
             }
         });
     }
+
 
     void getBoardImg(){
         StorageReference storageRef = storage.getReference();
@@ -275,10 +310,22 @@ public class BoardViewActivity extends AppCompatActivity {
         });
     }
 
+    void refreshBoard(){
+        setViews();
+        getBoardImg();
+    }
+
     private void startCountAnimation(int start, int end) {
         ValueAnimator animator = ValueAnimator.ofInt(start, end); //0 is min number, 600 is max number
         animator.setDuration(2000); //Duration is in milliseconds
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+            }
+        });
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 tv_boardView_price.setText(animation.getAnimatedValue().toString());
             }
