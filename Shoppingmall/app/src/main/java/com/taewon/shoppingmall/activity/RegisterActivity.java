@@ -1,12 +1,10 @@
 package com.taewon.shoppingmall.activity;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,13 +26,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.taewon.shoppingmall.R;
-import com.taewon.shoppingmall.User;
+import com.taewon.shoppingmall.item.User;
 import com.taewon.shoppingmall.dialog.LottieLoadingDialog;
-import com.taewon.shoppingmall.util.BoardDateComparator;
-import com.taewon.shoppingmall.util.BoardStarCountComparator;
-
-import java.util.ArrayList;
-import java.util.Collections;
 
 public class RegisterActivity extends AppCompatActivity {
     FirebaseAuth mAuth;

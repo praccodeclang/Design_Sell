@@ -113,7 +113,7 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
                         }
                         pictureRecyclerAdapter = new BoardPictureRecyclerAdapter(context, boardImgRefs);
                         holder.rv_boardImgs.setAdapter(pictureRecyclerAdapter);
-                        holder.rv_boardImgs.setLayoutManager(getGridLayoutManager(boardImgRefs.size()));
+                        holder.rv_boardImgs.setLayoutManager(getGridLayoutManager(boardImgRefs.size()-1));
                         pictureRecyclerAdapter.notifyDataSetChanged();
                     }
                 });

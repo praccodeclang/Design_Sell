@@ -5,12 +5,10 @@ import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Debug;
 import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
@@ -18,7 +16,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,18 +38,14 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.taewon.shoppingmall.R;
-import com.taewon.shoppingmall.User;
+import com.taewon.shoppingmall.item.User;
 import com.taewon.shoppingmall.adapter.AdsViewPagerAdapter;
-import com.taewon.shoppingmall.adapter.BoardRecyclerAdapter;
 import com.taewon.shoppingmall.adapter.MiniBoardRecyclerAdapter;
 import com.taewon.shoppingmall.adapter.UserProfileRecyclerAdapter;
 import com.taewon.shoppingmall.dialog.LottieLoadingDialog;
@@ -358,7 +351,9 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(DataSnapshot dataSnapshot) {
                         User user = dataSnapshot.getValue(User.class);
-                        upload.setValue(new BoardItem(user.getUid(), user.getUsername(), "3번째", "@@@@@@@@", tags, getDate()))
+                        BoardItem instance = new BoardItem(user.getUid(), user.getUsername(), "3번째", "@@@@@@@@", tags, 0, false, getDate());
+                        instance.setBoardID(upload.getKey());
+                        upload.setValue(instance)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {

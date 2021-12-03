@@ -8,7 +8,6 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,13 +18,10 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.taewon.shoppingmall.R;
-import com.taewon.shoppingmall.User;
-import com.taewon.shoppingmall.adapter.BoardRecyclerAdapter;
+import com.taewon.shoppingmall.item.User;
 import com.taewon.shoppingmall.adapter.MiniBoardRecyclerAdapter;
 import com.taewon.shoppingmall.dialog.LottieLoadingDialog;
 import com.taewon.shoppingmall.item.BoardItem;
@@ -34,8 +30,6 @@ import com.taewon.shoppingmall.util.BoardStarCountComparator;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 
 public class ProfileViewActivity extends AppCompatActivity {
 

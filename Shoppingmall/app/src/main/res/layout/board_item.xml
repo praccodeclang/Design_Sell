@@ -11,7 +11,7 @@
     android:layout_margin="5dp">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
         <TextView
             android:layout_width="match_parent"
@@ -24,18 +24,14 @@
             android:textSize="24sp"
             android:fontFamily="@font/nanum_myeongjo_bold"
             android:background="@drawable/border_layout_underline"/>
-        <LinearLayout
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_boardImgs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/border_layout_underline">
-            <androidx.recyclerview.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:id="@+id/rv_boardImgs"
-                android:overScrollMode="never"
-                android:layout_gravity="center"
-                android:padding="10dp"/>
-        </LinearLayout>
+            android:layout_gravity="center"
+            android:overScrollMode="never"
+            android:padding="10dp" />
 
         <LinearLayout
             android:id="@+id/li_board_profile"

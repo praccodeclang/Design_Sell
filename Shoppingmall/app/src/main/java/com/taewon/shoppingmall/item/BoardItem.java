@@ -20,12 +20,16 @@ public class BoardItem implements Serializable {
     public int starCount;
     public String dateString;
     public Map<String, Boolean> likeUsers;
-    private String boardID;
+    public String boardID;
+    public int price;
+    public boolean isAuction;
+    public String buyerUid;
 
     public BoardItem(){
 
     }
-    public BoardItem(String uid, String username,String title, String body, List<String> tags, String dateString){
+
+    public BoardItem(String uid, String username, String title, String body, List<String> tags, int price, boolean isAuction, String dateString){
         this.uid = uid;
         this.title = title;
         this.body = body;
@@ -35,6 +39,9 @@ public class BoardItem implements Serializable {
         this.likeUsers = new HashMap<>();
         likeUsers.put("temp", true);
         starCount = 0;
+        this.price = price;
+        this.isAuction = isAuction;
+        this.buyerUid = "";
     }
 
     public Map<String, Boolean> getLikeUsers() {
@@ -108,16 +115,26 @@ public class BoardItem implements Serializable {
     public void setDateString(String dateString) {
         this.dateString = dateString;
     }
+    public int getPrice() {
+        return price;
+    }
+    public void setPrice(int price) {
+        this.price = price;
+    }
 
-    public void copy(BoardItem copyItem){
-        this.uid = copyItem.getUid();
-        this.title = copyItem.getTitle();
-        this.body = copyItem.getBody();
-        this.username = copyItem.getUsername();
-        this.tags = copyItem.getTags();
-        this.starCount = copyItem.getStarCount();
-        this.dateString = copyItem.getDateString();
-        this.likeUsers = copyItem.getLikeUsers();
-        this.boardID = copyItem.getBoardID();
+    public boolean getIsAuction() {
+        return isAuction;
+    }
+
+    public void setIsAuction(boolean isAuction) {
+        this.isAuction = isAuction;
+    }
+
+    public String getBuyerUid() {
+        return buyerUid;
+    }
+
+    public void setBuyerUid(String buyerUid) {
+        this.buyerUid = buyerUid;
     }
 }

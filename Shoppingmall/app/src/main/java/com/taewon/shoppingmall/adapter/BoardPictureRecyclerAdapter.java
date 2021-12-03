@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -44,24 +45,16 @@ public class BoardPictureRecyclerAdapter extends RecyclerView.Adapter<BoardPictu
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.board_img_item, parent, false);
-        int i = 0;
-        for(StorageReference ref : refs){
-            Log.d("이미지 경로" + i, ref.getPath());
-        }
-        if(refs.size() < 3){
-            ViewGroup.LayoutParams params = view.findViewById(R.id.iv_boardImg).getLayoutParams();
-            params.height = params.height * 2;
-            view.findViewById(R.id.iv_boardImg).requestLayout();
-        }
+//        if(refs.size() < 3){
+//            ViewGroup.LayoutParams params = view.findViewById(R.id.iv_boardImg).getLayoutParams();
+//            params.height = params.height * 2;
+//            view.findViewById(R.id.iv_boardImg).requestLayout();
+//        }
         return new MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        if(position>4){
-            //5개까지만 미리보기 제공.
-            return;
-        }
 //        Log.d("보드 이미지 경로", refs.get(position).getPath());
 //        Log.d("보드 이미지 다운로드", "시작");
         refs.get(position).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
@@ -80,6 +73,15 @@ public class BoardPictureRecyclerAdapter extends RecyclerView.Adapter<BoardPictu
                 }
             }
         });
+        try{
+            GridLayoutManager.LayoutParams layoutParams = (GridLayoutManager.LayoutParams)holder.itemView.getLayoutParams();
+            layoutParams.height = 500;
+            holder.itemView.requestLayout();
+        }
+        catch (Exception e){
+
+        }
+
     }
 
     @Override

@@ -69,6 +69,14 @@ public class MiniBoardRecyclerAdapter extends RecyclerView.Adapter<MiniBoardRecy
         BoardItem item = items.get(position);
         holder.tv_mini_board_title.setText(item.getTitle());
         holder.tv_mini_board_body.setText(item.getBody());
+        holder.li_mini_board_wrap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, BoardViewActivity.class);
+                intent.putExtra("BoardItem", item);
+                context.startActivity(intent);
+            }
+        });
         storage.getReference("Board/"+item.getBoardID()).list(1).addOnSuccessListener(new OnSuccessListener<ListResult>() {
             @Override
             public void onSuccess(ListResult listResult) {
@@ -150,18 +158,6 @@ public class MiniBoardRecyclerAdapter extends RecyclerView.Adapter<MiniBoardRecy
             tv_mini_board_title = itemView.findViewById(R.id.tv_mini_board_title);
             tv_mini_board_body = itemView.findViewById(R.id.tv_mini_board_body);
             tv_mini_board_date = itemView.findViewById(R.id.tv_mini_board_date);
-
-            li_mini_board_wrap.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int pos = getAdapterPosition();
-                    if(pos != RecyclerView.NO_POSITION){
-                        Intent intent = new Intent(context, BoardViewActivity.class);
-                        intent.putExtra("Board",items.get(pos));
-                        context.startActivity(intent);
-                    }
-                }
-            });
         }
     }
 }
