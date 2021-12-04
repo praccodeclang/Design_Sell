@@ -1,11 +1,13 @@
 package com.taewon.shoppingmall.activity;
 
+import android.Manifest;
 import android.animation.TypeEvaluator;
 import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -30,6 +33,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -41,9 +46,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.normal.TedPermission;
 import com.taewon.shoppingmall.R;
+import com.taewon.shoppingmall.adapter.BoardPictureRecyclerAdapter;
 import com.taewon.shoppingmall.item.User;
 import com.taewon.shoppingmall.adapter.AdsViewPagerAdapter;
 import com.taewon.shoppingmall.adapter.MiniBoardRecyclerAdapter;
@@ -55,6 +64,7 @@ import com.taewon.shoppingmall.util.BoardDateComparator;
 import com.taewon.shoppingmall.util.PreferenceMgr;
 
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -68,6 +78,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
+
+    final int GET_PHOTO_IN_GALLERY = 10000;
+
     ArrayList<AdsItem> adsItems;
     Timer adsTimer;
     ArrayList<BoardItem> boardItems;
@@ -161,6 +174,58 @@ public class MainActivity extends AppCompatActivity {
         adsTimer.cancel();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case GET_PHOTO_IN_GALLERY:
+                if(resultCode == RESULT_OK){
+                    try {
+                        loadingDialog.show();
+                        InputStream in = getContentResolver().openInputStream(data.getData());
+                        Bitmap img = BitmapFactory.decodeStream(in);
+                        in.close();
+                        StorageReference storageRef = storage.getReference("Profile").child(mAuth.getCurrentUser().getUid()).child("profile.png");
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        img.compress(Bitmap.CompressFormat.PNG, 40, baos); //40% 정도 변환하는게 무난함. 고화질 이미지도 있기 때문.
+                        byte[] profileData = baos.toByteArray();
+
+                        UploadTask upload = storageRef.putBytes(profileData);
+                        Task<Uri> uriTask = upload.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                            @Override
+                            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                                if(!task.isSuccessful()){
+                                    throw task.getException();
+                                }
+                                return storageRef.getDownloadUrl();
+                            }
+                        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Uri> task) {
+                                Glide.with(MainActivity.this)
+                                        .load(task.getResult())
+                                        .apply(new RequestOptions().circleCrop())
+                                        .error(R.drawable.ic_warning)
+                                        .into(iv_rightDrawerUserImg);
+                                loadingDialog.dismiss();
+                            }
+                        });
+                    }catch (Exception e){
+                        loadingDialog.dismiss();
+                    }
+
+
+                }
+                else{
+
+                }
+                break;
+            default:
+                break;
+        }
+
+    }
+
     public void getUser(){
         DatabaseReference databaseRef = database.getReference("Users").child(mAuth.getCurrentUser().getUid());
         Log.d("CurrUserUid", mAuth.getCurrentUser().getUid());
@@ -179,6 +244,7 @@ public class MainActivity extends AppCompatActivity {
                                             Glide.with(MainActivity.this)
                                                     .load(task.getResult())
                                                     .error(R.drawable.test_profile)
+                                                    .apply(new RequestOptions().circleCrop())
                                                     .into(iv_rightDrawerUserImg);
                                         }
                                         else{
@@ -191,6 +257,7 @@ public class MainActivity extends AppCompatActivity {
                                 Glide.with(MainActivity.this)
                                         .load(R.drawable.test_profile)
                                         .error(R.drawable.test_profile)
+                                        .apply(new RequestOptions().circleCrop())
                                         .into(iv_rightDrawerUserImg);
                             }
                         });
@@ -567,10 +634,31 @@ public class MainActivity extends AppCompatActivity {
         tv_rightDrawerCoin = drawerLayout.findViewById(R.id.tv_rightDrawerCoin);
         li_rightDrawerProfile = drawerLayout.findViewById(R.id.li_rightDrawerProfile);
         tv_rightDrawerCoin = drawerLayout.findViewById(R.id.tv_rightDrawerCoin);
-        li_rightDrawerProfile.findViewById(R.id.li_rightDrawerProfile).setOnClickListener(new View.OnClickListener() {
+        iv_rightDrawerUserImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                TedPermission.create()
+                        .setPermissionListener(new PermissionListener() {
+                            @Override
+                            public void onPermissionGranted() {
+                                Intent intent = new Intent();
+                                intent.setType("image/*");
+                                intent.setAction(Intent.ACTION_GET_CONTENT);
+                                startActivityForResult(intent, GET_PHOTO_IN_GALLERY);
+                            }
 
+                            @Override
+                            public void onPermissionDenied(List<String> deniedPermissions) {
+                                Toast.makeText(MainActivity.this, "권한이 없으면 프로필 사진을 변경할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        })
+                        .setPermissions(
+                                Manifest.permission.READ_PHONE_STATE,
+                                Manifest.permission.READ_EXTERNAL_STORAGE,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        )
+                        .check();
             }
         });
         drawerLayout.findViewById(R.id.iv_rightDrawerCancel).setOnClickListener(new View.OnClickListener() {

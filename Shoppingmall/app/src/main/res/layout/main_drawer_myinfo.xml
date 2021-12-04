@@ -95,7 +95,7 @@
             android:stretchColumns="*">
             <TableRow>
                 <LinearLayout
-                    android:id="@+id/li_salesRegistrationBtn"
+                    android:id="@+id/li_myPurchaseList"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -106,14 +106,13 @@
                         android:layout_height="50dp"
                         android:src="@drawable/ic_baseline_payment_24"
                         app:tint="@color/black"/>
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:fontFamily="@font/nanum_myeongjo_bold"
-                        android:text="판매등록"
-                        android:textColor="@color/black" />
+                        android:text="내 구매목록"
+                        android:textColor="@color/black"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="0dp"
@@ -139,6 +138,26 @@
             <TableRow
                 android:layout_marginTop="20dp">
                 <LinearLayout
+                    android:id="@+id/li_salesRegistrationBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_marginHorizontal="15dp">
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/ic_baseline_point_of_sale_24"
+                        app:tint="@color/black"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/nanum_myeongjo_bold"
+                        android:text="판매등록"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+                <LinearLayout
                     android:id="@+id/li_shoppingBasket"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -158,6 +177,9 @@
                         android:fontFamily="@font/nanum_myeongjo_bold"
                         android:textColor="@color/black"/>
                 </LinearLayout>
+            </TableRow>
+            <TableRow
+                android:layout_marginTop="20dp">
                 <LinearLayout
                     android:id="@+id/li_appInfo"
                     android:layout_width="0dp"
@@ -178,8 +200,6 @@
                         android:fontFamily="@font/nanum_myeongjo_bold"
                         android:textColor="@color/black"/>
                 </LinearLayout>
-            </TableRow>
-            <TableRow android:layout_marginTop="20dp">
                 <LinearLayout
                     android:id="@+id/li_serviceCenter"
                     android:layout_width="0dp"
@@ -200,6 +220,9 @@
                         android:fontFamily="@font/nanum_myeongjo_bold"
                         android:textColor="@color/black"/>
                 </LinearLayout>
+            </TableRow>
+            <TableRow android:layout_marginTop="20dp">
+
             </TableRow>
         </TableLayout>
         <TextView

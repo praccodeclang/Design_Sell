@@ -24,6 +24,31 @@
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:id="@+id/rv_boardViewImg"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/li_boardView_like_cart"
+            android:gravity="right"
+            android:padding="10dp">
+            <com.airbnb.lottie.LottieAnimationView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:padding="5dp"
+                android:id="@+id/lottie_boardView_like"
+                android:layout_marginHorizontal="10dp"
+                app:lottie_autoPlay="false"
+                app:lottie_loop="false"
+                app:lottie_fileName="like.json"/>
+            <com.airbnb.lottie.LottieAnimationView
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:id="@+id/lottie_boardView_cart"
+                android:layout_marginRight="10dp"
+                app:lottie_autoPlay="false"
+                app:lottie_loop="false"
+                app:lottie_fileName="addcart.json"/>
+        </LinearLayout>
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -73,14 +98,6 @@
                 android:layout_height="16dp"
                 android:layout_gravity="center"
                 app:lottie_fileName="coin_flipping.json"
-                app:lottie_loop="true"
-                app:lottie_autoPlay="true"/>
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/lottie_boardView_auction"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                app:lottie_fileName="auction.json"
                 app:lottie_loop="true"
                 app:lottie_autoPlay="true"/>
             <TextView

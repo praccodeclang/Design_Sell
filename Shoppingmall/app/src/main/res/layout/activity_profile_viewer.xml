@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipe_profile_wrap"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -19,7 +20,17 @@
                 android:layout_width="200dp"
                 android:layout_height="200dp"
                 android:scaleType="fitXY"
-                android:src="@drawable/test_profile"/>
+                android:src="@drawable/test_profile"
+                android:layout_marginVertical="5dp"/>
+            <TextView
+                android:id="@+id/tv_userViewerName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:fontFamily="@font/nanum_myeongjo_bold"
+                android:text="유저 이름"
+                android:textColor="@color/black"/>
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -31,9 +42,45 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:gravity="center"
-                        android:id="@+id/li_profile_follow">
+                        android:gravity="center">
+                        <TextView
+                            android:id="@+id/tv_profile_followerCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            android:text="팔로워"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center">
+                        <TextView
+                            android:id="@+id/tv_profile_followingCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="팔로잉"
+                            android:textSize="16sp"/>
+                    </LinearLayout>
+                </TableRow>
+                <TableRow
+                    android:id="@+id/tr_profile_interaction_layout"
+                    android:layout_marginVertical="20dp">
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:gravity="center">
                         <ImageView
+                            android:id="@+id/iv_profile_follow"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:src="@drawable/ic_baseline_person_add_24"/>
@@ -51,9 +98,10 @@
                         android:gravity="center"
                         android:id="@+id/li_profile_chat">
                         <ImageView
+                            android:id="@+id/iv_profile_chat"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
-                            android:padding="3dp"
+                            android:padding="5dp"
                             android:src="@drawable/ic_baseline_chat_bubble_24"/>
                         <TextView
                             android:layout_width="wrap_content"
@@ -67,17 +115,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:orientation="vertical">
-                <TextView
-                    android:id="@+id/tv_userViewerName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:textSize="20sp"
-                    android:fontFamily="@font/nanum_myeongjo_bold"
-                    android:text="유저 이름"
-                    android:textColor="@color/black"/>
+                android:orientation="vertical"
+                android:id="@+id/li_profile_info"
+                android:padding="20dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -90,7 +130,6 @@
                         android:fontFamily="@font/nanum_myeongjo_bold"
                         android:text="Email :"
                         android:textColor="@color/black"
-                        android:paddingLeft="20dp"
                         android:paddingRight="10dp"
                         android:paddingVertical="10dp"/>
                     <TextView
@@ -101,6 +140,31 @@
                         android:textSize="16sp"
                         android:fontFamily="@font/nanum_myeongjo_bold"
                         android:text="email"
+                        android:textColor="@color/black"
+                        android:paddingVertical="10dp"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/nanum_myeongjo_bold"
+                        android:text="Phone :"
+                        android:textColor="@color/black"
+                        android:paddingRight="10dp"
+                        android:paddingVertical="10dp"/>
+                    <TextView
+                        android:id="@+id/tv_profile_user_phone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/nanum_myeongjo_bold"
+                        android:text="01046407993"
                         android:textColor="@color/black"
                         android:paddingVertical="10dp"/>
                 </LinearLayout>
@@ -143,14 +207,4 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_horizontal">
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="버튼"/>
-    </LinearLayout>
-</LinearLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

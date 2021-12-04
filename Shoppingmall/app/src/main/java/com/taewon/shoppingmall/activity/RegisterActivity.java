@@ -29,6 +29,9 @@ import com.taewon.shoppingmall.R;
 import com.taewon.shoppingmall.item.User;
 import com.taewon.shoppingmall.dialog.LottieLoadingDialog;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class RegisterActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseDatabase database;
@@ -161,11 +164,14 @@ public class RegisterActivity extends AppCompatActivity {
                     FirebaseUser registerUser= task.getResult().getUser();
                     User userInstance = new User();
                     userInstance.setUid(registerUser.getUid());
-                    userInstance.setUsername(et_registerUserName.getText().toString());
+                    userInstance.setUsername(et_registerUserName.getText().toString().trim());
                     userInstance.setEmail(registerUser.getEmail());
                     userInstance.setPhone(et_registerPhone.getText().toString());
                     userInstance.setIsDesigner(rd_yesDesigner.isChecked());
                     userInstance.setPhotoUrl("Profile/"+userInstance.getUid()+"/profile.png");
+                    Map<String,Boolean> friends = new HashMap<>();
+                    friends.put("temp", true);
+                    userInstance.setFriends(friends);
                     addUserOnDataBase(userInstance);
                 }
                 else{

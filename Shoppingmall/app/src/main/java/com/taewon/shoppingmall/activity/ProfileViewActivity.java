@@ -2,23 +2,37 @@ package com.taewon.shoppingmall.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.storage.FirebaseStorage;
 import com.taewon.shoppingmall.R;
 import com.taewon.shoppingmall.item.User;
@@ -33,9 +47,19 @@ import java.util.Collections;
 
 public class ProfileViewActivity extends AppCompatActivity {
 
+    SwipeRefreshLayout swipe_profile_wrap;
+    TableRow tr_profile_interaction_layout;
     ImageView iv_userViewerImg;
     TextView tv_userViewerEmail;
     TextView tv_userViewerName;
+    TextView tv_profile_followingCount;
+    TextView tv_profile_followerCount;
+
+    ImageView iv_profile_follow;
+    ImageView iv_profile_chat;
+
+    LinearLayout li_profile_info;
+    TextView tv_profile_user_phone;
 
     RecyclerView rv_profile_newest_board;
     MiniBoardRecyclerAdapter newestBoardAdapter;
@@ -51,7 +75,8 @@ public class ProfileViewActivity extends AppCompatActivity {
     ArrayList<BoardItem> popularItems;
     ArrayList<BoardItem> newerItems;
 
-    User user;
+    User profileUser;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,16 +84,16 @@ public class ProfileViewActivity extends AppCompatActivity {
         init();
         initViews();
         initListeners();
-        getBoard();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        refresh();
     }
 
     private void init(){
-        user = (User) getIntent().getSerializableExtra("UserData");
+        profileUser = (User) getIntent().getSerializableExtra("UserData");
         database = FirebaseDatabase.getInstance();
         storage = FirebaseStorage.getInstance();
         mAuth = FirebaseAuth.getInstance();
@@ -79,20 +104,33 @@ public class ProfileViewActivity extends AppCompatActivity {
     }
 
     private void initViews(){
+        li_profile_info = findViewById(R.id.li_profile_info);
+        li_profile_info.setVisibility(View.GONE);
+        tv_profile_user_phone = findViewById(R.id.tv_profile_user_phone);
+        swipe_profile_wrap = findViewById(R.id.swipe_profile_wrap);
+        tv_profile_user_phone.setText(profileUser.getPhone());
+        tr_profile_interaction_layout = findViewById(R.id.tr_profile_interaction_layout);
+        iv_profile_follow = findViewById(R.id.iv_profile_follow);
+        iv_profile_chat = findViewById(R.id.iv_profile_chat);
+        tv_profile_followingCount = findViewById(R.id.tv_profile_followingCount);
+        tv_profile_followerCount = findViewById(R.id.tv_profile_followerCount);
+
+
         iv_userViewerImg = findViewById(R.id.iv_userViewerImg);
-        storage.getReference(user.getPhotoUrl()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+        storage.getReference(profileUser.getPhotoUrl()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 Glide.with(ProfileViewActivity.this)
                         .load(uri)
+                        .apply(new RequestOptions().circleCrop())
                         .error(R.drawable.ic_warning)
                         .into(iv_userViewerImg);
             }
         });
         tv_userViewerEmail = findViewById(R.id.tv_userViewerEmail);
-        tv_userViewerEmail.setText(user.getEmail());
+        tv_userViewerEmail.setText(profileUser.getEmail());
         tv_userViewerName = findViewById(R.id.tv_userViewerName);
-        tv_userViewerName.setText(user.getUsername());
+        tv_userViewerName.setText(profileUser.getUsername());
 
         rv_profile_newest_board = findViewById(R.id.rv_profile_newest_board);
         newestBoardAdapter = new MiniBoardRecyclerAdapter(ProfileViewActivity.this, newerItems);
@@ -106,7 +144,14 @@ public class ProfileViewActivity extends AppCompatActivity {
     }
 
     private void initListeners(){
-
+        swipe_profile_wrap.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipe_profile_wrap.setRefreshing(true);
+                refresh();
+                swipe_profile_wrap.setRefreshing(false);
+            }
+        });
     }
 
     private void getBoard() {
@@ -121,7 +166,7 @@ public class ProfileViewActivity extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     BoardItem item = (BoardItem) snapshot.getValue(BoardItem.class);
                     item.setBoardID(snapshot.getKey());
-                    if(item.getUid().equals(user.getUid())){
+                    if(item.getUid().equals(profileUser.getUid())){
                         Log.d("UID",item.getUid());
                         mBoardItems.add(item);
                     }
@@ -152,4 +197,158 @@ public class ProfileViewActivity extends AppCompatActivity {
         });
     }
 
+    private void refresh(){
+        database.getReference().child("Users").child(mAuth.getCurrentUser().getUid()).get()
+                .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        if(task.isSuccessful()){
+                            //현재 사용자
+                            User user = task.getResult().getValue(User.class);
+                            if(user.getUid().equals(profileUser.getUid())){
+                                //내 프로필이면?
+                                tr_profile_interaction_layout.setVisibility(View.GONE);
+                                li_profile_info.setVisibility(View.VISIBLE);
+                            }
+                            followCheck(profileUser);
+                        }
+                    }
+                });
+        getBoard();
+    }
+
+    private void followCheck(User user){
+        iv_profile_follow.setImageResource(R.drawable.ic_baseline_person_add_24);
+        iv_profile_follow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                follow();
+            }
+        });
+        li_profile_info.setVisibility(View.GONE);
+
+        DatabaseReference followersDataRef = database.getReference("Followers").child(user.getUid());
+        followersDataRef.get()
+                .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        if(task.isSuccessful()){
+                            int i = 0;
+                            for(DataSnapshot snapshot : task.getResult().getChildren()){
+                                if(snapshot.getKey().equals(mAuth.getCurrentUser().getUid())){
+                                    iv_profile_follow.setImageResource(R.drawable.ic_baseline_check_24);
+                                    li_profile_info.setVisibility(View.VISIBLE);
+                                    iv_profile_follow.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            unfollow();
+                                        }
+                                    });
+                                }
+                                i++;
+                            }
+                            tv_profile_followerCount.setText(Integer.toString(i));
+                        }
+                    }
+                });
+        DatabaseReference followingsDataRef = database.getReference("Followings").child(user.getUid());
+        followingsDataRef.get()
+                .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                        if(task.isSuccessful()){
+                            int i=0;
+                            for(DataSnapshot snapshot : task.getResult().getChildren()){
+                                i++;
+                            }
+                            tv_profile_followingCount.setText(Integer.toString(i));
+                        }
+                    }
+                });
+    }
+
+
+    private void follow(){
+        database.getReference("Following").child(mAuth.getCurrentUser().getUid()).runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData currentData) {
+                if(currentData == null){
+                    return Transaction.success(currentData);
+                }
+                currentData.child(profileUser.getUid()).setValue(true);
+                return  Transaction.success(currentData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
+
+            }
+        });
+        database.getReference("Followers").child(profileUser.getUid()).runTransaction(new Transaction.Handler() {
+            @NonNull
+            @Override
+            public Transaction.Result doTransaction(@NonNull MutableData currentData) {
+                if(currentData == null){
+                    return Transaction.success(currentData);
+                }
+                currentData.child(mAuth.getCurrentUser().getUid()).setValue(true);
+                return  Transaction.success(currentData);
+            }
+
+            @Override
+            public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
+                refresh();
+            }
+        });
+    }
+
+    private void unfollow(){
+        Log.d("언팔", "언팔");
+        AlertDialog.Builder builder = new AlertDialog.Builder(ProfileViewActivity.this);
+        builder.setTitle("팔로우 끊기")
+                .setMessage("정말로 팔로우를 끊으시겠습니까?")
+                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        database.getReference("Following").child(mAuth.getCurrentUser().getUid()).runTransaction(new Transaction.Handler() {
+                            @NonNull
+                            @Override
+                            public Transaction.Result doTransaction(@NonNull MutableData currentData) {
+                                if(currentData == null){
+                                    return Transaction.success(currentData);
+                                }
+                                currentData.child(profileUser.getUid()).setValue(null);
+                                return  Transaction.success(currentData);
+                            }
+                            @Override
+                            public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
+                                database.getReference("Followers").child(profileUser.getUid()).runTransaction(new Transaction.Handler() {
+                                    @NonNull
+                                    @Override
+                                    public Transaction.Result doTransaction(@NonNull MutableData currentData) {
+                                        if(currentData == null){
+                                            return Transaction.success(currentData);
+                                        }
+                                        currentData.child(mAuth.getCurrentUser().getUid()).setValue(null);
+                                        return  Transaction.success(currentData);
+                                    }
+
+                                    @Override
+                                    public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
+                                        refresh();
+                                    }
+                                });
+                            }
+                        });
+
+                    }
+                })
+                .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).show();
+    }
 }
