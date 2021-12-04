@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rl_wrapLayout"
+    android:orientation="vertical">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:focusedByDefault="true">
+            <EditText
+                android:id="@+id/et_sales_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp"
+                android:hint="제목을 입력하세요."
+                android:gravity="center"
+                android:textSize="24sp"
+                android:fontFamily="@font/nanum_myeongjo_extrabold"
+                android:singleLine="true"/>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:id="@+id/rv_salesImg"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/li_sales_addUserPhotoBtn"
+                    android:orientation="vertical"
+                    android:layout_margin="20dp"
+                    android:gravity="center">
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/plus"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="사진등록"
+                        android:layout_gravity="center"
+                        android:gravity="center"/>
+                </LinearLayout>
+            </FrameLayout>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/et_sales_body"
+                android:padding="10dp"
+                android:gravity="top"
+                android:hint="내용을 입력하세요."
+                android:textSize="16sp"/>
+            <GridLayout
+                android:id="@+id/li_sales_tags"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:columnCount="4"
+                android:rowCount="5"
+                android:orientation="vertical"
+                android:padding="10dp">
+                <ToggleButton
+                    android:id="@+id/rd_sales_2d_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:button="@null"
+                    android:textOn="2d"
+                    android:textOff="2d"
+                    android:textSize="14sp"
+                    android:padding="10dp"
+                    android:background="@drawable/tag_items_selector"
+                    android:layout_margin="5dp"/>
+                <ToggleButton
+                    android:padding="10dp"
+                    android:id="@+id/rd_sales_2d_character_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:button="@null"
+                    android:textOn="2d 캐릭터"
+                    android:textOff="2d 캐릭터"
+                    android:textSize="14sp"
+                    android:background="@drawable/tag_items_selector"
+                    android:layout_margin="5dp"/>
+                <ToggleButton
+                    android:padding="10dp"
+                    android:id="@+id/rd_sales_2d_background_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:button="@null"
+                    android:textOn="2d 배경"
+                    android:textOff="2d 배경"
+                    android:textSize="14sp"
+                    android:background="@drawable/tag_items_selector"
+                    android:layout_margin="5dp"/>
+                <ToggleButton
+                    android:padding="10dp"
+                    android:id="@+id/rd_sales_2d_anim_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:button="@null"
+                    android:textOn="2d 애니메이션"
+                    android:textOff="2d 애니메이션"
+                    android:textSize="14sp"
+                    android:background="@drawable/tag_items_selector"
+                    android:layout_margin="5dp"/>
+                <ToggleButton
+                    android:padding="10dp"
+                    android:id="@+id/rd_sales_3d_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:button="@null"
+                    android:textOn="3d"
+                    android:textOff="3d"
+                    android:textSize="14sp"
+                    android:background="@drawable/tag_items_selector"
+                    android:layout_margin="5dp"
+
+                    />
+                <ToggleButton
+                    android:padding="10dp"
+                    android:id="@+id/rd_sales_3d_character_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:button="@null"
+                    android:textOn="3d 캐릭터"
+                    android:textOff="3d 캐릭터"
+                    android:textSize="14sp"
+                    android:background="@drawable/tag_items_selector"
+                    android:layout_margin="5dp"
+
+                    />
+                <ToggleButton
+                    android:padding="10dp"
+                    android:id="@+id/rd_sales_3d_background_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:button="@null"
+                    android:textOn="3d 배경"
+                    android:textOff="3d 배경"
+                    android:textSize="14sp"
+                    android:background="@drawable/tag_items_selector"
+                    android:layout_margin="5dp"
+
+                    />
+                <ToggleButton
+                    android:padding="10dp"
+                    android:id="@+id/rd_sales_3d_anim_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:button="@null"
+                    android:textOn="3d 애니메이션"
+                    android:textOff="3d 애니메이션"
+                    android:textSize="14sp"
+                    android:background="@drawable/tag_items_selector"
+                    android:layout_margin="5dp"/>
+                <ToggleButton
+                    android:padding="10dp"
+                    android:id="@+id/rd_sales_3d_modeling_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:button="@null"
+                    android:textOn="3d 모델링"
+                    android:textOff="3d 모델링"
+                    android:textSize="14sp"
+                    android:background="@drawable/tag_items_selector"
+                    android:layout_margin="5dp"/>
+
+
+                <ToggleButton
+                    android:padding="10dp"
+                    android:id="@+id/rd_sales_plan_gameplan_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:button="@null"
+                    android:textOn="게임기획"
+                    android:textOff="게임기획"
+                    android:textSize="14sp"
+                    android:background="@drawable/tag_items_selector"
+                    android:layout_margin="5dp"/>
+                <ToggleButton
+                    android:padding="10dp"
+                    android:id="@+id/rd_sales_plan_level_design_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:button="@null"
+                    android:textOn="레벨디자인"
+                    android:textOff="레벨디자인"
+                    android:textSize="14sp"
+                    android:background="@drawable/tag_items_selector"
+                    android:layout_margin="5dp"/>
+                <ToggleButton
+                    android:padding="10dp"
+                    android:id="@+id/rd_sales_plan_bgm_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:button="@null"
+                    android:textOn="배경음악"
+                    android:textOff="배경음악"
+                    android:textSize="14sp"
+                    android:background="@drawable/tag_items_selector"
+                    android:layout_margin="5dp"/>
+                <ToggleButton
+                    android:id="@+id/rd_sales_plan_effect_sound_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:button="@null"
+                    android:padding="10dp"
+                    android:textOn="효과음"
+                    android:textOff="효과음"
+                    android:textSize="14sp"
+                    android:background="@drawable/tag_items_selector"
+                    android:layout_margin="5dp" />
+            </GridLayout>
+        </LinearLayout>
+    </ScrollView>
+    <Button
+        android:id="@+id/btn_send_registration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:textColor="@color/white"
+        android:text="물품 등록하기"
+        android:background="@drawable/border_layout_round_buy"/>
+</LinearLayout>

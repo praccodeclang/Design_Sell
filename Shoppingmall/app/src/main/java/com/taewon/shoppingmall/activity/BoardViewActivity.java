@@ -1,5 +1,6 @@
 package com.taewon.shoppingmall.activity;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
@@ -44,6 +45,8 @@ import com.google.firebase.database.Transaction;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.normal.TedPermission;
 import com.taewon.shoppingmall.R;
 import com.taewon.shoppingmall.dialog.LottieLoadingDialog;
 import com.taewon.shoppingmall.item.User;
@@ -52,6 +55,7 @@ import com.taewon.shoppingmall.item.BoardItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BoardViewActivity extends AppCompatActivity {
@@ -327,10 +331,28 @@ public class BoardViewActivity extends AppCompatActivity {
                             li_buyBtn.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    Intent intent = new Intent(BoardViewActivity.this, FileDownloadActivity.class);
-                                    intent.putExtra("BoardID", intentBoardItem.getBoardID());
-                                    startActivity(intent);
-                                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                                    TedPermission.create()
+                                            .setPermissionListener(new PermissionListener() {
+                                                @Override
+                                                public void onPermissionGranted() {
+                                                    Intent intent = new Intent(BoardViewActivity.this, FileDownloadActivity.class);
+                                                    intent.putExtra("BoardID", intentBoardItem.getBoardID());
+                                                    startActivity(intent);
+                                                    overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                                                }
+
+                                                @Override
+                                                public void onPermissionDenied(List<String> deniedPermissions) {
+                                                    Toast.makeText(BoardViewActivity.this, "권한이 없으면 파일을 다운로드할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                                                    return;
+                                                }
+                                            })
+                                            .setPermissions(
+                                                    Manifest.permission.READ_PHONE_STATE,
+                                                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                                                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                                            )
+                                            .check();
                                 }
                             });
                         }

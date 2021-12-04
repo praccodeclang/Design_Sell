@@ -307,6 +307,7 @@ public class ProfileViewActivity extends AppCompatActivity {
         Log.d("언팔", "언팔");
         AlertDialog.Builder builder = new AlertDialog.Builder(ProfileViewActivity.this);
         builder.setTitle("팔로우 끊기")
+                .setIcon(R.drawable.ic_baseline_back_hand_24)
                 .setMessage("정말로 팔로우를 끊으시겠습니까?")
                 .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override

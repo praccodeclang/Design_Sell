@@ -19,22 +19,30 @@
         <entry key="..\:/Users/xodnj/Desktop/Shoppingmall/app/src/main/res/layout/main_viewpager_ads.xml" value="0.25" />
         <entry key="..\:/Users/xodnj/Desktop/Shoppingmall/app/src/main/res/layout/search_listview_item.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/xodnj/Desktop/Shoppingmall/app/src/main/res/menu/bottom_menu.xml" value="0.2078125" />
+        <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/drawable-v24/border_layout_round_buy.xml" value="0.190625" />
+        <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/drawable-v24/border_layout_tag_items.xml" value="0.190625" />
+        <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/drawable-v24/layout_tag_items_normal_checked.xml" value="0.190625" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/drawable/border_layout_basic.xml" value="0.25" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/drawable/border_layout_round_rectangle.xml" value="0.3398148148148148" />
+        <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/drawable/tag_items_selector.xml" value="0.190625" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/activity_board_view.xml" value="0.21875" />
+        <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/activity_file_download.xml" value="0.19270833333333334" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/activity_login.xml" value="0.22" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/activity_main.xml" value="0.2962962962962963" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/activity_main2.xml" value="0.25" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/activity_profile_viewer.xml" value="0.25" />
+        <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/activity_sales_registration.xml" value="0.19" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/activity_splash.xml" value="0.21875" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/board_img_item.xml" value="0.21875" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/board_item.xml" value="0.33" />
+        <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/download_img_item.xml" value="0.2947916666666667" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/loading_layout.xml" value="0.1" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/main_drawer_category.xml" value="0.33" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/main_drawer_myinfo.xml" value="0.25" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/main_user_item.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/main_viewpager_ads.xml" value="0.22" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/mini_board_item.xml" value="0.25" />
+        <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/sales_registration_bottomdialog.xml" value="0.25" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/spinner_item.xml" value="0.21875" />
         <entry key="app/src/main/res/drawable-v24/border_layout_round_buy.xml" value="0.22864583333333333" />
         <entry key="app/src/main/res/drawable-v24/border_layout_round_buyeris_me.xml" value="0.22864583333333333" />
@@ -69,7 +77,7 @@
     </option>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_15_PREVIEW" project-jdk-name="15" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_15" project-jdk-name="15" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

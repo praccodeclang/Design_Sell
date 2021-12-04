@@ -401,7 +401,9 @@ public class MainActivity extends AppCompatActivity {
             Bitmap bitmap = ((BitmapDrawable) getDrawable(R.drawable.example)).getBitmap();
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG, 80, bos);
-            storageRef.child(upload.getKey()).child(Integer.toString(i)).putBytes(bos.toByteArray()).addOnCompleteListener((OnCompleteListener) new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            storageRef.child(upload.getKey()).child(Integer.toString(i))
+                    .putBytes(bos.toByteArray())
+                    .addOnCompleteListener((OnCompleteListener) new OnCompleteListener<UploadTask.TaskSnapshot>() {
                 public void onComplete(Task<UploadTask.TaskSnapshot> task) {
                     if (task.isSuccessful()) {
                         Log.d("이미지 업로드", task.getResult().toString());
@@ -668,6 +670,9 @@ public class MainActivity extends AppCompatActivity {
         });
         drawerLayout.findViewById(R.id.li_salesRegistrationBtn).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SalesRegActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             }
         });
         drawerLayout.findViewById(R.id.li_saleItems).setOnClickListener(new View.OnClickListener() {
@@ -676,6 +681,7 @@ public class MainActivity extends AppCompatActivity {
         });
         drawerLayout.findViewById(R.id.li_shoppingBasket).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+
             }
         });
         drawerLayout.findViewById(R.id.li_appInfo).setOnClickListener(new View.OnClickListener() {

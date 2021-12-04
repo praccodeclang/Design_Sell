@@ -91,6 +91,8 @@ public class SearchActivity extends AppCompatActivity {
         list.add("3d 모델링");
         list.add("게임 기획");
         list.add("레벨 디자인");
+        list.add("배경음악");
+        list.add("효과음");
     }
     
     //
