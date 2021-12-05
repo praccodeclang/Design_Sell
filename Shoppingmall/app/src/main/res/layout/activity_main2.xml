@@ -7,12 +7,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:padding="10dp"
+        android:gravity="center"
+        android:orientation="vertical">
         <TextView
             android:id="@+id/tv_category"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="20dp"
             android:gravity="center"
             android:textSize="24sp"
             android:textColor="@color/black"
@@ -22,10 +23,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/sp_orderSpinner"
-            android:layout_gravity="right|center_vertical"
             android:dropDownWidth="100dp"
-            android:spinnerMode="dropdown"
-            android:layout_marginRight="10dp"/>
+            android:spinnerMode="dropdown"/>
     </LinearLayout>
     <FrameLayout
         android:layout_width="match_parent"

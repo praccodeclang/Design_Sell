@@ -22,7 +22,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="50sp"
+            android:textSize="36sp"
             android:fontFamily="@font/nanum_myeongjo_regular"
             android:textColor="@color/black"
             android:text="Category"/>

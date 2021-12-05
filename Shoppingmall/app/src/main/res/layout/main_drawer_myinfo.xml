@@ -21,10 +21,10 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textSize="16sp"
+            android:textSize="20sp"
             android:layout_gravity="center"
             android:gravity="center"
-            android:fontFamily="@font/nanum_myeongjo_regular"
+            android:fontFamily="@font/nanum_myeongjo_bold"
             android:textColor="@color/black"
             android:text="내 정보"/>
     </FrameLayout>
@@ -36,7 +36,8 @@
         android:gravity="center">
         <FrameLayout
             android:layout_width="100dp"
-            android:layout_height="100dp">
+            android:layout_height="100dp"
+            android:layout_marginTop="10dp">
             <ImageView
                 android:id="@+id/iv_rightDrawerUserImg"
                 android:layout_gravity="center"
@@ -71,7 +72,6 @@
             android:orientation="horizontal"
             android:gravity="center"
             android:paddingRight="10dp"
-            android:layout_marginTop="5dp"
             android:layout_marginBottom="20dp"
             >
             <com.airbnb.lottie.LottieAnimationView

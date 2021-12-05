@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rl_wrapLayout"
     android:orientation="vertical"
+    android:background="@color/white"
     android:focusedByDefault="true">
     <ScrollView
         android:layout_width="match_parent"
@@ -18,10 +19,11 @@
                 android:id="@+id/et_sales_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="#fdfdfd"
                 android:padding="20dp"
                 android:hint="제목을 입력하세요."
                 android:gravity="center"
-                android:textSize="24sp"
+                android:textSize="16sp"
                 android:fontFamily="@font/nanum_myeongjo_extrabold"
                 android:singleLine="true"/>
             <FrameLayout
@@ -52,31 +54,20 @@
                         android:gravity="center"/>
                 </LinearLayout>
             </FrameLayout>
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/et_sales_body"
-                android:padding="10dp"
-                android:gravity="top"
-                android:hint="내용을 입력하세요."
-                android:textSize="16sp"/>
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dp">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="가격 : "
-                    android:fontFamily="@font/nanum_myeongjo_regular"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"/>
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_weight="1">
                 <EditText
-                    android:id="@+id/et_sales_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number"
-                    android:hint="가격을 입력하세요."
+                    android:background="#fdfdfd"
+                    android:id="@+id/et_sales_body"
+                    android:lines="8"
+                    android:padding="10dp"
+                    android:gravity="top"
+                    android:hint="내용을 입력하세요."
                     android:textSize="16sp"/>
             </LinearLayout>
             <GridLayout
@@ -84,9 +75,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:columnCount="4"
-                android:rowCount="5"
                 android:orientation="vertical"
+                android:columnCount="2"
+                android:rowCount="4"
                 android:padding="10dp">
                 <ToggleButton
                     android:id="@+id/rd_sales_2d_tag"
@@ -202,8 +193,6 @@
                     android:textSize="14sp"
                     android:background="@drawable/tag_items_selector"
                     android:layout_margin="5dp"/>
-
-
                 <ToggleButton
                     android:padding="10dp"
                     android:id="@+id/rd_sales_plan_gameplan_tag"
@@ -255,12 +244,46 @@
             </GridLayout>
         </LinearLayout>
     </ScrollView>
-    <Button
-        android:id="@+id/btn_send_registration"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:textColor="@color/white"
-        android:text="물품 등록하기"
-        android:background="@drawable/border_layout_round_buy"/>
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:gravity="center">
+            <com.airbnb.lottie.LottieAnimationView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                app:lottie_fileName="coin_flipping.json"
+                app:lottie_autoPlay="true"
+                app:lottie_loop="true"
+                android:layout_marginRight="5dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="가격 : "
+                android:fontFamily="@font/nanum_myeongjo_regular"
+                android:textColor="@color/black"
+                android:textSize="16sp"/>
+            <EditText
+                android:id="@+id/et_sales_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:background="@color/white"
+                android:hint="가격을 입력하세요."
+                android:textSize="16sp"
+                android:padding="10dp"/>
+        </LinearLayout>
+        <Button
+            android:id="@+id/btn_send_registration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:textColor="@color/white"
+            android:text="물품 등록"
+            android:background="@drawable/border_layout_round_buy"/>
+    </LinearLayout>
 </LinearLayout>

@@ -295,9 +295,22 @@ public class BoardViewActivity extends AppCompatActivity {
 
                                                 @Override
                                                 public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
-                                                    loadingDialog.dismiss();
-                                                    Toast.makeText(BoardViewActivity.this, "구매되었습니다.", Toast.LENGTH_SHORT).show();
-                                                    refresh();
+                                                    database.getReference("Users").child(intentBoardItem.getUid()).get()
+                                                            .addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                @Override
+                                                                public void onSuccess(DataSnapshot dataSnapshot) {
+                                                                    User seller = dataSnapshot.getValue(User.class);
+                                                                    seller.setCoin(seller.getCoin() + intentBoardItem.getPrice());
+                                                                    dataSnapshot.getRef().setValue(seller).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                        @Override
+                                                                        public void onSuccess(Void unused) {
+                                                                            loadingDialog.dismiss();
+                                                                            Toast.makeText(BoardViewActivity.this, "구매되었습니다.", Toast.LENGTH_SHORT).show();
+                                                                            refresh();
+                                                                        }
+                                                                    });
+                                                                }
+                                                            });
                                                 }
                                             });
                                         }

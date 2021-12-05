@@ -136,6 +136,9 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                if(((Activity)context).isFinishing()){
+                    return;
+                }
                 Glide.with(context)
                         .load(R.drawable.test_profile)
                         .apply(new RequestOptions().circleCrop())
@@ -199,7 +202,16 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
                 return false;
             }
         };
-        if(size != 4){
+        if(size == 1){
+            manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup(){
+                @Override
+                public int getSpanSize(int position) {
+                    return 2;
+                }
+            });
+            return manager;
+        }
+        else if(size != 4){
             manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup(){
                 @Override
                 public int getSpanSize(int position) {
@@ -213,6 +225,7 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
                     return 0;
                 }
             });
+            return manager;
         }
         else {
             manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
@@ -221,8 +234,8 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
                     return 1;
                 }
             });
+            return manager;
         }
-        return manager;
     }
 
     void like(LottieAnimationView lottie, BoardItem item){
