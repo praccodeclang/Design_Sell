@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">DesignSell</string>
+    <string name="app_name">Design Sell</string>
     <string-array name="spinner_items">
         <item>최신 순</item>
         <item>오래된 순</item>
