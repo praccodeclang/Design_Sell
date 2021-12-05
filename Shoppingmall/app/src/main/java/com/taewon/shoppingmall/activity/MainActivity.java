@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
@@ -88,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
     int currentAdsPage = 0;
 
+    SwipeRefreshLayout refresh_main;
     DrawerLayout drawerLayout;
     EditText et_search;
 
@@ -248,7 +250,10 @@ public class MainActivity extends AppCompatActivity {
                                                     .into(iv_rightDrawerUserImg);
                                         }
                                         else{
-
+                                            Glide.with(MainActivity.this)
+                                                    .load(R.drawable.test_profile)
+                                                    .apply(new RequestOptions().circleCrop())
+                                                    .into(iv_rightDrawerUserImg);
                                         }
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
@@ -256,7 +261,6 @@ public class MainActivity extends AppCompatActivity {
                             public void onFailure(@NonNull Exception e) {
                                 Glide.with(MainActivity.this)
                                         .load(R.drawable.test_profile)
-                                        .error(R.drawable.test_profile)
                                         .apply(new RequestOptions().circleCrop())
                                         .into(iv_rightDrawerUserImg);
                             }
@@ -321,7 +325,8 @@ public class MainActivity extends AppCompatActivity {
             // 연결에 실패했을 때.
             public void onFailure(Exception e) {
                 loadingDialog.dismiss();
-                new AlertDialog.Builder(MainActivity.this).setTitle("게시글을 불러오지 못했습니다. 다시 시도해보세요.")
+                Log.d("왜 재연결이 안될까", e.getMessage());
+                new AlertDialog.Builder(MainActivity.this).setTitle("게시글을 불러오지 못했습니다.\n다시 시도해보세요.")
                         .setMessage("")
                         .setIcon(R.drawable.ic_baseline_back_hand_24)
                         .setPositiveButton("다시 시도", new DialogInterface.OnClickListener() {
@@ -442,6 +447,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initViews() {
+        refresh_main = findViewById(R.id.refresh_main);
         li_logout = findViewById(R.id.li_logout);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         et_search = findViewById(R.id.et_search);
@@ -482,6 +488,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initListeners() {
+        refresh_main.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                onStart();
+                refresh_main.setRefreshing(false);
+            }
+        });
         et_search.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {

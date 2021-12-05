@@ -113,36 +113,39 @@
                 </TableRow>
             </TableLayout>
             <LinearLayout
+                android:id="@+id/li_profile_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:id="@+id/li_profile_info"
                 android:padding="20dp">
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:textSize="16sp"
                         android:fontFamily="@font/nanum_myeongjo_bold"
+                        android:paddingVertical="10dp"
+                        android:paddingRight="10dp"
                         android:text="Email :"
                         android:textColor="@color/black"
-                        android:paddingRight="10dp"
-                        android:paddingVertical="10dp"/>
+                        android:textSize="16sp" />
+
                     <TextView
                         android:id="@+id/tv_userViewerEmail"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:textSize="16sp"
                         android:fontFamily="@font/nanum_myeongjo_bold"
+                        android:paddingVertical="10dp"
                         android:text="email"
                         android:textColor="@color/black"
-                        android:paddingVertical="10dp"/>
+                        android:textSize="16sp" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -151,24 +154,29 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:textSize="16sp"
                         android:fontFamily="@font/nanum_myeongjo_bold"
+                        android:paddingVertical="10dp"
+                        android:paddingRight="10dp"
                         android:text="Phone :"
                         android:textColor="@color/black"
-                        android:paddingRight="10dp"
-                        android:paddingVertical="10dp"/>
+                        android:textSize="16sp" />
+
                     <TextView
                         android:id="@+id/tv_profile_user_phone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:textSize="16sp"
                         android:fontFamily="@font/nanum_myeongjo_bold"
+                        android:paddingVertical="10dp"
                         android:text="01046407993"
                         android:textColor="@color/black"
-                        android:paddingVertical="10dp"/>
+                        android:textSize="16sp" />
                 </LinearLayout>
             </LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rv_profile_feed"/>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

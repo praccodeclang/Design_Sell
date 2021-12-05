@@ -326,6 +326,7 @@ public class BoardViewActivity extends AppCompatActivity {
                         if(isBought){
                             //이미 샀다면 실행
                             tv_boardView_price.setText("Download");
+                            tv_boardView_price.setTextColor(Color.WHITE);
                             lottie_boardView_price.setVisibility(View.GONE);
                             li_buyBtn.setBackgroundResource(R.drawable.border_layout_round_buyeris_me);
                             li_buyBtn.setOnClickListener(new View.OnClickListener() {
@@ -407,7 +408,6 @@ public class BoardViewActivity extends AppCompatActivity {
                     //2. 내가 가장 많은 돈을 지불했을 때
                     if(mAuth.getCurrentUser().getUid().equals(item.getBuyerUid()))
                     {
-                        li_buyBtn.setEnabled(false);
                         li_buyBtn.setBackground(getDrawable(R.drawable.border_layout_round_buyeris_me));
                     }
 
@@ -429,7 +429,6 @@ public class BoardViewActivity extends AppCompatActivity {
                                 }
                             });
                     buyCheck();
-//                    tv_boardView_price.setText(Integer.toString(item.getPrice()));
                 }
             }
         });

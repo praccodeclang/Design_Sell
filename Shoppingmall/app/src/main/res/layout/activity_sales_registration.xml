@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rl_wrapLayout"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:focusedByDefault="true">
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -12,8 +13,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:focusedByDefault="true">
+            android:orientation="vertical">
             <EditText
                 android:id="@+id/et_sales_title"
                 android:layout_width="match_parent"
@@ -60,6 +60,25 @@
                 android:gravity="top"
                 android:hint="내용을 입력하세요."
                 android:textSize="16sp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="가격 : "
+                    android:fontFamily="@font/nanum_myeongjo_regular"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"/>
+                <EditText
+                    android:id="@+id/et_sales_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:hint="가격을 입력하세요."
+                    android:textSize="16sp"/>
+            </LinearLayout>
             <GridLayout
                 android:id="@+id/li_sales_tags"
                 android:layout_width="match_parent"

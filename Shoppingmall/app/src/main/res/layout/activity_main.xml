@@ -7,135 +7,149 @@
     android:layout_height="match_parent"
     android:id="@+id/drawerLayout"
     tools:context=".activity.MainActivity">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:id="@+id/wrap_layout"
-        android:background="@color/white">
-
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:orientation="horizontal"
-            android:paddingVertical="10dp"
-            android:paddingHorizontal="10dp"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:gravity="center">
-            <ImageView
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:id="@+id/iv_category"
-                android:src="@drawable/category"
-                android:layout_gravity="center"
-                app:tint="#555555"/>
-            <LinearLayout
-                android:id="@+id/sv_search"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:layout_marginHorizontal="30dp"
-                android:orientation="horizontal">
-                <EditText
-                    android:id="@+id/et_search"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/searchview_background"
-                    android:drawableStart="@drawable/ic_baseline_search_24"
-                    android:drawableTint="@color/black"
-                    android:hint="검색어를 입력하세요."
-                    android:textSize="16sp"
-                    android:imeOptions="actionGo"
-                    android:paddingHorizontal="10dp"
-                    android:paddingVertical="10dp"
-                    android:singleLine="true"
-                    android:textColor="@color/black" />
-            </LinearLayout>
-            <ImageView
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:id="@+id/iv_myinfo"
-                app:tint="#555555"
-                android:src="@drawable/ic_baseline_person_24"/>
-        </LinearLayout>
-        <ScrollView
-            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:orientation="vertical"
+            android:id="@+id/wrap_layout"
+            android:background="@color/white">
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:paddingTop="20dp">
-                <TextView
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:paddingVertical="10dp"
+                android:paddingHorizontal="10dp"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:id="@+id/iv_category"
+                    android:src="@drawable/category"
+                    android:layout_gravity="center"
+                    app:tint="#555555"/>
+                <LinearLayout
+                    android:id="@+id/sv_search"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="오늘의 디자이너"
-                    android:textSize="16sp"
-                    android:textColor="@color/black"
-                    android:fontFamily="@font/nanum_myeongjo_bold"
-                    android:paddingHorizontal="10dp"
-                    android:layout_marginBottom="10dp" />
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_main_todayDesigner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-                <androidx.viewpager2.widget.ViewPager2
-                    android:id="@+id/vp_adsViewPager"
-                    android:layout_width="match_parent"
-                    android:layout_height="300dp"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Newest 2D"
-                    android:textSize="16sp"
-                    android:textColor="@color/black"
-                    android:fontFamily="@font/nanum_myeongjo_bold"
-                    android:paddingHorizontal="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="30dp"/>
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_newest2D"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constrainedHeight="true"
-                    android:overScrollMode="never"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Newest 3D"
-                    android:textSize="16sp"
-                    android:textColor="@color/black"
-                    android:fontFamily="@font/nanum_myeongjo_bold"
-                    android:paddingHorizontal="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="30dp"/>
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_newest3D"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constrainedHeight="true"
-                    android:overScrollMode="never"/>
-                <Button
-                    android:id="@+id/btn_insertTest"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="테스트"/>
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="30dp"
+                    android:orientation="horizontal">
+                    <EditText
+                        android:id="@+id/et_search"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/searchview_background"
+                        android:drawableStart="@drawable/ic_baseline_search_24"
+                        android:drawableTint="@color/black"
+                        android:hint="검색어를 입력하세요."
+                        android:textSize="16sp"
+                        android:imeOptions="actionGo"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="10dp"
+                        android:singleLine="true"
+                        android:textColor="@color/black" />
+                </LinearLayout>
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:id="@+id/iv_myinfo"
+                    app:tint="#555555"
+                    android:src="@drawable/ic_baseline_person_24"/>
             </LinearLayout>
-        </ScrollView>
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/bottomnav_bottom_menu"
-            android:background="#fff"
-            android:layout_gravity="center"
-            app:labelVisibilityMode="unlabeled"
-            app:itemIconTint="#555555"
-            app:menu="@menu/bottom_menu"/>
-    </LinearLayout>
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/refresh_main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:paddingTop="20dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="오늘의 디자이너"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/nanum_myeongjo_bold"
+                        android:paddingHorizontal="10dp"
+                        android:layout_marginBottom="10dp" />
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_main_todayDesigner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+                    <androidx.viewpager2.widget.ViewPager2
+                        android:id="@+id/vp_adsViewPager"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="20dp"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Newest 2D"
+                            android:textSize="16sp"
+                            android:textColor="@color/black"
+                            android:fontFamily="@font/nanum_myeongjo_bold"
+                            android:paddingHorizontal="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginTop="30dp"/>
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rv_newest2D"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:overScrollMode="never" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Newest 3D"
+                            android:textSize="16sp"
+                            android:textColor="@color/black"
+                            android:fontFamily="@font/nanum_myeongjo_bold"
+                            android:paddingHorizontal="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginTop="30dp"/>
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rv_newest3D"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:overScrollMode="never"/>
+                    </LinearLayout>
+                    <Button
+                        android:id="@+id/btn_insertTest"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="테스트"/>
+                </LinearLayout>
+                </ScrollView>
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            <com.google.android.material.bottomnavigation.BottomNavigationView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/bottomnav_bottom_menu"
+                android:background="#fff"
+                android:layout_gravity="center"
+                app:labelVisibilityMode="unlabeled"
+                app:itemIconTint="#555555"
+                app:menu="@menu/bottom_menu"/>
+        </LinearLayout>
     <include
         layout="@layout/main_drawer_myinfo"/>
     <include

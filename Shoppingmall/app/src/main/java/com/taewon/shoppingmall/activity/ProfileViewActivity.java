@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -35,6 +36,7 @@ import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.storage.FirebaseStorage;
 import com.taewon.shoppingmall.R;
+import com.taewon.shoppingmall.adapter.FeedRecyclerAdapter;
 import com.taewon.shoppingmall.item.User;
 import com.taewon.shoppingmall.adapter.MiniBoardRecyclerAdapter;
 import com.taewon.shoppingmall.dialog.LottieLoadingDialog;
@@ -60,6 +62,9 @@ public class ProfileViewActivity extends AppCompatActivity {
 
     LinearLayout li_profile_info;
     TextView tv_profile_user_phone;
+
+    RecyclerView rv_profile_feed;
+    FeedRecyclerAdapter feedRecyclerAdapter;
 
     RecyclerView rv_profile_newest_board;
     MiniBoardRecyclerAdapter newestBoardAdapter;
@@ -132,6 +137,12 @@ public class ProfileViewActivity extends AppCompatActivity {
         tv_userViewerName = findViewById(R.id.tv_userViewerName);
         tv_userViewerName.setText(profileUser.getUsername());
 
+        rv_profile_feed = findViewById(R.id.rv_profile_feed);
+        feedRecyclerAdapter = new FeedRecyclerAdapter(ProfileViewActivity.this, mBoardItems);
+        rv_profile_feed.setLayoutManager(new GridLayoutManager(ProfileViewActivity.this, 3));
+        rv_profile_feed.setAdapter(feedRecyclerAdapter);
+
+
         rv_profile_newest_board = findViewById(R.id.rv_profile_newest_board);
         newestBoardAdapter = new MiniBoardRecyclerAdapter(ProfileViewActivity.this, newerItems);
         rv_profile_newest_board.setLayoutManager(new LinearLayoutManager(ProfileViewActivity.this, RecyclerView.VERTICAL, false));
@@ -162,7 +173,7 @@ public class ProfileViewActivity extends AppCompatActivity {
                 mBoardItems.clear();
                 popularItems.clear();
                 newerItems.clear();
-                // 2. 가져온 보드들을 우선 모두 리스트에 정리하고,
+                // 2. 가져온 전체 보드 중, 현재 유저 보드만 정리.
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     BoardItem item = (BoardItem) snapshot.getValue(BoardItem.class);
                     item.setBoardID(snapshot.getKey());
@@ -171,6 +182,8 @@ public class ProfileViewActivity extends AppCompatActivity {
                         mBoardItems.add(item);
                     }
                 }
+                // 3. 피드생성.
+                feedRecyclerAdapter.notifyDataSetChanged();
 
                 // 4. 아이템들을 최신순, 인기순으로 정렬.
                 // 5. 어댑터에 리스트 데이터 구조가 바뀌었음을 알려주자.
