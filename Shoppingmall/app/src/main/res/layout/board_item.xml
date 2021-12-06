@@ -19,13 +19,13 @@
             android:layout_height="wrap_content"
             android:id="@+id/tv_boardTitle"
             android:text="title"
+            android:ems="10"
             android:textColor="@color/black"
             android:padding="10dp"
             android:gravity="center"
-            android:textSize="24sp"
+            android:textSize="20sp"
             android:fontFamily="@font/nanum_myeongjo_bold"
             android:background="@drawable/border_layout_underline"/>
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_boardImgs"
             android:layout_width="match_parent"
