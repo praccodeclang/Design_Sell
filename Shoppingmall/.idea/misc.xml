@@ -67,6 +67,7 @@
         <entry key="app/src/main/res/layout/activity_profile_viewer.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_register.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_sales_reg.xml" value="0.2125" />
+        <entry key="app/src/main/res/layout/activity_sales_registration.xml" value="0.28229166666666666" />
         <entry key="app/src/main/res/layout/activity_search.xml" value="0.14583333333333334" />
         <entry key="app/src/main/res/layout/board_img_item.xml" value="0.2125" />
         <entry key="app/src/main/res/layout/board_item.xml" value="0.25" />
@@ -76,6 +77,8 @@
         <entry key="app/src/main/res/layout/main_viewpager_ads.xml" value="0.14583333333333334" />
         <entry key="app/src/main/res/layout/mini_board_item.xml" value="0.16197916666666667" />
         <entry key="app/src/main/res/layout/user_profile_layout.xml" value="0.25" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2722222222222222" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.2722222222222222" />
       </map>
     </option>
   </component>

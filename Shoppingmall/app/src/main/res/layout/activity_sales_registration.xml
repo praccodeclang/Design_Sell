@@ -77,7 +77,7 @@
                 android:layout_gravity="center_horizontal"
                 android:orientation="vertical"
                 android:columnCount="2"
-                android:rowCount="4"
+                android:rowCount="5"
                 android:padding="10dp">
                 <ToggleButton
                     android:id="@+id/rd_sales_2d_tag"
