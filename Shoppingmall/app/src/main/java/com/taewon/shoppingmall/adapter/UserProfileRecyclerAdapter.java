@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -67,6 +68,19 @@ public class UserProfileRecyclerAdapter extends RecyclerView.Adapter<UserProfile
                 }
                 Glide.with(context)
                         .load(uri)
+                        .circleCrop()
+                        .apply(new RequestOptions().circleCrop())
+                        .into(holder.iv_userItemProfile);
+            }
+        })
+        .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                if(((Activity)context).isFinishing()){
+                    return;
+                }
+                Glide.with(context)
+                        .load(R.drawable.test_profile)
                         .circleCrop()
                         .apply(new RequestOptions().circleCrop())
                         .into(holder.iv_userItemProfile);

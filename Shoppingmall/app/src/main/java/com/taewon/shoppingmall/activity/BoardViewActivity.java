@@ -324,6 +324,25 @@ public class BoardViewActivity extends AppCompatActivity {
     }
 
     void buyCheck(){
+        //1. 내 아이템일경우,
+        if(mAuth.getCurrentUser().getUid().equals(intentBoardItem.getUid())){
+            li_boardView_profile.setEnabled(false);
+            iv_boardView_userName.setText("내 판매 아이템");
+            li_buyBtn.setEnabled(false);
+            li_buyBtn.setBackground(getDrawable(R.drawable.border_layout_round_disable_buy));
+            lottie_boardView_price.setVisibility(View.GONE);
+        }
+        else{
+            iv_boardView_userName.setText(intentBoardItem.getUsername());
+        }
+
+        //2. 내가 가장 많은 돈을 지불했을 때
+        if(mAuth.getCurrentUser().getUid().equals(intentBoardItem.getBuyerUid()))
+        {
+            li_buyBtn.setBackground(getDrawable(R.drawable.border_layout_round_buyeris_me));
+        }
+
+
         //이미 샀는지 체크
         database.getReference("Sales").child(intentBoardItem.getBoardID()).get()
                 .addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
@@ -372,12 +391,28 @@ public class BoardViewActivity extends AppCompatActivity {
                         }
                         else{
                             //사지 않았다면 실행
-                            try{
-                                startCountAnimation(Integer.parseInt(tv_boardView_price.getText().toString()), intentBoardItem.getPrice());
-                            }
-                            catch (Exception e){
-                                startCountAnimation(0, intentBoardItem.getPrice());
-                            }
+                            //살 수 있는지 없는지 체크.
+                            database.getReference("Users").child(mAuth.getCurrentUser().getUid()).get()
+                                    .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DataSnapshot> task) {
+                                            if(task.isSuccessful()){
+                                                User mUser = task.getResult().getValue(User.class);
+                                                if(mUser.getCoin() < intentBoardItem.getPrice()){
+                                                    tv_boardView_price.setTextColor(Color.RED);
+                                                }
+                                                else{
+                                                    tv_boardView_price.setTextColor(Color.WHITE);
+                                                }
+                                            }
+                                            try{
+                                                startCountAnimation(Integer.parseInt(tv_boardView_price.getText().toString()), intentBoardItem.getPrice());
+                                            }
+                                            catch (Exception e){
+                                                startCountAnimation(0, intentBoardItem.getPrice());
+                                            }
+                                        }
+                                    });
                         }
 
 
@@ -407,40 +442,7 @@ public class BoardViewActivity extends AppCompatActivity {
                     tv_boardView_title.setText(item.getTitle());
                     tv_boardView_body.setText(item.getBody());
 
-                    //1. 내 아이템일경우,
-                    if(mAuth.getCurrentUser().getUid().equals(item.getUid())){
-                        li_boardView_profile.setEnabled(false);
-                        iv_boardView_userName.setText("내 판매 아이템");
-                        li_buyBtn.setEnabled(false);
-                        li_buyBtn.setBackground(getDrawable(R.drawable.border_layout_round_disable_buy));
-                    }
-                    else{
-                        iv_boardView_userName.setText(item.getUsername());
-                    }
 
-                    //2. 내가 가장 많은 돈을 지불했을 때
-                    if(mAuth.getCurrentUser().getUid().equals(item.getBuyerUid()))
-                    {
-                        li_buyBtn.setBackground(getDrawable(R.drawable.border_layout_round_buyeris_me));
-                    }
-
-
-                    //살 수 있는지 없는지 체크.
-                    database.getReference("Users").child(mAuth.getCurrentUser().getUid()).get()
-                            .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DataSnapshot> task) {
-                                    if(task.isSuccessful()){
-                                        User mUser = task.getResult().getValue(User.class);
-                                        if(mUser.getCoin() < intentBoardItem.getPrice()){
-                                            tv_boardView_price.setTextColor(Color.RED);
-                                        }
-                                        else{
-                                            tv_boardView_price.setTextColor(Color.WHITE);
-                                        }
-                                    }
-                                }
-                            });
                     buyCheck();
                 }
             }

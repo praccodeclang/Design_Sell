@@ -50,6 +50,8 @@
         <entry key="app/src/main/res/drawable-v24/border_layout_round_buy.xml" value="0.22864583333333333" />
         <entry key="app/src/main/res/drawable-v24/border_layout_round_buyeris_me.xml" value="0.22864583333333333" />
         <entry key="app/src/main/res/drawable-v24/border_layout_round_disable_buy.xml" value="0.22864583333333333" />
+        <entry key="app/src/main/res/drawable-v24/layout_tag_items_checked.xml" value="0.16354166666666667" />
+        <entry key="app/src/main/res/drawable-v24/layout_tag_items_normal.xml" value="0.16354166666666667" />
         <entry key="app/src/main/res/drawable/board_layout_round_rectangle.xml" value="0.15572916666666667" />
         <entry key="app/src/main/res/drawable/border_layout_basic.xml" value="0.3861538461538462" />
         <entry key="app/src/main/res/drawable/border_layout_round_icon.xml" value="0.22864583333333333" />
@@ -59,7 +61,9 @@
         <entry key="app/src/main/res/drawable/ic_baseline_check_24.xml" value="0.22552083333333334" />
         <entry key="app/src/main/res/drawable/ic_baseline_person_24.xml" value="0.22552083333333334" />
         <entry key="app/src/main/res/drawable/searchview_background.xml" value="0.18125" />
+        <entry key="app/src/main/res/drawable/tag_items_selector.xml" value="0.16354166666666667" />
         <entry key="app/src/main/res/layout/activity_board_view.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_cart.xml" value="0.165" />
         <entry key="app/src/main/res/layout/activity_file_download.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.2078125" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
@@ -71,6 +75,7 @@
         <entry key="app/src/main/res/layout/activity_search.xml" value="0.14583333333333334" />
         <entry key="app/src/main/res/layout/board_img_item.xml" value="0.2125" />
         <entry key="app/src/main/res/layout/board_item.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/default_img_item.xml" value="0.28229166666666666" />
         <entry key="app/src/main/res/layout/download_img_item.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/layout/main_drawer_category.xml" value="0.20260416666666667" />
         <entry key="app/src/main/res/layout/main_drawer_myinfo.xml" value="0.25" />

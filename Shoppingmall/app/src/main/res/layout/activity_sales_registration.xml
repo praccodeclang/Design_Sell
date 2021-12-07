@@ -152,9 +152,7 @@
                     android:textOff="3d 캐릭터"
                     android:textSize="14sp"
                     android:background="@drawable/tag_items_selector"
-                    android:layout_margin="5dp"
-
-                    />
+                    android:layout_margin="5dp"/>
                 <ToggleButton
                     android:padding="10dp"
                     android:id="@+id/rd_sales_3d_background_tag"

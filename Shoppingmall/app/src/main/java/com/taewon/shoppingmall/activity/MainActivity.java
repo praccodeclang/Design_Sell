@@ -174,6 +174,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         adsTimer.cancel();
+        adsTimer = null;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     @Override
@@ -694,7 +700,9 @@ public class MainActivity extends AppCompatActivity {
         });
         drawerLayout.findViewById(R.id.li_shoppingBasket).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
+                Intent intent = new Intent(MainActivity.this, CartActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             }
         });
         drawerLayout.findViewById(R.id.li_appInfo).setOnClickListener(new View.OnClickListener() {

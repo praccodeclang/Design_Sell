@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -55,9 +56,11 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
                                         }
                                         Glide.with(context)
                                                 .load(uri)
+                                                .override(300,300)
                                                 .placeholder(R.drawable.ic_loading)
                                                 .error(R.drawable.ic_warning)
                                                 .into(holder.iv_default_img);
+                                        holder.iv_default_img.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                                     }
                                 });
                     }
