@@ -14,18 +14,29 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <TextView
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/tv_boardTitle"
-            android:text="title"
-            android:ems="10"
-            android:textColor="@color/black"
             android:padding="15dp"
-            android:gravity="center"
-            android:textSize="20sp"
-            android:fontFamily="@font/nanum_myeongjo_bold"
-            android:background="@drawable/border_layout_underline"/>
+            android:background="@drawable/border_layout_underline">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tv_boardTitle"
+                android:text="title"
+                android:ems="10"
+                android:layout_gravity="center"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:fontFamily="@font/nanum_myeongjo_bold"/>
+            <ImageView
+                android:id="@+id/iv_board_etc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_baseline_more_vert_24"
+                android:layout_gravity="right"/>
+        </FrameLayout>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_boardImgs"
             android:layout_width="match_parent"

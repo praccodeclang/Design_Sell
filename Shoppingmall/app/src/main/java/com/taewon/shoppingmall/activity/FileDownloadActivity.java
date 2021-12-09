@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class FileDownloadActivity extends AppCompatActivity {
     String boardID;
-    RecyclerView rv_fileDownload_Img;
+    RecyclerView rv_fileDownload_img;
     DownloadPictureRecyclerAdapter adapter;
     ArrayList<StorageReference> storageRefs;
 
@@ -39,10 +39,11 @@ public class FileDownloadActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
     }
     void initViews(){
-        rv_fileDownload_Img = findViewById(R.id.rv_fileDownload_Img);
+        rv_fileDownload_img = findViewById(R.id.rv_fileDownload_img);
         adapter = new DownloadPictureRecyclerAdapter(FileDownloadActivity.this, storageRefs);
-        rv_fileDownload_Img.setAdapter(adapter);
-        rv_fileDownload_Img.setLayoutManager(new LinearLayoutManager(FileDownloadActivity.this));
+        rv_fileDownload_img.setAdapter(adapter);
+        rv_fileDownload_img.setLayoutManager(new LinearLayoutManager(FileDownloadActivity.this, RecyclerView.HORIZONTAL, false));
+        
         storage.getReference("Board").child(boardID)
                 .listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
             @Override

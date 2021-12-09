@@ -104,9 +104,9 @@ public class SalesRegActivity extends AppCompatActivity {
                 if(isNull){
                     Toast.makeText(SalesRegActivity.this, "이미지를 선택하지 않았습니다.", Toast.LENGTH_LONG).show();
                     return; }
-                if(photoItems.size()>4)
+                if(photoItems.size()>10)
                 {
-                    //선택한 사진이 5장이 넘는다면 함수를 종료.
+                    //선택한 사진이 10장이 넘는다면 함수를 종료.
                     Toast.makeText(SalesRegActivity.this, "사진은 4장까지 선택할 수 있습니다.", Toast.LENGTH_LONG).show();
                     return;
                 }

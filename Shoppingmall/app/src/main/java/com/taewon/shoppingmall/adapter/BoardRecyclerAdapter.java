@@ -53,6 +53,7 @@ import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.taewon.shoppingmall.R;
 import com.taewon.shoppingmall.activity.BoardViewActivity;
+import com.taewon.shoppingmall.dialog.BoardEditDialog;
 import com.taewon.shoppingmall.item.BoardItem;
 
 import java.text.ParsePosition;
@@ -191,6 +192,13 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
             @Override
             public void onClick(View view) {
                 addEraseCart(holder.lottie_addCart, item);
+            }
+        });
+
+        holder.iv_board_etc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new BoardEditDialog(context, item).show();
             }
         });
     }
@@ -427,9 +435,10 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
         TextView tv_nickname;
         TextView tv_uploadTime;
         TextView tv_boardTitle;
+        ImageView iv_board_etc;
         LottieAnimationView lottie_addCart;
         LottieAnimationView lottie_like;
-        BoardItem item;
+
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -441,6 +450,7 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
             tv_uploadTime = itemView.findViewById(R.id.tv_uploadTime);
             lottie_addCart = itemView.findViewById(R.id.lottie_board_addCart);
             lottie_like = itemView.findViewById(R.id.lottie_board_like);
+            iv_board_etc = itemView.findViewById(R.id.iv_board_etc);
         }
     }
 }

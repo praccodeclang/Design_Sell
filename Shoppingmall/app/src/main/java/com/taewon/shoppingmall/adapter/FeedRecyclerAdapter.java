@@ -2,6 +2,7 @@ package com.taewon.shoppingmall.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -20,6 +22,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.taewon.shoppingmall.R;
+import com.taewon.shoppingmall.activity.BoardViewActivity;
 import com.taewon.shoppingmall.item.BoardItem;
 
 import java.util.ArrayList;
@@ -56,11 +59,12 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
                                         }
                                         Glide.with(context)
                                                 .load(uri)
-                                                .override(300,300)
                                                 .placeholder(R.drawable.ic_loading)
                                                 .error(R.drawable.ic_warning)
                                                 .into(holder.iv_default_img);
-                                        holder.iv_default_img.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                                        GridLayoutManager.LayoutParams layoutParams = (GridLayoutManager.LayoutParams)holder.itemView.getLayoutParams();
+                                        layoutParams.height = layoutParams.width;
+                                        holder.itemView.requestLayout();
                                     }
                                 });
                     }
@@ -76,6 +80,16 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
                                 .into(holder.iv_default_img);
                     }
                 });
+        holder.iv_default_img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, BoardViewActivity.class);
+                intent.putExtra("BoardItem", boardItems.get(position));
+                context.startActivity(intent);
+                ((Activity)context).overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                ((Activity) context).finish();
+            }
+        });
     }
 
     @Override

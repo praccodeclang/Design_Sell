@@ -1,5 +1,6 @@
 package com.taewon.shoppingmall.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -53,6 +54,9 @@ public class AdsViewPagerAdapter extends RecyclerView.Adapter<AdsViewPagerAdapte
         ref.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
+                if(((Activity)context).isFinishing()){
+                    return;
+                }
                 Glide.with(context)
                     .load(task.getResult())
                     .error(R.drawable.ic_warning)

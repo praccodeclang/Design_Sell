@@ -173,7 +173,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        adsTimer.cancel();
+        try{
+            adsTimer.cancel();
+        }catch (Exception e){
+
+        }
         adsTimer = null;
     }
 

@@ -10,15 +10,25 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_weight="1">
-        <TextView
-            android:id="@+id/tv_boardView_title"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="20dp"
-            android:text="Title"
-            android:gravity="center"
-            android:textSize="24sp"
-            android:fontFamily="@font/nanum_myeongjo_extrabold"/>
+            android:padding="20dp">
+            <ImageView
+                android:id="@+id/iv_board_etc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_baseline_more_vert_24"
+                android:layout_gravity="right|center_vertical"/>
+            <TextView
+                android:id="@+id/tv_boardView_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Title"
+                android:gravity="center"
+                android:textSize="24sp"
+                android:fontFamily="@font/nanum_myeongjo_extrabold"/>
+        </FrameLayout>
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

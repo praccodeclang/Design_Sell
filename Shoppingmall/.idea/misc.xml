@@ -24,6 +24,7 @@
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/drawable-v24/layout_tag_items_normal_checked.xml" value="0.190625" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/drawable/border_layout_basic.xml" value="0.25" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/drawable/border_layout_round_rectangle.xml" value="0.3398148148148148" />
+        <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/drawable/ic_baseline_report_24.xml" value="0.3984375" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/drawable/tag_items_selector.xml" value="0.190625" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/activity_board_view.xml" value="0.21875" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/activity_file_download.xml" value="0.19270833333333334" />
@@ -31,11 +32,14 @@
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/activity_main.xml" value="0.22" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/activity_main2.xml" value="0.22" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/activity_profile_viewer.xml" value="0.25" />
-        <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/activity_sales_registration.xml" value="0.21" />
+        <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/activity_sales_registration.xml" value="0.33" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/activity_splash.xml" value="0.21875" />
+        <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/board_edit_dialog.xml" value="0.38229166666666664" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/board_img_item.xml" value="0.21875" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/board_item.xml" value="0.25" />
+        <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/default_img_item.xml" value="0.18854166666666666" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/download_img_item.xml" value="0.2947916666666667" />
+        <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/ic_baseline_report_24.xml" value="0.38229166666666664" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/loading_layout.xml" value="0.1" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/main_drawer_category.xml" value="0.33" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/main_drawer_myinfo.xml" value="0.5" />
