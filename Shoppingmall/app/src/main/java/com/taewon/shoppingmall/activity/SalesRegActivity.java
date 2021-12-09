@@ -99,7 +99,7 @@ public class SalesRegActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode){
-            case 2222 :
+            case GET_PHOTO_IN_GALLERY :
                 boolean isNull = galleryUtil.photoDataIsNull(data);
                 if(isNull){
                     Toast.makeText(SalesRegActivity.this, "이미지를 선택하지 않았습니다.", Toast.LENGTH_LONG).show();

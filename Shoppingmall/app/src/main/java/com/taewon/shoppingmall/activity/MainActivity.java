@@ -659,6 +659,8 @@ public class MainActivity extends AppCompatActivity {
         tv_rightDrawerCoin = drawerLayout.findViewById(R.id.tv_rightDrawerCoin);
         li_rightDrawerProfile = drawerLayout.findViewById(R.id.li_rightDrawerProfile);
         tv_rightDrawerCoin = drawerLayout.findViewById(R.id.tv_rightDrawerCoin);
+
+        //유저 프로필 이미지를 바꾸려고 시도하면, 런타임에 권한을 체크함. TedPermission 라이브러리 사용.
         iv_rightDrawerUserImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

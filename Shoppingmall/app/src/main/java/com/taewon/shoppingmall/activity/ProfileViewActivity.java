@@ -18,7 +18,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
@@ -137,10 +139,12 @@ public class ProfileViewActivity extends AppCompatActivity {
         tv_userViewerName = findViewById(R.id.tv_userViewerName);
         tv_userViewerName.setText(profileUser.getUsername());
 
+        SnapHelper helper = new LinearSnapHelper();
         rv_profile_feed = findViewById(R.id.rv_profile_feed);
         feedRecyclerAdapter = new FeedRecyclerAdapter(ProfileViewActivity.this, mBoardItems);
         rv_profile_feed.setLayoutManager(new GridLayoutManager(ProfileViewActivity.this, 3));
         rv_profile_feed.setAdapter(feedRecyclerAdapter);
+        helper.attachToRecyclerView(rv_profile_feed);
 
 
         rv_profile_newest_board = findViewById(R.id.rv_profile_newest_board);
@@ -187,12 +191,26 @@ public class ProfileViewActivity extends AppCompatActivity {
 
                 // 4. 아이템들을 최신순, 인기순으로 정렬.
                 // 5. 어댑터에 리스트 데이터 구조가 바뀌었음을 알려주자.
+//                newerItems = (ArrayList<BoardItem>) mBoardItems.clone();
+//                popularItems = (ArrayList<BoardItem>) mBoardItems.clone();
+//                newerItems.addAll(mBoardItems);
+//                popularItems.addAll(mBoardItems);
+
                 Collections.sort(mBoardItems, new BoardDateComparator());
-                newerItems.addAll(mBoardItems);
-                newestBoardAdapter.notifyDataSetChanged();
+                for(int i = 0; i < mBoardItems.size(); i++){
+                    if(i > 3) break;
+                    newerItems.add(mBoardItems.get(i));
+                }
 
                 Collections.sort(mBoardItems, new BoardStarCountComparator());
-                popularItems.addAll(mBoardItems);
+                for(int i = 0; i < popularItems.size(); i++){
+                    if(i > 3) break;
+                    popularItems.add(mBoardItems.get(i));
+                }
+
+                Log.d("newerSize", Integer.toString(newerItems.size()));
+                Log.d("popularSize", Integer.toString(popularItems.size()));
+                newestBoardAdapter.notifyDataSetChanged();
                 popularBoardAdapter.notifyDataSetChanged();
                 // 6. 로딩창 닫기
                 loadingDialog.dismiss();
