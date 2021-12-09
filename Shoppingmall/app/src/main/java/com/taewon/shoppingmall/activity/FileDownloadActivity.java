@@ -5,7 +5,9 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.FirebaseDatabase;
@@ -40,9 +42,11 @@ public class FileDownloadActivity extends AppCompatActivity {
     }
     void initViews(){
         rv_fileDownload_Img = findViewById(R.id.rv_fileDownload_Img);
+        SnapHelper helper = new LinearSnapHelper();
         adapter = new DownloadPictureRecyclerAdapter(FileDownloadActivity.this, storageRefs);
         rv_fileDownload_Img.setAdapter(adapter);
         rv_fileDownload_Img.setLayoutManager(new LinearLayoutManager(FileDownloadActivity.this));
+        helper.attachToRecyclerView(rv_fileDownload_Img);
         storage.getReference("Board").child(boardID)
                 .listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
             @Override

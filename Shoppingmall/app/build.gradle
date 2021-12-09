@@ -48,6 +48,9 @@ dependencies {
     //TedPermission
     implementation 'io.github.ParkSangGwon:tedpermission-normal:3.3.0'
 
+    //RoundedImageView
+    implementation 'com.makeramen:roundedimageview:2.3.0'
+
     implementation 'com.airbnb.android:lottie:4.2.2'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
