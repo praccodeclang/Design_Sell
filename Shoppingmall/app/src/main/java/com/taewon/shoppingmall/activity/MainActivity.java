@@ -308,10 +308,10 @@ public class MainActivity extends AppCompatActivity {
                     for(String s : tag){
                         tagString.append(s);
                     }
-                    if (tagString.toString().contains("2d")) {
+                    if (items2D.size() < 3 && tagString.toString().contains("2d")) {
                         //2d
                         items2D.add(item);
-                    } else if (tagString.toString().contains("3d")) {
+                    } else if (items3D.size() < 3 && tagString.toString().contains("3d")) {
                         //3d
                         items3D.add(item);
                     }
@@ -700,8 +700,17 @@ public class MainActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             }
         });
+        drawerLayout.findViewById(R.id.li_myPurchaseList).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, MyPurchaseActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+            }
+        });
         drawerLayout.findViewById(R.id.li_saleItems).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+
             }
         });
         drawerLayout.findViewById(R.id.li_shoppingBasket).setOnClickListener(new View.OnClickListener() {

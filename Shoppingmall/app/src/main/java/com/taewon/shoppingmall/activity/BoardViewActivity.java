@@ -289,7 +289,7 @@ public class BoardViewActivity extends AppCompatActivity {
                                                     if (currentData == null) {
                                                         return Transaction.success(currentData);
                                                     }
-                                                    currentData.child(mAuth.getCurrentUser().getUid()).setValue(true);
+                                                    currentData.child(mAuth.getCurrentUser().getUid()).setValue(intentBoardItem.getPrice());
                                                     return Transaction.success(currentData);
                                                 }
 

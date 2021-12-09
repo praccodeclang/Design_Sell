@@ -438,6 +438,7 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
         ImageView iv_board_etc;
         LottieAnimationView lottie_addCart;
         LottieAnimationView lottie_like;
+        TextView tv_myItem;
 
 
         public MyViewHolder(@NonNull View itemView) {
@@ -451,6 +452,7 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
             lottie_addCart = itemView.findViewById(R.id.lottie_board_addCart);
             lottie_like = itemView.findViewById(R.id.lottie_board_like);
             iv_board_etc = itemView.findViewById(R.id.iv_board_etc);
+            tv_myItem = itemView.findViewById(R.id.tv_myItem);
         }
     }
 }

@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -17,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -67,8 +69,21 @@ public class BoardPictureRecyclerAdapter extends RecyclerView.Adapter<BoardPictu
                     Glide.with(context)
                             .load(task.getResult())
                             .error(R.drawable.ic_warning)
+                            .listener(new RequestListener<Drawable>() {
+                                @Override
+                                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                    return false;
+                                }
+
+                                @Override
+                                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                    holder.lottie_board_img_loading.pauseAnimation();
+                                    holder.lottie_board_img_loading.setVisibility(View.GONE);
+                                    holder.board_img_wrap.setVisibility(View.VISIBLE);
+                                    return false;
+                                }
+                            })
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .placeholder(R.drawable.ic_loading)
                             .into(holder.iv_boardImg);
                 }
             }
@@ -90,10 +105,14 @@ public class BoardPictureRecyclerAdapter extends RecyclerView.Adapter<BoardPictu
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
+        FrameLayout board_img_wrap;
         ImageView iv_boardImg;
+        LottieAnimationView lottie_board_img_loading;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             iv_boardImg = itemView.findViewById(R.id.iv_boardImg);
+            board_img_wrap = itemView.findViewById(R.id.board_img_wrap);
+            lottie_board_img_loading = itemView.findViewById(R.id.lottie_board_img_loading);
         }
     }
 }

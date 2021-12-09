@@ -190,12 +190,6 @@ public class ProfileViewActivity extends AppCompatActivity {
                 feedRecyclerAdapter.notifyDataSetChanged();
 
                 // 4. 아이템들을 최신순, 인기순으로 정렬.
-                // 5. 어댑터에 리스트 데이터 구조가 바뀌었음을 알려주자.
-//                newerItems = (ArrayList<BoardItem>) mBoardItems.clone();
-//                popularItems = (ArrayList<BoardItem>) mBoardItems.clone();
-//                newerItems.addAll(mBoardItems);
-//                popularItems.addAll(mBoardItems);
-
                 Collections.sort(mBoardItems, new BoardDateComparator());
                 for(int i = 0; i < mBoardItems.size(); i++){
                     if(i > 3) break;
@@ -208,8 +202,9 @@ public class ProfileViewActivity extends AppCompatActivity {
                     popularItems.add(mBoardItems.get(i));
                 }
 
-                Log.d("newerSize", Integer.toString(newerItems.size()));
-                Log.d("popularSize", Integer.toString(popularItems.size()));
+//                Log.d("newerSize", Integer.toString(newerItems.size()));
+//                Log.d("popularSize", Integer.toString(popularItems.size()));
+                // 5. 어댑터에 리스트 데이터 구조가 바뀌었음을 알려주자.
                 newestBoardAdapter.notifyDataSetChanged();
                 popularBoardAdapter.notifyDataSetChanged();
                 // 6. 로딩창 닫기

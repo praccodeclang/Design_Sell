@@ -109,6 +109,10 @@ public class MiniBoardRecyclerAdapter extends RecyclerView.Adapter<MiniBoardRecy
         Date date1 = calendar.getTime();
         now.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
         holder.tv_mini_board_date.setText(calUploadDate(now.format(date1), item.getDateString()));
+        if(item.getPrice() == 0){
+            holder.tv_mini_board_price.setText("무료");
+        }
+        holder.tv_mini_board_price.setText(item.getPrice()+"");
     }
 
     @Override
@@ -150,6 +154,7 @@ public class MiniBoardRecyclerAdapter extends RecyclerView.Adapter<MiniBoardRecy
         TextView tv_mini_board_title;
         TextView tv_mini_board_body;
         TextView tv_mini_board_date;
+        TextView tv_mini_board_price;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -158,6 +163,7 @@ public class MiniBoardRecyclerAdapter extends RecyclerView.Adapter<MiniBoardRecy
             tv_mini_board_title = itemView.findViewById(R.id.tv_mini_board_title);
             tv_mini_board_body = itemView.findViewById(R.id.tv_mini_board_body);
             tv_mini_board_date = itemView.findViewById(R.id.tv_mini_board_date);
+            tv_mini_board_price = itemView.findViewById(R.id.tv_mini_board_price);
         }
     }
 }
