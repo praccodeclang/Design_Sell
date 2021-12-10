@@ -67,25 +67,30 @@
         <entry key="app/src/main/res/drawable/ic_baseline_person_24.xml" value="0.22552083333333334" />
         <entry key="app/src/main/res/drawable/searchview_background.xml" value="0.18125" />
         <entry key="app/src/main/res/drawable/tag_items_selector.xml" value="0.16354166666666667" />
+        <entry key="app/src/main/res/layout/activity_appinfo.xml" value="0.18" />
         <entry key="app/src/main/res/layout/activity_board_view.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_cart.xml" value="0.165" />
-        <entry key="app/src/main/res/layout/activity_file_download.xml" value="0.37604166666666666" />
+        <entry key="app/src/main/res/layout/activity_file_download.xml" value="0.22" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.2078125" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/activity_main2.xml" value="0.14583333333333334" />
-        <entry key="app/src/main/res/layout/activity_profile_viewer.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.22" />
+        <entry key="app/src/main/res/layout/activity_main2.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/activity_my_sales.xml" value="0.37604166666666666" />
+        <entry key="app/src/main/res/layout/activity_profile_viewer.xml" value="0.16" />
+        <entry key="app/src/main/res/layout/activity_purchase.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_register.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_sales_reg.xml" value="0.2125" />
         <entry key="app/src/main/res/layout/activity_sales_registration.xml" value="0.28229166666666666" />
         <entry key="app/src/main/res/layout/activity_search.xml" value="0.14583333333333334" />
+        <entry key="app/src/main/res/layout/board_edit_dialog.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/layout/board_img_item.xml" value="0.2125" />
         <entry key="app/src/main/res/layout/board_item.xml" value="0.25" />
         <entry key="app/src/main/res/layout/default_img_item.xml" value="0.28229166666666666" />
         <entry key="app/src/main/res/layout/download_img_item.xml" value="0.37604166666666666" />
-        <entry key="app/src/main/res/layout/main_drawer_category.xml" value="0.20260416666666667" />
+        <entry key="app/src/main/res/layout/main_drawer_category.xml" value="0.22" />
         <entry key="app/src/main/res/layout/main_drawer_myinfo.xml" value="0.25" />
         <entry key="app/src/main/res/layout/main_viewpager_ads.xml" value="0.14583333333333334" />
-        <entry key="app/src/main/res/layout/mini_board_item.xml" value="0.16197916666666667" />
+        <entry key="app/src/main/res/layout/mini_board_item.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/search_listview_item.xml" value="0.37604166666666666" />
         <entry key="app/src/main/res/layout/user_profile_layout.xml" value="0.25" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.2722222222222222" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.2722222222222222" />
@@ -93,7 +98,7 @@
     </option>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_15" project-jdk-name="15" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_15_PREVIEW" project-jdk-name="15" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

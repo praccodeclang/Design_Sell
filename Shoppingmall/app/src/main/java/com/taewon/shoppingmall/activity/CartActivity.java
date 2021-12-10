@@ -2,6 +2,8 @@ package com.taewon.shoppingmall.activity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -30,6 +33,8 @@ public class CartActivity extends AppCompatActivity {
     RecyclerView rv_cart;
     BoardRecyclerAdapter adapter;
     LottieAnimationView lottie_cart;
+    LinearLayout li_cart_empty;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +56,10 @@ public class CartActivity extends AppCompatActivity {
                 .get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getChildrenCount() == 0){
+                    li_cart_empty.setVisibility(View.VISIBLE);
+                    return;
+                }
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     database.getReference("Board").child(snapshot.getKey()).get()
                     .addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
@@ -61,6 +70,11 @@ public class CartActivity extends AppCompatActivity {
                         }
                     });
                 }
+            }
+        })
+        .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
 
             }
         });
@@ -73,14 +87,16 @@ public class CartActivity extends AppCompatActivity {
     }
 
     void initViews(){
+        li_cart_empty = findViewById(R.id.li_cart_empty);
         rv_cart = findViewById(R.id.rv_cart);
         adapter = new BoardRecyclerAdapter(CartActivity.this, cartItems);
         rv_cart.setAdapter(adapter);
-        rv_cart.setLayoutManager(new LinearLayoutManager(CartActivity.this));
+        rv_cart.setLayoutManager(new LinearLayoutManager(CartActivity.this, RecyclerView.HORIZONTAL, false));
         SnapHelper helper = new LinearSnapHelper();
         helper.attachToRecyclerView(rv_cart);
 
         lottie_cart = findViewById(R.id.lottie_cartView_cart);
+        li_cart_empty.setVisibility(View.GONE);
     }
 
     void initListeners(){

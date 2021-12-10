@@ -4,8 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.FirebaseDatabase;
@@ -13,14 +12,16 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
 import com.taewon.shoppingmall.R;
-import com.taewon.shoppingmall.adapter.DownloadPictureRecyclerAdapter;
+import com.taewon.shoppingmall.adapter.DownloadPicturePagerAdapter;
+import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
 
 import java.util.ArrayList;
 
 public class FileDownloadActivity extends AppCompatActivity {
     String boardID;
-    RecyclerView rv_fileDownload_img;
-    DownloadPictureRecyclerAdapter adapter;
+    ViewPager2 rv_fileDownload_img;
+    DotsIndicator fileDownload_dots_indicator;
+    DownloadPicturePagerAdapter adapter;
     ArrayList<StorageReference> storageRefs;
 
     FirebaseStorage storage;
@@ -39,10 +40,8 @@ public class FileDownloadActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
     }
     void initViews(){
+        fileDownload_dots_indicator = findViewById(R.id.fileDownload_dots_indicator);
         rv_fileDownload_img = findViewById(R.id.rv_fileDownload_img);
-        adapter = new DownloadPictureRecyclerAdapter(FileDownloadActivity.this, storageRefs);
-        rv_fileDownload_img.setAdapter(adapter);
-        rv_fileDownload_img.setLayoutManager(new LinearLayoutManager(FileDownloadActivity.this, RecyclerView.HORIZONTAL, false));
         
         storage.getReference("Board").child(boardID)
                 .listAll().addOnSuccessListener(new OnSuccessListener<ListResult>() {
@@ -54,6 +53,9 @@ public class FileDownloadActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
             }
         });
+        adapter = new DownloadPicturePagerAdapter(FileDownloadActivity.this, storageRefs);
+        rv_fileDownload_img.setAdapter(adapter);
+        fileDownload_dots_indicator.setViewPager2(rv_fileDownload_img);
     }
     void initListeners(){
 

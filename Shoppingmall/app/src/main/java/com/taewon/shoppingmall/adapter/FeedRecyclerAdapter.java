@@ -3,6 +3,7 @@ package com.taewon.shoppingmall.adapter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,10 +12,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -59,7 +66,19 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
                                         }
                                         Glide.with(context)
                                                 .load(uri)
-                                                .placeholder(R.drawable.ic_loading)
+                                                .listener(new RequestListener<Drawable>() {
+                                                    @Override
+                                                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                                                        return false;
+                                                    }
+
+                                                    @Override
+                                                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                                                        holder.lottie_loading_progress.pauseAnimation();
+                                                        holder.lottie_loading_progress.setVisibility(View.GONE);
+                                                        return false;
+                                                    }
+                                                })
                                                 .error(R.drawable.ic_warning)
                                                 .into(holder.iv_default_img);
                                         GridLayoutManager.LayoutParams layoutParams = (GridLayoutManager.LayoutParams)holder.itemView.getLayoutParams();
@@ -99,9 +118,11 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
         ImageView iv_default_img;
+        LottieAnimationView lottie_loading_progress;
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             iv_default_img = itemView.findViewById(R.id.iv_default_img);
+            lottie_loading_progress = itemView.findViewById(R.id.lottie_loading_progress);
         }
     }
 }

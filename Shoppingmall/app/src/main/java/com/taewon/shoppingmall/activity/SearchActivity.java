@@ -63,9 +63,9 @@ public class SearchActivity extends AppCompatActivity {
                 Intent intent = new Intent(SearchActivity.this, MainActivity2.class);
                 intent.putExtra("category", et_searchText.getText().toString());
                 startActivity(intent);
-                onBackPressed();
                 finish();
-                return false;
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                return true;
             }
         });
         lv_search.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -73,8 +73,8 @@ public class SearchActivity extends AppCompatActivity {
                 Intent intent = new Intent(SearchActivity.this, MainActivity2.class);
                 intent.putExtra("category", searchWordAdapter.getItem(position));
                 startActivity(intent);
-                onBackPressed();
                 finish();
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             }
         });
     }

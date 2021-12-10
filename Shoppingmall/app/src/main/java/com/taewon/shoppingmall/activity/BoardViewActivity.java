@@ -48,6 +48,7 @@ import com.google.firebase.storage.StorageReference;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.normal.TedPermission;
 import com.taewon.shoppingmall.R;
+import com.taewon.shoppingmall.dialog.BoardEditDialog;
 import com.taewon.shoppingmall.dialog.LottieLoadingDialog;
 import com.taewon.shoppingmall.item.User;
 import com.taewon.shoppingmall.adapter.BoardPictureRecyclerAdapter;
@@ -71,6 +72,8 @@ public class BoardViewActivity extends AppCompatActivity {
 
     SwipeRefreshLayout rl_wrapLayout;
     TextView tv_boardView_title;
+    ImageView iv_boardview_etc;
+
     RecyclerView rv_boardViewImg;
     BoardPictureRecyclerAdapter pictureRecyclerAdapter;
     ArrayList<StorageReference> boardImgRefs;
@@ -123,6 +126,7 @@ public class BoardViewActivity extends AppCompatActivity {
     void initViews(){
         rl_wrapLayout = findViewById(R.id.rl_wrapLayout);
         tv_boardView_title = findViewById(R.id.tv_boardView_title);
+        iv_boardview_etc = findViewById(R.id.iv_boardview_etc);
 
         //릴레이티브 레이아웃 초기화 및 어댑터
         rv_boardViewImg = findViewById(R.id.rv_boardViewImg);
@@ -256,6 +260,20 @@ public class BoardViewActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 addEraseCart(lottie_boardView_cart, intentBoardItem);
+            }
+        });
+        iv_boardview_etc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new BoardEditDialog(BoardViewActivity.this, intentBoardItem, new BoardEditDialog.DialogClickListener() {
+                    @Override
+                    public void onDelete(String result) {
+                        if(result.equals("OK")){
+                            finish();
+                            overridePendingTransition(R.anim.slide_enter, R.anim.slide_exit);
+                        }
+                    }
+                }).show();
             }
         });
     }

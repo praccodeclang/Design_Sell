@@ -51,6 +51,18 @@ dependencies {
     //RoundedImageView
     implementation 'com.makeramen:roundedimageview:2.3.0'
 
+    //emoji
+    def emoji2_version = "1.0.0"
+    implementation "androidx.emoji2:emoji2:$emoji2_version"
+    implementation "androidx.emoji2:emoji2-views:$emoji2_version"
+    implementation "androidx.emoji2:emoji2-views-helper:$emoji2_version"
+
+    //indicator
+    implementation 'com.tbuonomo:dotsindicator:4.2'
+
+    //FCM
+    implementation 'com.google.firebase:firebase-messaging'
+
     implementation 'com.airbnb.android:lottie:4.2.2'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'

@@ -6,7 +6,9 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableRow;
@@ -65,6 +67,7 @@ public class ProfileViewActivity extends AppCompatActivity {
     LinearLayout li_profile_info;
     TextView tv_profile_user_phone;
 
+    TextView tv_profile_feed_empty;
     RecyclerView rv_profile_feed;
     FeedRecyclerAdapter feedRecyclerAdapter;
 
@@ -121,7 +124,7 @@ public class ProfileViewActivity extends AppCompatActivity {
         iv_profile_chat = findViewById(R.id.iv_profile_chat);
         tv_profile_followingCount = findViewById(R.id.tv_profile_followingCount);
         tv_profile_followerCount = findViewById(R.id.tv_profile_followerCount);
-
+        tv_profile_feed_empty = findViewById(R.id.tv_profile_feed_empty);
 
         iv_userViewerImg = findViewById(R.id.iv_userViewerImg);
         storage.getReference(profileUser.getPhotoUrl()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -187,27 +190,30 @@ public class ProfileViewActivity extends AppCompatActivity {
                     }
                 }
                 // 3. 피드생성.
+                if(mBoardItems.size() < 1){
+                    tv_profile_feed_empty.setVisibility(View.VISIBLE);
+                }
+                else{
+                    tv_profile_feed_empty.setVisibility(View.GONE);
+                }
                 feedRecyclerAdapter.notifyDataSetChanged();
 
                 // 4. 아이템들을 최신순, 인기순으로 정렬.
                 Collections.sort(mBoardItems, new BoardDateComparator());
                 for(int i = 0; i < mBoardItems.size(); i++){
-                    if(i > 3) break;
+                    if(i > 2) break;
                     newerItems.add(mBoardItems.get(i));
                 }
+                newestBoardAdapter.notifyDataSetChanged();
 
                 Collections.sort(mBoardItems, new BoardStarCountComparator());
-                for(int i = 0; i < popularItems.size(); i++){
-                    if(i > 3) break;
+                for(int i = 0; i < mBoardItems.size(); i++){
+                    if(i > 2) break;
                     popularItems.add(mBoardItems.get(i));
                 }
-
-//                Log.d("newerSize", Integer.toString(newerItems.size()));
-//                Log.d("popularSize", Integer.toString(popularItems.size()));
-                // 5. 어댑터에 리스트 데이터 구조가 바뀌었음을 알려주자.
-                newestBoardAdapter.notifyDataSetChanged();
                 popularBoardAdapter.notifyDataSetChanged();
-                // 6. 로딩창 닫기
+
+                // 5. 로딩창 닫기
                 loadingDialog.dismiss();
             }
         }).addOnFailureListener(new OnFailureListener() {

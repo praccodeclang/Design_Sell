@@ -46,6 +46,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
@@ -63,6 +64,7 @@ import com.taewon.shoppingmall.item.AdsItem;
 import com.taewon.shoppingmall.item.BoardItem;
 import com.taewon.shoppingmall.util.BoardDateComparator;
 import com.taewon.shoppingmall.util.PreferenceMgr;
+import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -121,6 +123,8 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView rv_newest3D;
 
     ViewPager2 vp_adsViewPager;
+    DotsIndicator ads_dots_indicator;
+
     LinearLayout wrap_layout;
     LinearLayout li_logout;
 
@@ -238,6 +242,22 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void initFCM(){
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+                if(!task.isSuccessful()){
+                    Log.d("FCM 알림", "token Failed", task.getException());
+                    return;
+                }
+
+                String token = task.getResult();
+                Log.d("FCM 알림", token);
+                Toast.makeText(MainActivity.this, "성공했습니다." + token, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     public void getUser(){
         DatabaseReference databaseRef = database.getReference("Users").child(mAuth.getCurrentUser().getUid());
         Log.d("CurrUserUid", mAuth.getCurrentUser().getUid());
@@ -284,7 +304,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void getBoard() {
         loadingDialog.show();
-        database.getReference("Board/").limitToFirst(100).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+        database.getReference("Board/").get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             public void onSuccess(DataSnapshot dataSnapshot) {
                 // 1.데이터는 쌓인다. 청소하자.
                 boardItems.clear();
@@ -297,6 +317,7 @@ public class MainActivity extends AppCompatActivity {
                     item.setBoardID(snapshot.getKey());
                     boardItems.add(item);
                 }
+                Collections.sort(boardItems, new BoardDateComparator());
 
                 // 3. Iterator를 이용해 2d 카테고리와 3d 카테고리를 분리.
                 Iterator<BoardItem> it = boardItems.iterator();
@@ -308,10 +329,11 @@ public class MainActivity extends AppCompatActivity {
                     for(String s : tag){
                         tagString.append(s);
                     }
-                    if (items2D.size() < 3 && tagString.toString().contains("2d")) {
+                    Log.d("태그 모음", tagString.toString());
+                    if (items2D.size() < 3 && tagString.toString().matches("2d.*")) {
                         //2d
                         items2D.add(item);
-                    } else if (items3D.size() < 3 && tagString.toString().contains("3d")) {
+                    } else if (items3D.size() < 3 && tagString.toString().matches("3d.*")) {
                         //3d
                         items3D.add(item);
                     }
@@ -386,12 +408,14 @@ public class MainActivity extends AppCompatActivity {
                 pagerAdapter.notifyDataSetChanged();
             }
         });
-        adsTimer = new Timer();
-        adsTimer.schedule(new TimerTask() {
-            public void run() {
-                handler.post(Update);
-            }
-        }, 500, 3000);
+        if(adsTimer == null){
+            adsTimer = new Timer();
+            adsTimer.schedule(new TimerTask() {
+                public void run() {
+                    handler.post(Update);
+                }
+            }, 500, 3000);
+        }
     }
 
     /* access modifiers changed from: private */
@@ -471,8 +495,10 @@ public class MainActivity extends AppCompatActivity {
         userProfileRecyclerAdapter = new UserProfileRecyclerAdapter(MainActivity.this, userItems);
         rv_main_todayDesigner.setAdapter(userProfileRecyclerAdapter);
 
+        ads_dots_indicator = findViewById(R.id.ads_dots_indicator);
         pagerAdapter = new AdsViewPagerAdapter(this, adsItems);
         vp_adsViewPager.setAdapter(pagerAdapter);
+        ads_dots_indicator.setViewPager2(vp_adsViewPager);
 
         boardRecyclerAdapter2D = new MiniBoardRecyclerAdapter(MainActivity.this, items2D);
         rv_newest2D.setAdapter(boardRecyclerAdapter2D);
@@ -539,6 +565,10 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(new Intent(MainActivity.this, SearchActivity.class));
                         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                         return true;
+                    case R.id.bottom_cart:
+                        Intent intent = new Intent(MainActivity.this, CartActivity.class);
+                        startActivity(intent);
+                        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
                     default:
                         return true;
                 }
@@ -710,7 +740,9 @@ public class MainActivity extends AppCompatActivity {
         });
         drawerLayout.findViewById(R.id.li_saleItems).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
+                Intent intent = new Intent(MainActivity.this, MySalesActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             }
         });
         drawerLayout.findViewById(R.id.li_shoppingBasket).setOnClickListener(new View.OnClickListener() {
@@ -722,10 +754,14 @@ public class MainActivity extends AppCompatActivity {
         });
         drawerLayout.findViewById(R.id.li_appInfo).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, AppInfoActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
             }
         });
         drawerLayout.findViewById(R.id.li_serviceCenter).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+
             }
         });
         drawerLayout.findViewById(R.id.li_logout).setOnClickListener(new View.OnClickListener() {

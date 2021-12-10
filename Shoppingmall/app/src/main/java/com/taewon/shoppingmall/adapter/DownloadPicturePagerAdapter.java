@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Environment;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,14 +24,13 @@ import com.google.firebase.storage.StorageReference;
 import com.taewon.shoppingmall.R;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 
-public class DownloadPictureRecyclerAdapter extends RecyclerView.Adapter<DownloadPictureRecyclerAdapter.MyViewHolder> {
+public class DownloadPicturePagerAdapter extends RecyclerView.Adapter<DownloadPicturePagerAdapter.MyViewHolder> {
 
     Context context;
     ArrayList<StorageReference> refs;
-    public DownloadPictureRecyclerAdapter(Context context, ArrayList<StorageReference> refs){
+    public DownloadPicturePagerAdapter(Context context, ArrayList<StorageReference> refs){
         this.context = context;
         this.refs = refs;
     }
@@ -44,7 +41,7 @@ public class DownloadPictureRecyclerAdapter extends RecyclerView.Adapter<Downloa
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.download_img_item, parent, false);
         Animation animation = AnimationUtils.loadAnimation(context, R.anim.board_slide_in);
         view.setAnimation(animation);
-        return new DownloadPictureRecyclerAdapter.MyViewHolder(view);
+        return new DownloadPicturePagerAdapter.MyViewHolder(view);
     }
 
     @Override

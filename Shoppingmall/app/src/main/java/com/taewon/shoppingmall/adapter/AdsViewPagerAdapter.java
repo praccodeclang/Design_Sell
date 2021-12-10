@@ -65,6 +65,14 @@ public class AdsViewPagerAdapter extends RecyclerView.Adapter<AdsViewPagerAdapte
             }
         });
         holder.iv_ads.setTag(items.get(position).getUrl());
+        holder.iv_ads.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, WebViewActivity.class);
+                intent.putExtra("url", holder.iv_ads.getTag().toString());
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -77,14 +85,6 @@ public class AdsViewPagerAdapter extends RecyclerView.Adapter<AdsViewPagerAdapte
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             iv_ads = itemView.findViewById(R.id.iv_ads);
-            iv_ads.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(context, WebViewActivity.class);
-                    intent.putExtra("url", iv_ads.getTag().toString());
-                    context.startActivity(intent);
-                }
-            });
         }
     }
 }

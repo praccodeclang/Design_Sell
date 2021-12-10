@@ -27,9 +27,32 @@
             app:lottie_autoPlay="true"
             app:lottie_loop="true"
             app:lottie_fileName="cart.json"/>
-        <androidx.recyclerview.widget.RecyclerView
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/rv_cart"/>
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:id="@+id/li_cart_empty"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/ic_baseline_cancel_24"
+                    app:tint="@color/black"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="장바구니가 비었습니다."
+                    android:textSize="18sp"
+                    android:layout_gravity="center"
+                    android:gravity="center"/>
+            </LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/rv_cart"/>
+        </FrameLayout>
     </LinearLayout>
 </LinearLayout>

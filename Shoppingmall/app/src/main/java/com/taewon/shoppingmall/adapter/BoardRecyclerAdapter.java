@@ -92,7 +92,7 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        BoardItem item = items.get(holder.getLayoutPosition());
+        BoardItem item = items.get(position);
         //like check
         checkLike(holder.lottie_like, item);
         checkCart(holder.lottie_addCart, item);
@@ -198,7 +198,16 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
         holder.iv_board_etc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new BoardEditDialog(context, item).show();
+                BoardEditDialog editDialog = new BoardEditDialog(context, item, new BoardEditDialog.DialogClickListener() {
+                    @Override
+                    public void onDelete(String result) {
+                        if(result.equals("OK")){
+                            items.remove(item);
+                            notifyDataSetChanged();
+                        }
+                    }
+                });
+                editDialog.show();
             }
         });
     }
@@ -212,6 +221,15 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
         };
         if(size == 1){
             manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup(){
+                @Override
+                public int getSpanSize(int position) {
+                    return 2;
+                }
+            });
+            return manager;
+        }
+        else if(size == 2){
+            manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                 @Override
                 public int getSpanSize(int position) {
                     return 2;

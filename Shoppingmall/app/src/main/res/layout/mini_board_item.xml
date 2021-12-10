@@ -3,13 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:elevation="1dp"
     android:id="@+id/li_mini_board_wrap"
     android:layout_margin="2dp"
     app:contentPadding="20dp">
     <ImageView
         android:id="@+id/iv_mini_board_img"
+        android:layout_gravity="center_vertical"
         android:layout_width="50dp"
         android:layout_height="50dp"/>
     <LinearLayout
@@ -31,7 +32,7 @@
             android:id="@+id/tv_mini_board_body"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"
+            android:padding="5dp"
             android:textSize="14sp"
             android:fontFamily="@font/nanum_myeongjo_regular"
             android:text="내용"
@@ -41,7 +42,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="10dp">
             <com.airbnb.lottie.LottieAnimationView
                 android:layout_width="16dp"
                 android:layout_height="16dp"

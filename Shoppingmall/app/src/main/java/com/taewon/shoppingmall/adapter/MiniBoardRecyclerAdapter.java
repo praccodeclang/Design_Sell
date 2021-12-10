@@ -83,7 +83,14 @@ public class MiniBoardRecyclerAdapter extends RecyclerView.Adapter<MiniBoardRecy
                 if(((Activity)context).isFinishing()){
                     return;
                 }
-                StorageReference ref = listResult.getItems().get(0);
+                StorageReference ref = null;
+                try{
+                    ref = listResult.getItems().get(0);
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+
                 if(ref == null){
                     holder.iv_mini_board_img.setImageResource(R.drawable.ic_warning);
                     return;

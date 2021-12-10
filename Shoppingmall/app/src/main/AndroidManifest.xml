@@ -34,5 +34,27 @@
         <activity android:name=".activity.FileDownloadActivity"/>
         <activity android:name=".activity.CartActivity"/>
         <activity android:name=".activity.MyPurchaseActivity"/>
+        <activity android:name=".activity.AppInfoActivity"/>
+        <activity android:name=".activity.MySalesActivity"/>
+        <!--fcm-->
+        <service
+            android:name=".util.MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_notify_pencil" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/black"/>
+        <meta-data
+            android:name="firebase_messaging_auto_init_enabled"
+            android:value="false" />
+        <meta-data
+            android:name="firebase_analytics_collection_enabled"
+            android:value="false" />
     </application>
 </manifest>

@@ -87,11 +87,28 @@
                         android:id="@+id/rv_main_todayDesigner"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
-                    <androidx.viewpager2.widget.ViewPager2
-                        android:id="@+id/vp_adsViewPager"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginVertical="20dp"/>
+                        android:layout_marginVertical="20dp"
+                        android:orientation="vertical">
+                        <androidx.viewpager2.widget.ViewPager2
+                            android:id="@+id/vp_adsViewPager"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+                        <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+                            android:layout_marginTop="10dp"
+                            android:id="@+id/ads_dots_indicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal|bottom"
+                            app:dotsColor="#aaaaaa"
+                            app:dotsCornerRadius="50dp"
+                            app:dotsSize="10dp"
+                            app:dotsSpacing="5dp"
+                            app:dotsWidthFactor="2"
+                            app:selectedDotColor="@color/black"/>
+                    </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -136,6 +153,7 @@
                         android:id="@+id/btn_insertTest"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:visibility="gone"
                         android:text="테스트"/>
                 </LinearLayout>
                 </ScrollView>

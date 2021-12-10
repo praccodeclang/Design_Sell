@@ -2,6 +2,8 @@ package com.taewon.shoppingmall.activity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -32,6 +34,7 @@ public class MyPurchaseActivity extends AppCompatActivity {
     ArrayList<BoardItem> purchaseItems;
 
     int totalPrice = 0;
+    LinearLayout li_purchase_empty;
     SwipeRefreshLayout swipe_purchase_wrap;
     RecyclerView rv_purchase;
     TextView tv_purchase_totalPrice;
@@ -77,6 +80,12 @@ public class MyPurchaseActivity extends AppCompatActivity {
                                 purchaseItems.add(item);
                             }
                         }
+                        if(purchaseItems.size() > 0){
+                            li_purchase_empty.setVisibility(View.GONE);
+                        }
+                        else{
+                            li_purchase_empty.setVisibility(View.VISIBLE);
+                        }
                         Collections.sort(purchaseItems, new BoardDateComparator());
                         adapter.notifyDataSetChanged();
                         tv_purchase_totalPrice.setText(totalPrice + "");
@@ -94,13 +103,14 @@ public class MyPurchaseActivity extends AppCompatActivity {
     }
 
     void initViews(){
+        li_purchase_empty = findViewById(R.id.li_purchase_empty);
         swipe_purchase_wrap = findViewById(R.id.swipe_purchase_wrap);
         tv_purchase_totalPrice = findViewById(R.id.tv_purchase_totalPrice);
 
         rv_purchase = findViewById(R.id.rv_purchase);
         adapter = new BoardRecyclerAdapter(MyPurchaseActivity.this, purchaseItems);
         rv_purchase.setAdapter(adapter);
-        rv_purchase.setLayoutManager(new LinearLayoutManager(MyPurchaseActivity.this));
+        rv_purchase.setLayoutManager(new LinearLayoutManager(MyPurchaseActivity.this, RecyclerView.HORIZONTAL, false));
 
         SnapHelper helper = new LinearSnapHelper();
         helper.attachToRecyclerView(rv_purchase);

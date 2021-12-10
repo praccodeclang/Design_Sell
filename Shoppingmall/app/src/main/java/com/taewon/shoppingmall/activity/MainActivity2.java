@@ -101,9 +101,9 @@ public class MainActivity2 extends AppCompatActivity {
                 searchedBoardRecyclerAdapter.notifyDataSetChanged();
             }
             public void onNothingSelected(AdapterView<?> adapterView) {
+                sp_orderSpinner.setSelection(0);
             }
         });
-        sp_orderSpinner.setSelection(0);
 
         //리사이클러뷰
         rv_boardRecycler = (RecyclerView) findViewById(R.id.rv_boardRecycler);
@@ -134,7 +134,8 @@ public class MainActivity2 extends AppCompatActivity {
                     for(String tag : tags){
                         sb.append(tag);
                     }
-                    if(sb.toString().contains(categoryString)){
+                    //2021 12 10 정규식 여기부터
+                    if(sb.toString().contains(categoryString) || item.getTitle().contains(categoryString)){
                         searchItemList.add(item);
                     }
                 }
@@ -147,7 +148,6 @@ public class MainActivity2 extends AppCompatActivity {
 
                 if(searchItemList.size() < 1){
                     rv_boardRecycler.setVisibility(View.GONE);
-                    dialog.dismiss();
                 }
                 dialog.dismiss();
             }
@@ -155,7 +155,7 @@ public class MainActivity2 extends AppCompatActivity {
             // 연결에 실패했을 때.
             public void onFailure(Exception e) {
                 dialog.dismiss();
-                new AlertDialog.Builder(MainActivity2.this).setTitle("게시글을 불러오지 못했습니다. 다시 시도해보세요.").setMessage("").setIcon(R.drawable.ic_baseline_back_hand_24).setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                new AlertDialog.Builder(MainActivity2.this).setTitle("게시글을 불러오지 못했습니다.\n다시 시도해보세요.").setMessage("").setIcon(R.drawable.ic_baseline_back_hand_24).setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         getBoard();
                     }
