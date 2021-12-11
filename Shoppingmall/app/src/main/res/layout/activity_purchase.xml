@@ -30,10 +30,22 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1">
-            <androidx.recyclerview.widget.RecyclerView
+            <androidx.viewpager2.widget.ViewPager2
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/rv_purchase"/>
+            <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+                android:layout_marginBottom="20dp"
+                android:id="@+id/purchase_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom"
+                app:dotsColor="#aaaaaa"
+                app:dotsCornerRadius="8dp"
+                app:dotsSize="10dp"
+                app:dotsSpacing="4dp"
+                app:dotsWidthFactor="1.5"
+                app:selectedDotColor="@color/black"/>
             <LinearLayout
                 android:id="@+id/li_purchase_empty"
                 android:layout_width="match_parent"
@@ -63,7 +75,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
-                android:fontFamily="@font/nanum_myeongjo_extrabold"
+                android:fontFamily="@font/nanum_myeongjo_bold"
                 android:textSize="20sp"
                 android:text="총 구매 금액 : "/>
             <TextView

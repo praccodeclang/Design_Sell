@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -23,6 +24,7 @@ import com.taewon.shoppingmall.R;
 import com.taewon.shoppingmall.adapter.BoardRecyclerAdapter;
 import com.taewon.shoppingmall.item.BoardItem;
 import com.taewon.shoppingmall.util.BoardDateComparator;
+import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,9 +38,10 @@ public class MyPurchaseActivity extends AppCompatActivity {
     int totalPrice = 0;
     LinearLayout li_purchase_empty;
     SwipeRefreshLayout swipe_purchase_wrap;
-    RecyclerView rv_purchase;
+    ViewPager2 rv_purchase;
     TextView tv_purchase_totalPrice;
     BoardRecyclerAdapter adapter;
+    DotsIndicator purchase_indicator;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,14 +109,12 @@ public class MyPurchaseActivity extends AppCompatActivity {
         li_purchase_empty = findViewById(R.id.li_purchase_empty);
         swipe_purchase_wrap = findViewById(R.id.swipe_purchase_wrap);
         tv_purchase_totalPrice = findViewById(R.id.tv_purchase_totalPrice);
+        purchase_indicator = findViewById(R.id.purchase_indicator);
 
         rv_purchase = findViewById(R.id.rv_purchase);
         adapter = new BoardRecyclerAdapter(MyPurchaseActivity.this, purchaseItems);
         rv_purchase.setAdapter(adapter);
-        rv_purchase.setLayoutManager(new LinearLayoutManager(MyPurchaseActivity.this, RecyclerView.HORIZONTAL, false));
-
-        SnapHelper helper = new LinearSnapHelper();
-        helper.attachToRecyclerView(rv_purchase);
+        purchase_indicator.setViewPager2(rv_purchase);
     }
 
     void initListeners(){

@@ -114,7 +114,7 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
                         }
                         pictureRecyclerAdapter = new BoardPictureRecyclerAdapter(context, boardImgRefs);
                         holder.rv_boardImgs.setAdapter(pictureRecyclerAdapter);
-                        holder.rv_boardImgs.setLayoutManager(getGridLayoutManager(boardImgRefs.size()));
+                        holder.rv_boardImgs.setLayoutManager(getLayoutManager(boardImgRefs.size()));
                         pictureRecyclerAdapter.notifyDataSetChanged();
                     }
                 });
@@ -159,6 +159,7 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
         now.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
         holder.tv_uploadTime.setText(calUploadDate(now.format(date1), item.getDateString()));
         holder.tv_boardTitle.setText(item.getTitle());
+        holder.tv_boardBody.setText(item.getBody());
 
         //전체 레이아웃 클릭
         holder.cv_board_wrap.setOnClickListener(new View.OnClickListener() {
@@ -212,32 +213,27 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
         });
     }
 
-    private GridLayoutManager getGridLayoutManager(int size){
-        GridLayoutManager manager = new GridLayoutManager(context, 2){
-            @Override
-            public boolean canScrollVertically() {
-                return false;
-            }
-        };
+    private RecyclerView.LayoutManager getLayoutManager(int size){
         if(size == 1){
-            manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup(){
-                @Override
-                public int getSpanSize(int position) {
-                    return 2;
-                }
-            });
+            LinearLayoutManager manager = new LinearLayoutManager(context);
             return manager;
         }
         else if(size == 2){
-            manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            GridLayoutManager manager = new GridLayoutManager(context, 2){
                 @Override
-                public int getSpanSize(int position) {
-                    return 2;
+                public boolean canScrollVertically() {
+                    return false;
                 }
-            });
+            };
             return manager;
         }
-        else if(size != 4){
+        else if(size == 3){
+            GridLayoutManager manager = new GridLayoutManager(context, 2){
+                @Override
+                public boolean canScrollVertically() {
+                    return false;
+                }
+            };
             manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup(){
                 @Override
                 public int getSpanSize(int position) {
@@ -254,6 +250,12 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
             return manager;
         }
         else {
+            GridLayoutManager manager = new GridLayoutManager(context, 2){
+                @Override
+                public boolean canScrollVertically() {
+                    return false;
+                }
+            };
             manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
                 @Override
                 public int getSpanSize(int position) {
@@ -453,6 +455,7 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
         TextView tv_nickname;
         TextView tv_uploadTime;
         TextView tv_boardTitle;
+        TextView tv_boardBody;
         ImageView iv_board_etc;
         LottieAnimationView lottie_addCart;
         LottieAnimationView lottie_like;
@@ -462,6 +465,7 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             tv_boardTitle = itemView.findViewById(R.id.tv_boardTitle);
+            tv_boardBody = itemView.findViewById(R.id.tv_boardBody);
             cv_board_wrap = itemView.findViewById(R.id.cv_board_wrap);
             rv_boardImgs = itemView.findViewById(R.id.rv_boardImgs);
             iv_boardUserProfile = itemView.findViewById(R.id.iv_boardUserProfile);

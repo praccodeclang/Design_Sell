@@ -70,10 +70,9 @@
             android:layout_width="match_parent"
             android:layout_height="20dp"
             android:orientation="horizontal"
+            android:layout_gravity="center_vertical"
             android:gravity="center"
-            android:paddingRight="10dp"
-            android:layout_marginBottom="20dp"
-            >
+            android:paddingRight="10dp">
             <com.airbnb.lottie.LottieAnimationView
                 android:layout_width="16dp"
                 android:layout_height="16dp"
@@ -90,9 +89,20 @@
                 android:textColor="@color/black"
                 android:textSize="14sp"/>
         </LinearLayout>
+        <Button
+            android:id="@+id/btn_right_drawer_cashIn"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:gravity="center"
+            android:textSize="10sp"
+            android:backgroundTint="#ffc500"
+            android:textColor="@color/white"
+            android:text="Cash"/>
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
             android:stretchColumns="*">
             <TableRow>
                 <LinearLayout

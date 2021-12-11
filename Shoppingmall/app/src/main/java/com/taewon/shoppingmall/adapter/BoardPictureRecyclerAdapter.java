@@ -4,11 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -24,6 +26,7 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.SizeReadyCallback;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -47,11 +50,16 @@ public class BoardPictureRecyclerAdapter extends RecyclerView.Adapter<BoardPictu
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.board_img_item, parent, false);
-//        if(refs.size() < 3){
-//            ViewGroup.LayoutParams params = view.findViewById(R.id.iv_boardImg).getLayoutParams();
-//            params.height = params.height * 2;
-//            view.findViewById(R.id.iv_boardImg).requestLayout();
-//        }
+        if(refs.size()>2){
+            try {
+                GridLayoutManager.LayoutParams layoutParams = (GridLayoutManager.LayoutParams) view.getLayoutParams();
+                layoutParams.height = parent.getMeasuredHeight()/2;
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+
+        }
         return new MyViewHolder(view);
     }
 
@@ -59,6 +67,7 @@ public class BoardPictureRecyclerAdapter extends RecyclerView.Adapter<BoardPictu
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 //        Log.d("보드 이미지 경로", refs.get(position).getPath());
 //        Log.d("보드 이미지 다운로드", "시작");
+
         refs.get(position).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
             @Override
             public void onComplete(@NonNull Task<Uri> task) {
@@ -80,6 +89,7 @@ public class BoardPictureRecyclerAdapter extends RecyclerView.Adapter<BoardPictu
                                     holder.lottie_board_img_loading.pauseAnimation();
                                     holder.lottie_board_img_loading.setVisibility(View.GONE);
                                     holder.board_img_wrap.setVisibility(View.VISIBLE);
+
                                     return false;
                                 }
                             })
@@ -88,14 +98,7 @@ public class BoardPictureRecyclerAdapter extends RecyclerView.Adapter<BoardPictu
                 }
             }
         });
-        try{
-            GridLayoutManager.LayoutParams layoutParams = (GridLayoutManager.LayoutParams)holder.itemView.getLayoutParams();
-            layoutParams.height = 500;
-            holder.itemView.requestLayout();
-        }
-        catch (Exception e){
 
-        }
 
     }
 

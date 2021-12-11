@@ -2,7 +2,7 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:id="@+id/cv_board_wrap"
@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="15dp"
-            android:background="@drawable/border_layout_underline">
+            android:background="@drawable/border_layout_under_line">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -38,26 +38,25 @@
                 android:src="@drawable/ic_baseline_more_vert_24"
                 android:layout_gravity="right"/>
         </FrameLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="400dp"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_boardImgs"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:overScrollMode="never"
+            android:layout_weight="1"
+            android:padding="10dp"/>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_boardImgs"
-                android:layout_width="300dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="left"
-                android:layout_weight="1"
-                android:overScrollMode="never"
-                android:padding="10dp"/>
             <LinearLayout
                 android:id="@+id/li_board_profile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_gravity="bottom"
+                android:layout_margin="10dp"
+                android:layout_gravity="bottom|right"
                 android:gravity="center_vertical"
-                android:layout_marginHorizontal="10dp"
                 android:padding="10dp">
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -101,20 +100,23 @@
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/tv_boardBody"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:layout_margin="10dp"/>
             <TextView
                 android:id="@+id/tv_uploadTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="10dp"
+                android:layout_margin="10dp"
                 android:fontFamily="@font/nanum_myeongjo_regular"
                 android:layout_marginHorizontal="10dp"
                 android:text="1시간 전"
-                android:textColor="@color/black"/>
+                android:textColor="@color/black"
+                android:layout_gravity="bottom"/>
             <TextView
                 android:id="@+id/tv_myItem"
                 android:layout_width="wrap_content"

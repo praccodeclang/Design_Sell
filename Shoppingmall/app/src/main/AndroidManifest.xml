@@ -36,6 +36,7 @@
         <activity android:name=".activity.MyPurchaseActivity"/>
         <activity android:name=".activity.AppInfoActivity"/>
         <activity android:name=".activity.MySalesActivity"/>
+        <activity android:name=".activity.CashRefillActivity"/>
         <!--fcm-->
         <service
             android:name=".util.MyFirebaseMessagingService"

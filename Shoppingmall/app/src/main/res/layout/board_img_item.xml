@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center">
     <FrameLayout
+        android:id="@+id/board_img_wrap"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <com.airbnb.lottie.LottieAnimationView
@@ -14,20 +15,15 @@
             app:lottie_loop="true"
             app:lottie_autoPlay="true"
             app:lottie_fileName="lottie_loading_progress.json"/>
-        <FrameLayout
-            android:id="@+id/board_img_wrap"
+        <ImageView
+            android:id="@+id/iv_boardImg"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <ImageView
-                android:id="@+id/iv_boardImg"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"/>
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                android:src="@drawable/watermark"/>
-        </FrameLayout>
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/watermark"/>
     </FrameLayout>
 </RelativeLayout>

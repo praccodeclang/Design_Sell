@@ -163,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
         initViews();
         initListeners();
         initDrawers();
+        initFCM();
     }
 
     @Override
@@ -253,7 +254,6 @@ public class MainActivity extends AppCompatActivity {
 
                 String token = task.getResult();
                 Log.d("FCM 알림", token);
-                Toast.makeText(MainActivity.this, "성공했습니다." + token, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -683,12 +683,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //오른쪽 드로워
+        //오른쪽 드로워쪽
         iv_rightDrawerUserImg = drawerLayout.findViewById(R.id.iv_rightDrawerUserImg);
         tv_rightDrawerUserName = drawerLayout.findViewById(R.id.tv_rightDrawerUserName);
         tv_rightDrawerCoin = drawerLayout.findViewById(R.id.tv_rightDrawerCoin);
         li_rightDrawerProfile = drawerLayout.findViewById(R.id.li_rightDrawerProfile);
         tv_rightDrawerCoin = drawerLayout.findViewById(R.id.tv_rightDrawerCoin);
+
 
         //유저 프로필 이미지를 바꾸려고 시도하면, 런타임에 권한을 체크함. TedPermission 라이브러리 사용.
         iv_rightDrawerUserImg.setOnClickListener(new View.OnClickListener() {
@@ -723,6 +724,17 @@ public class MainActivity extends AppCompatActivity {
                 drawerLayout.closeDrawer((int) GravityCompat.END);
             }
         });
+        //충전버튼
+        drawerLayout.findViewById(R.id.btn_right_drawer_cashIn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, CashRefillActivity.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+            }
+        });
+
+        //메뉴 아이템들
         drawerLayout.findViewById(R.id.li_salesRegistrationBtn).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, SalesRegActivity.class);
