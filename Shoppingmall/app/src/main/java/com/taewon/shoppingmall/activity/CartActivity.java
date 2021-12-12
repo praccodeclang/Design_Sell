@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -22,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.taewon.shoppingmall.R;
 import com.taewon.shoppingmall.adapter.BoardRecyclerAdapter;
 import com.taewon.shoppingmall.item.BoardItem;
+import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
 
 import java.util.ArrayList;
 
@@ -30,8 +32,10 @@ public class CartActivity extends AppCompatActivity {
     FirebaseDatabase database;
     ArrayList<BoardItem> cartItems;
 
-    RecyclerView rv_cart;
+    ViewPager2 rv_cart;
     BoardRecyclerAdapter adapter;
+    DotsIndicator cart_dots_indicator;
+
     LottieAnimationView lottie_cart;
     LinearLayout li_cart_empty;
 
@@ -88,12 +92,13 @@ public class CartActivity extends AppCompatActivity {
 
     void initViews(){
         li_cart_empty = findViewById(R.id.li_cart_empty);
+        cart_dots_indicator = findViewById(R.id.cart_dots_indicator);
         rv_cart = findViewById(R.id.rv_cart);
+
         adapter = new BoardRecyclerAdapter(CartActivity.this, cartItems);
         rv_cart.setAdapter(adapter);
-        rv_cart.setLayoutManager(new LinearLayoutManager(CartActivity.this, RecyclerView.HORIZONTAL, false));
-        SnapHelper helper = new LinearSnapHelper();
-        helper.attachToRecyclerView(rv_cart);
+        cart_dots_indicator.setViewPager2(rv_cart);
+
 
         lottie_cart = findViewById(R.id.lottie_cartView_cart);
         li_cart_empty.setVisibility(View.GONE);

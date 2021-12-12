@@ -37,10 +37,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-                <androidx.recyclerview.widget.RecyclerView
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="300dp"
-                    android:id="@+id/rv_boardViewImg"/>
+                    android:layout_height="wrap_content">
+                    <androidx.viewpager2.widget.ViewPager2
+                        android:layout_width="match_parent"
+                        android:layout_height="300dp"
+                        android:id="@+id/rv_boardViewImg"/>
+                    <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+                        android:layout_marginBottom="20dp"
+                        android:id="@+id/boardview_dots_indicator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal|bottom"
+                        app:dotsColor="#eee"
+                        app:dotsCornerRadius="8dp"
+                        app:dotsSize="10dp"
+                        app:dotsSpacing="4dp"
+                        app:dotsWidthFactor="1.5"
+                        app:selectedDotColor="@color/black" />
+                </FrameLayout>
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -94,7 +110,7 @@
                         <EditText
                             android:id="@+id/et_board_comment"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="45dp"
                             android:hint="Comment Here"
                             android:layout_weight="1"/>
                         <ImageButton
@@ -102,8 +118,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:backgroundTint="@color/black"
-                            android:src="@drawable/ic_baseline_send_24"
-                            android:text="댓글"/>
+                            android:src="@drawable/ic_baseline_send_24"/>
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>

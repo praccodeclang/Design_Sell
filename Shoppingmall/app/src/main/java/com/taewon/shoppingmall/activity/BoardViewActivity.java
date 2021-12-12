@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
@@ -52,10 +53,12 @@ import com.taewon.shoppingmall.adapter.BoardCommentsRecyclerAdapter;
 import com.taewon.shoppingmall.dialog.BoardEditDialog;
 import com.taewon.shoppingmall.dialog.LottieLoadingDialog;
 import com.taewon.shoppingmall.item.BoardCommentItem;
+import com.taewon.shoppingmall.item.NotifyItem;
 import com.taewon.shoppingmall.item.User;
 import com.taewon.shoppingmall.adapter.BoardPictureRecyclerAdapter;
 import com.taewon.shoppingmall.item.BoardItem;
 import com.taewon.shoppingmall.util.BoardCommentDateComparator;
+import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -82,7 +85,8 @@ public class BoardViewActivity extends AppCompatActivity {
     TextView tv_boardView_title;
     ImageView iv_boardview_etc;
 
-    RecyclerView rv_boardViewImg;
+    ViewPager2 rv_boardViewImg;
+    DotsIndicator boardview_dots_indicator;
     BoardPictureRecyclerAdapter pictureRecyclerAdapter;
     ArrayList<StorageReference> boardImgRefs;
 
@@ -119,6 +123,7 @@ public class BoardViewActivity extends AppCompatActivity {
             checkLike(lottie_boardView_like, intentBoardItem);
             checkCart(lottie_boardView_cart, intentBoardItem);
         }catch (Exception e){
+            e.printStackTrace();
             loadingDialog.dismiss();
             Toast.makeText(BoardViewActivity.this, "게시글을 불러오지 못했습니다.", Toast.LENGTH_SHORT).show();
             onBackPressed();
@@ -150,10 +155,10 @@ public class BoardViewActivity extends AppCompatActivity {
 
         //게시글 이미지 리사이클러뷰 레이아웃 초기화 및 어댑터
         rv_boardViewImg = findViewById(R.id.rv_boardViewImg);
+        boardview_dots_indicator = findViewById(R.id.boardview_dots_indicator);
         pictureRecyclerAdapter = new BoardPictureRecyclerAdapter(BoardViewActivity.this, boardImgRefs);
-        rv_boardViewImg.setLayoutManager(new LinearLayoutManager(BoardViewActivity.this, RecyclerView.HORIZONTAL, false));
         rv_boardViewImg.setAdapter(pictureRecyclerAdapter);
-        new LinearSnapHelper().attachToRecyclerView(rv_boardViewImg);
+        boardview_dots_indicator.setViewPager2(rv_boardViewImg);
 
         //게시글 댓글 리사이클러뷰 레이아웃 초기화 및 어댑터
         rv_board_comments = findViewById(R.id.rv_board_comments);
@@ -337,7 +342,7 @@ public class BoardViewActivity extends AppCompatActivity {
                             commentItem.setCommentID(obj.get("commentID").toString());
                             boardCommentItems.add(commentItem);
                         }
-                        Collections.sort(boardCommentItems, new BoardCommentDateComparator());
+                        Collections.sort(boardCommentItems, new BoardCommentDateComparator(true));
                         commentsRecyclerAdapter.notifyDataSetChanged();
                     }
                     catch (Exception e){
@@ -364,7 +369,7 @@ public class BoardViewActivity extends AppCompatActivity {
                             boardImgRefs.add(item);
                             Log.d("이미지 레퍼런스", item.getPath());
                         }
-                        rv_boardViewImg.setLayoutManager(new LinearLayoutManager(BoardViewActivity.this, RecyclerView.HORIZONTAL, false));
+
                         pictureRecyclerAdapter.notifyDataSetChanged();
                         loadingDialog.dismiss();
                     }
@@ -523,6 +528,17 @@ public class BoardViewActivity extends AppCompatActivity {
                                                                         public void onSuccess(Void unused) {
                                                                             loadingDialog.dismiss();
                                                                             Toast.makeText(BoardViewActivity.this, "구매되었습니다.", Toast.LENGTH_SHORT).show();
+                                                                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                                                            Date date = Calendar.getInstance().getTime();
+                                                                            sdf.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+                                                                            NotifyItem notifyItem = new NotifyItem(
+                                                                                    mUser.getUid(),
+                                                                                    "구매 알림",
+                                                                                    mUser.getUsername() +"님이 \"" + intentBoardItem.getTitle() +"\" 아이템을 구매했습니다.",
+                                                                                    sdf.format(date),
+                                                                                    false
+                                                                            );
+                                                                            database.getReference("Notify").child(intentBoardItem.getUid()).push().setValue(notifyItem);
                                                                             refresh();
                                                                         }
                                                                     });

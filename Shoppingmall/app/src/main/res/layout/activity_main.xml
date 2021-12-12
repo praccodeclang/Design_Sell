@@ -165,7 +165,7 @@
                 android:background="#fff"
                 android:layout_gravity="center"
                 app:labelVisibilityMode="unlabeled"
-                app:itemIconTint="#555555"
+                app:itemIconTint="@null"
                 app:menu="@menu/bottom_menu"/>
         </LinearLayout>
     <include

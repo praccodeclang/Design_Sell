@@ -41,6 +41,7 @@ import com.google.firebase.database.Transaction;
 import com.google.firebase.storage.FirebaseStorage;
 import com.taewon.shoppingmall.R;
 import com.taewon.shoppingmall.adapter.FeedRecyclerAdapter;
+import com.taewon.shoppingmall.item.NotifyItem;
 import com.taewon.shoppingmall.item.User;
 import com.taewon.shoppingmall.adapter.MiniBoardRecyclerAdapter;
 import com.taewon.shoppingmall.dialog.LottieLoadingDialog;
@@ -48,8 +49,12 @@ import com.taewon.shoppingmall.item.BoardItem;
 import com.taewon.shoppingmall.util.BoardDateComparator;
 import com.taewon.shoppingmall.util.BoardStarCountComparator;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class ProfileViewActivity extends AppCompatActivity {
     enum FollowState{
@@ -81,19 +86,15 @@ public class ProfileViewActivity extends AppCompatActivity {
     RecyclerView rv_profile_newest_board;
     MiniBoardRecyclerAdapter newestBoardAdapter;
 
-    RecyclerView rv_profile_popular_board;
-    MiniBoardRecyclerAdapter popularBoardAdapter;
-
     LottieLoadingDialog loadingDialog;
     FirebaseDatabase database;
     FirebaseStorage storage;
     FirebaseAuth mAuth;
     ArrayList<BoardItem> mBoardItems;
-    ArrayList<BoardItem> popularItems;
     ArrayList<BoardItem> newerItems;
 
     User profileUser;
-    FollowState followState = FollowState.FollowNone;
+    FollowState followState;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -117,7 +118,6 @@ public class ProfileViewActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         loadingDialog = new LottieLoadingDialog(ProfileViewActivity.this);
         mBoardItems = new ArrayList<>();
-        popularItems = new ArrayList<>();
         newerItems = new ArrayList<>();
     }
 
@@ -163,11 +163,6 @@ public class ProfileViewActivity extends AppCompatActivity {
         newestBoardAdapter = new MiniBoardRecyclerAdapter(ProfileViewActivity.this, newerItems);
         rv_profile_newest_board.setLayoutManager(new LinearLayoutManager(ProfileViewActivity.this, RecyclerView.VERTICAL, false));
         rv_profile_newest_board.setAdapter(newestBoardAdapter);
-
-        rv_profile_popular_board = findViewById(R.id.rv_profile_popular_board);
-        popularBoardAdapter = new MiniBoardRecyclerAdapter(ProfileViewActivity.this, popularItems);
-        rv_profile_popular_board.setLayoutManager(new LinearLayoutManager(ProfileViewActivity.this, RecyclerView.VERTICAL, false));
-        rv_profile_popular_board.setAdapter(popularBoardAdapter);
     }
 
     private void initListeners(){
@@ -193,7 +188,6 @@ public class ProfileViewActivity extends AppCompatActivity {
             public void onSuccess(DataSnapshot dataSnapshot) {
                 // 1.데이터는 쌓인다. 청소하자.
                 mBoardItems.clear();
-                popularItems.clear();
                 newerItems.clear();
                 // 2. 가져온 전체 보드 중, 현재 유저 보드만 정리.
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -220,13 +214,6 @@ public class ProfileViewActivity extends AppCompatActivity {
                     newerItems.add(mBoardItems.get(i));
                 }
                 newestBoardAdapter.notifyDataSetChanged();
-
-                Collections.sort(mBoardItems, new BoardStarCountComparator());
-                for(int i = 0; i < mBoardItems.size(); i++){
-                    if(i > 2) break;
-                    popularItems.add(mBoardItems.get(i));
-                }
-                popularBoardAdapter.notifyDataSetChanged();
 
                 // 5. 로딩창 닫기
                 loadingDialog.dismiss();
@@ -259,33 +246,41 @@ public class ProfileViewActivity extends AppCompatActivity {
         DatabaseReference currUserFollowingDataRef = database.getReference("Following").child(mAuth.getCurrentUser().getUid());
         DatabaseReference profileUserFollowersDataRef = database.getReference("Followers").child(profileUser.getUid());
         DatabaseReference profileUserFollowingDataRef = database.getReference("Following").child(profileUser.getUid());
+        followState = FollowState.FollowNone;
 
-        profileUserFollowersDataRef.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-            @Override
-            public void onSuccess(DataSnapshot dataSnapshot) {
-                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    if(snapshot.getKey().equals(mAuth.getCurrentUser().getUid())){
-                        if(snapshot.getValue(Boolean.class).booleanValue()){
-                            followState = FollowState.FollowBoth;
-                        }
-                        else{
-                            followState = FollowState.FollowSend;
-                        }
-                        followStateUpdate();
-                        break;
-                    }
-                }
-            }
-        });
-
-        currUserFollowersDataRef.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+        currUserFollowingDataRef.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
                 for(DataSnapshot snapshot : dataSnapshot.getChildren()){
                     if(snapshot.getKey().equals(profileUser.getUid())){
-
+                        followState = FollowState.FollowSend;
+                        break;
                     }
                 }
+                profileUserFollowingDataRef.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                    @Override
+                    public void onSuccess(DataSnapshot dataSnapshot) {
+                        tv_profile_followingCount.setText(dataSnapshot.getChildrenCount()+"");
+                        for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                            if(snapshot.getKey().equals(mAuth.getCurrentUser().getUid())){
+                                if(followState == FollowState.FollowSend){
+                                    followState = FollowState.FollowBoth;
+                                }
+                                else{
+                                    followState = FollowState.FollowReceived;
+                                }
+                                break;
+                            }
+                        }
+                        followStateUpdate();
+                    }
+                });
+            }
+        });
+        profileUserFollowersDataRef.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                tv_profile_followerCount.setText(dataSnapshot.getChildrenCount()+"");
             }
         });
 
@@ -294,23 +289,25 @@ public class ProfileViewActivity extends AppCompatActivity {
     private void followStateUpdate(){
         switch (followState){
             case FollowNone:
-                tv_profile_follow.setText("follow");
                 iv_profile_follow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         follow();
+                        notifyFollow("팔로우 요청을 보냈습니다.");
                     }
                 });
+                tv_profile_follow.setText("Follow");
+                iv_profile_follow.setImageResource(R.drawable.ic_baseline_person_add_24);
                 break;
             case FollowSend:
                 iv_profile_follow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(ProfileViewActivity.this, "follow", Toast.LENGTH_SHORT).show();
-                        follow();
+                        unfollow();
                     }
                 });
-                tv_profile_follow.setText("팔로우 요청을 보냄.");
+                tv_profile_follow.setText("Follow Send");
+                iv_profile_follow.setImageResource(R.drawable.ic_follow_send);
                 break;
             case FollowBoth:
                 iv_profile_follow.setOnClickListener(new View.OnClickListener() {
@@ -319,16 +316,19 @@ public class ProfileViewActivity extends AppCompatActivity {
                         unfollow();
                     }
                 });
-                tv_profile_follow.setText("맞팔로우");
+                tv_profile_follow.setText("Follower");
+                iv_profile_follow.setImageResource(R.drawable.ic_baseline_person_24);
                 break;
             case FollowReceived:
-                tv_profile_follow.setText("팔로우 요청을 받음.");
                 iv_profile_follow.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         follow();
+                        notifyFollow("팔로우 요청을 수락했습니다.");
                     }
                 });
+                tv_profile_follow.setText("팔로우 요청을 받음.");
+                iv_profile_follow.setImageResource(R.drawable.ic_follow_recieved);
                 break;
             default:
                 iv_profile_follow.setOnClickListener(new View.OnClickListener() {
@@ -371,7 +371,7 @@ public class ProfileViewActivity extends AppCompatActivity {
             }
             @Override
             public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
-
+                refresh();
             }
         });
     }
@@ -424,5 +424,20 @@ public class ProfileViewActivity extends AppCompatActivity {
 
                     }
                 }).show();
+    }
+
+    public void notifyFollow(String message){
+        database.getReference("Users").child(mAuth.getCurrentUser().getUid())
+                .get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                User currUser = dataSnapshot.getValue(User.class);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date date = Calendar.getInstance().getTime();
+                sdf.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+                NotifyItem notifyItem = new NotifyItem(currUser.getUid(), "팔로우 알림", currUser.getUsername()+"님이 " + message, sdf.format(date), false);
+                database.getReference("Notify").child(profileUser.getUid()).push().setValue(notifyItem);
+            }
+        });
     }
 }

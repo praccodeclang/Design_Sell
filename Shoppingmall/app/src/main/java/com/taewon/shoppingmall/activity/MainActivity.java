@@ -6,9 +6,13 @@ import android.animation.ValueAnimator;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,7 +39,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -56,6 +64,7 @@ import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.normal.TedPermission;
 import com.taewon.shoppingmall.R;
 import com.taewon.shoppingmall.adapter.BoardPictureRecyclerAdapter;
+import com.taewon.shoppingmall.item.NotifyItem;
 import com.taewon.shoppingmall.item.User;
 import com.taewon.shoppingmall.adapter.AdsViewPagerAdapter;
 import com.taewon.shoppingmall.adapter.MiniBoardRecyclerAdapter;
@@ -174,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
         getAds();
         getBoard();
         setTodayDesigner();
+        checkNewNotify();
     }
 
     @Override
@@ -231,8 +241,6 @@ public class MainActivity extends AppCompatActivity {
                     }catch (Exception e){
                         loadingDialog.dismiss();
                     }
-
-
                 }
                 else{
 
@@ -274,6 +282,9 @@ public class MainActivity extends AppCompatActivity {
                                     public void onComplete(@NonNull Task<Uri> task) {
                                         if(task.isSuccessful()){
                                             Log.d("url", task.getResult().toString());
+                                            if(MainActivity.this.isFinishing()){
+                                                return;
+                                            }
                                             Glide.with(MainActivity.this)
                                                     .load(task.getResult())
                                                     .error(R.drawable.test_profile)
@@ -419,66 +430,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /* access modifiers changed from: private */
     public void openCategoryDrawer() {
         drawerLayout.openDrawer((int) GravityCompat.START);
         wrap_layout.setClickable(false);
         wrap_layout.setEnabled(false);
     }
 
-    /* access modifiers changed from: private */
     public void openMyInfoDrawer() {
         drawerLayout.openDrawer((int) GravityCompat.END);
         wrap_layout.setClickable(false);
         wrap_layout.setEnabled(false);
-    }
-
-    public void insertBoardTest() {
-        DatabaseReference upload = database.getReference("Board/").push();
-        StorageReference storageRef = storage.getReference("Board/");
-        List<String> tags = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            Bitmap bitmap = ((BitmapDrawable) getDrawable(R.drawable.example)).getBitmap();
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 80, bos);
-            storageRef.child(upload.getKey()).child(Integer.toString(i))
-                    .putBytes(bos.toByteArray())
-                    .addOnCompleteListener((OnCompleteListener) new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                public void onComplete(Task<UploadTask.TaskSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        Log.d("이미지 업로드", task.getResult().toString());
-                    }
-                }
-            });
-        }
-        tags.add("2d");
-        tags.add("2d 배경");
-        tags.add("2d 디자인");
-
-        database.getReference("Users").child(mAuth.getCurrentUser().getUid()).get()
-                .addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                    @Override
-                    public void onSuccess(DataSnapshot dataSnapshot) {
-                        User user = dataSnapshot.getValue(User.class);
-                        BoardItem instance = new BoardItem(user.getUid(), user.getUsername(), "3번째", "@@@@@@@@", tags, 0, false, getDate());
-                        instance.setBoardID(upload.getKey());
-                        upload.setValue(instance)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                Toast.makeText(MainActivity.this, "글을 작성했습니다.", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                });
-
-    }
-
-    private String getDate() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = Calendar.getInstance().getTime();
-        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
-        return sdf.format(date);
     }
 
     private void initViews() {
@@ -562,14 +523,15 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.bottom_myinfo :
                         openMyInfoDrawer();
                         return true;
-                    case R.id.bottom_search :
-                        startActivity(new Intent(MainActivity.this, SearchActivity.class));
-                        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-                        return true;
                     case R.id.bottom_cart:
                         Intent intent = new Intent(MainActivity.this, CartActivity.class);
                         startActivity(intent);
                         overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                        return true;
+                    case R.id.bottom_notify:
+                        startActivity(new Intent(MainActivity.this, NotifyActivity.class));
+                        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                        return true;
                     default:
                         return true;
                 }
@@ -803,28 +765,23 @@ public class MainActivity extends AppCompatActivity {
                 logout();
             }
         });
-        findViewById(R.id.btn_insertTest).setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                insertBoardTest();
-            }
-        });
     }
 
-    private void cashCount(int cash){
-        ValueAnimator animator = new ValueAnimator();
-        animator.setObjectValues(0, cash);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            public void onAnimationUpdate(ValueAnimator animation) {
-                tv_rightDrawerCoin.setText(animation.getAnimatedValue().toString());
+    private void checkNewNotify(){
+        bottomNavigationView.setItemIconTintList(null);
+        bottomNavigationView.getMenu().findItem(R.id.bottom_notify).setIcon(R.drawable.ic_baseline_notifications_24);
+        database.getReference("Notify").child(mAuth.getCurrentUser().getUid()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    NotifyItem notifyItem = snapshot.getValue(NotifyItem.class);
+                    if(!notifyItem.getIsRead()){
+                        bottomNavigationView.getMenu().findItem(R.id.bottom_notify).setIcon(R.drawable.ic_baseline_notifications_active_24);
+                        break;
+                    }
+                }
             }
         });
-        animator.setEvaluator(new TypeEvaluator<Integer>() {
-            public Integer evaluate(float fraction, Integer startValue, Integer endValue) {
-                return Math.round(startValue + (endValue - startValue) * fraction);
-            }
-        });
-        animator.setDuration(700);
-        animator.start();
     }
 
     private void logout(){

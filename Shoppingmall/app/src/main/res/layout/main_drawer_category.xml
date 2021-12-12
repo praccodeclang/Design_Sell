@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="300dp"
+    android:layout_width="250dp"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_gravity="start"
@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="36sp"
-            android:fontFamily="@font/nanum_myeongjo_regular"
+            android:fontFamily="@font/nanum_myeongjo_bold"
             android:textColor="@color/black"
             android:text="Category"/>
     </LinearLayout>
@@ -65,10 +65,10 @@
                         android:layout_weight="1"/>
                     <ImageView
                         android:id="@+id/iv_2dDetail"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
                         android:src="@drawable/ic_baseline_arrow_right_24"
-                        android:layout_gravity="end"
+                        android:layout_gravity="end|center_vertical"
                         app:tint="@color/black"/>
                 </LinearLayout>
                 <LinearLayout
@@ -133,10 +133,10 @@
                         android:layout_weight="1"/>
                     <ImageView
                         android:id="@+id/iv_3dDetail"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
                         android:src="@drawable/ic_baseline_arrow_right_24"
-                        android:layout_gravity="end"
+                        android:layout_gravity="end|center_vertical"
                         app:tint="@color/black"/>
                 </LinearLayout>
                 <LinearLayout
@@ -195,7 +195,7 @@
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:src="@drawable/ic_baseline_fact_check_24"
+                        android:src="@drawable/icon_plan"
                         app:tint="@color/black"
                         android:layout_marginRight="10dp"/>
                     <TextView
@@ -210,10 +210,10 @@
                         android:layout_weight="1"/>
                     <ImageView
                         android:id="@+id/iv_planDetail"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
                         android:src="@drawable/ic_baseline_arrow_right_24"
-                        android:layout_gravity="end"
+                        android:layout_gravity="end|center_vertical"
                         app:tint="@color/black"/>
                 </LinearLayout>
                 <LinearLayout

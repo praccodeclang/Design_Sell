@@ -8,12 +8,6 @@
         android:title=""
         app:labelVisibilityMode="unlabeled"/>
     <item
-        android:id="@+id/bottom_search"
-        android:enabled="true"
-        android:icon="@drawable/ic_baseline_search_24"
-        android:title=""
-        app:labelVisibilityMode="unlabeled"/>
-    <item
         android:id="@+id/bottom_home"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_home_24"
@@ -22,13 +16,19 @@
     <item
         android:id="@+id/bottom_myinfo"
         android:enabled="true"
-        android:icon="@drawable/ic_baseline_person_24"
+        android:icon="@drawable/ic_baseline_person_basic"
         android:title=""
         app:labelVisibilityMode="unlabeled"/>
     <item
         android:id="@+id/bottom_cart"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_shopping_cart_24"
+        android:title=""
+        app:labelVisibilityMode="unlabeled"/>
+    <item
+        android:id="@+id/bottom_notify"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_notifications_24"
         android:title=""
         app:labelVisibilityMode="unlabeled"/>
 </menu>

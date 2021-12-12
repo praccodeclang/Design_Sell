@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:elevation="1dp"
+    android:id="@+id/card_notify_wrap">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/iv_isRead_circle"
+            android:padding="5dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_baseline_circle_24"
+            android:layout_gravity="right|top"
+            android:layout_margin="10dp"
+            app:tint="#ff5252"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+            <TextView
+                android:id="@+id/tv_notify_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:text="Notify Title"
+                android:textColor="@color/black"
+                android:fontFamily="@font/nanum_myeongjo_bold"/>
+            <TextView
+                android:id="@+id/tv_notify_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Notify Text"
+                android:textSize="14sp"
+                android:padding="10dp"
+                android:fontFamily="@font/nanum_myeongjo_regular"/>
+        </LinearLayout>
+        <TextView
+            android:id="@+id/tv_notify_dateString"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginRight="20dp"
+            android:text="Date"/>
+    </FrameLayout>
+
+</androidx.cardview.widget.CardView>

@@ -10,6 +10,13 @@
         android:orientation="vertical"
         android:gravity="center"
         android:padding="10dp">
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottie_cartView_cart"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_fileName="cart.json"/>
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -20,13 +27,6 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:text="장바구니"/>
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/lottie_cartView_cart"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true"
-            app:lottie_fileName="cart.json"/>
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -49,10 +49,22 @@
                     android:layout_gravity="center"
                     android:gravity="center"/>
             </LinearLayout>
-            <androidx.recyclerview.widget.RecyclerView
+            <androidx.viewpager2.widget.ViewPager2
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/rv_cart"/>
+            <com.tbuonomo.viewpagerdotsindicator.DotsIndicator
+                android:layout_marginBottom="20dp"
+                android:id="@+id/cart_dots_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom"
+                app:dotsColor="#aaaaaa"
+                app:dotsCornerRadius="8dp"
+                app:dotsSize="10dp"
+                app:dotsSpacing="4dp"
+                app:dotsWidthFactor="1.5"
+                app:selectedDotColor="@color/black" />
         </FrameLayout>
     </LinearLayout>
 </LinearLayout>
