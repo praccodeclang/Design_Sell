@@ -1,5 +1,6 @@
 package com.taewon.shoppingmall.activity;
 
+import android.Manifest;
 import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -33,6 +34,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.normal.TedPermission;
 import com.taewon.shoppingmall.R;
 import com.taewon.shoppingmall.adapter.SalesPictureRecyclerAdapter;
 import com.taewon.shoppingmall.dialog.LottieLoadingDialog;
@@ -189,11 +192,29 @@ public class SalesRegActivity extends AppCompatActivity {
         li_sales_addUserPhotoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
-                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);  // 다중 이미지를 가져올 수 있도록 세팅
-                intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, GET_PHOTO_IN_GALLERY);
+                TedPermission.create()
+                        .setPermissionListener(new PermissionListener() {
+                            @Override
+                            public void onPermissionGranted() {
+                                Intent intent = new Intent(Intent.ACTION_PICK);
+                                intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+                                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);  // 다중 이미지를 가져올 수 있도록 세팅
+                                intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                startActivityForResult(intent, GET_PHOTO_IN_GALLERY);
+                            }
+
+                            @Override
+                            public void onPermissionDenied(List<String> deniedPermissions) {
+                                Toast.makeText(SalesRegActivity.this, "권한이 없으면 판매등록을 할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        })
+                        .setPermissions(
+                                Manifest.permission.READ_PHONE_STATE,
+                                Manifest.permission.READ_EXTERNAL_STORAGE,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        )
+                        .check();
             }
         });
 

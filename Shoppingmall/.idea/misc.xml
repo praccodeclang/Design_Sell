@@ -25,8 +25,9 @@
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/drawable/border_layout_basic.xml" value="0.25" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/drawable/border_layout_round_rectangle.xml" value="0.3398148148148148" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/drawable/ic_baseline_report_24.xml" value="0.3984375" />
+        <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/drawable/ic_baseline_send_24.xml" value="0.23541666666666666" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/drawable/tag_items_selector.xml" value="0.190625" />
-        <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/activity_board_view.xml" value="0.21875" />
+        <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/activity_board_view.xml" value="0.25" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/activity_file_download.xml" value="0.19270833333333334" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/activity_login.xml" value="0.22" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/activity_main.xml" value="0.22" />
@@ -35,10 +36,13 @@
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/activity_purchase.xml" value="0.215625" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/activity_sales_registration.xml" value="0.33" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/activity_splash.xml" value="0.21875" />
+        <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/board_comments_item.xml" value="0.33" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/board_edit_dialog.xml" value="0.38229166666666664" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/board_img_item.xml" value="0.21875" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/board_item.xml" value="0.33" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/default_img_item.xml" value="0.18854166666666666" />
+        <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/dialog_cash_fill.xml" value="0.20260416666666667" />
+        <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/dialog_comment_delete.xml" value="0.33" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/download_img_item.xml" value="0.2947916666666667" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/ic_baseline_report_24.xml" value="0.38229166666666664" />
         <entry key="..\:/Users/xodnj/Desktop/shoppingmall_lastexam/Shoppingmall/app/src/main/res/layout/loading_layout.xml" value="0.1" />
@@ -103,7 +107,7 @@
     </option>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_15_PREVIEW" project-jdk-name="15" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_15" project-jdk-name="15" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

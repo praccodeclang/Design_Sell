@@ -55,6 +55,7 @@ import com.taewon.shoppingmall.R;
 import com.taewon.shoppingmall.activity.BoardViewActivity;
 import com.taewon.shoppingmall.dialog.BoardEditDialog;
 import com.taewon.shoppingmall.item.BoardItem;
+import com.taewon.shoppingmall.util.DateUtil;
 
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -157,7 +158,7 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
         Calendar calendar = Calendar.getInstance();
         Date date1 = calendar.getTime();
         now.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
-        holder.tv_uploadTime.setText(calUploadDate(now.format(date1), item.getDateString()));
+        holder.tv_uploadTime.setText(DateUtil.calUploadDate(now.format(date1), item.getDateString()));
         holder.tv_boardTitle.setText(item.getTitle());
         holder.tv_boardBody.setText(item.getBody());
 
@@ -344,19 +345,6 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
                 }
 
                 return;
-//                if(data.keySet().contains(item.getBoardID())){
-//                    data.remove(item.getBoardID());
-//                    cartAnim(lottie, false);
-//                }
-//                else{
-//                    data.put(item.getBoardID(), true);
-//                    databaseRef.setValue(data).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                        @Override
-//                        public void onSuccess(Void unused) {
-//                            cartAnim(lottie, true);
-//                        }
-//                    });
-//                }
             }
         });
     }
@@ -421,33 +409,6 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
     }
 
 
-    private String calUploadDate(String date1, String date2){
-        Date format1;
-        Date format2;
-        try{
-            format1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date1);
-            format2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(date2);
-            long diffSec = (format1.getTime() - format2.getTime()) / 1000; //초 차이
-
-            long diffDays = diffSec / (24*60*60); // 일 수 차이
-            if(diffDays > 0){
-                return diffDays +"일 전";
-            }
-
-            long diffHour = (format1.getTime() - format2.getTime()) / 3600000; //시간 차이
-            if(diffHour > 0){
-                return diffHour + "시간 전";
-            }
-
-            long diffMin = (format1.getTime() - format2.getTime()) / 60000; //분 차이
-            return diffMin+"분 전";
-        }catch (Exception e){
-            e.printStackTrace();
-            Log.e("시간 에러", e.getMessage());
-        }
-        return "";
-    }
-
     public class MyViewHolder extends RecyclerView.ViewHolder{
         CardView cv_board_wrap;
         RecyclerView rv_boardImgs;
@@ -460,7 +421,6 @@ public class BoardRecyclerAdapter extends RecyclerView.Adapter<BoardRecyclerAdap
         LottieAnimationView lottie_addCart;
         LottieAnimationView lottie_like;
         TextView tv_myItem;
-
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);

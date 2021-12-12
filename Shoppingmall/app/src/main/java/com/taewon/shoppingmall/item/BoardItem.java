@@ -3,9 +3,7 @@ package com.taewon.shoppingmall.item;
 import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +22,7 @@ public class BoardItem implements Serializable {
     public int price;
     public boolean isAuction;
     public String buyerUid;
+    public Map<String, Object> comments;
 
     public BoardItem(){
 
@@ -42,6 +41,15 @@ public class BoardItem implements Serializable {
         this.price = price;
         this.isAuction = isAuction;
         this.buyerUid = "";
+        this.comments = new HashMap<>();
+    }
+
+    public Map<String, Object> getComments() {
+        return comments;
+    }
+
+    public void setComments(Map<String, Object> comments) {
+        this.comments = comments;
     }
 
     public Map<String, Boolean> getLikeUsers() {

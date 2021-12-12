@@ -12,6 +12,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -735,11 +736,31 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //메뉴 아이템들
+
+        //판매등록
         drawerLayout.findViewById(R.id.li_salesRegistrationBtn).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, SalesRegActivity.class);
-                startActivity(intent);
-                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                TedPermission.create()
+                        .setPermissionListener(new PermissionListener() {
+                            @Override
+                            public void onPermissionGranted() {
+                                Intent intent = new Intent(MainActivity.this, SalesRegActivity.class);
+                                startActivity(intent);
+                                overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                            }
+
+                            @Override
+                            public void onPermissionDenied(List<String> deniedPermissions) {
+                                Toast.makeText(MainActivity.this, "권한이 없으면 판매등록을 할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                        })
+                        .setPermissions(
+                                Manifest.permission.READ_PHONE_STATE,
+                                Manifest.permission.READ_EXTERNAL_STORAGE,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        )
+                        .check();
             }
         });
         drawerLayout.findViewById(R.id.li_myPurchaseList).setOnClickListener(new View.OnClickListener() {

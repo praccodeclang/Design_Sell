@@ -47,6 +47,8 @@ public class SalesPictureRecyclerAdapter extends RecyclerView.Adapter<SalesPictu
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        holder.lottie_loading_progress.pauseAnimation();
+                        holder.lottie_loading_progress.setVisibility(View.GONE);
                         return false;
                     }
 

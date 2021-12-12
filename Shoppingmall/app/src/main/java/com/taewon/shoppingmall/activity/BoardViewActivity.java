@@ -9,9 +9,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Debug;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -24,7 +25,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SnapHelper;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -48,16 +48,24 @@ import com.google.firebase.storage.StorageReference;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.normal.TedPermission;
 import com.taewon.shoppingmall.R;
+import com.taewon.shoppingmall.adapter.BoardCommentsRecyclerAdapter;
 import com.taewon.shoppingmall.dialog.BoardEditDialog;
 import com.taewon.shoppingmall.dialog.LottieLoadingDialog;
+import com.taewon.shoppingmall.item.BoardCommentItem;
 import com.taewon.shoppingmall.item.User;
 import com.taewon.shoppingmall.adapter.BoardPictureRecyclerAdapter;
 import com.taewon.shoppingmall.item.BoardItem;
+import com.taewon.shoppingmall.util.BoardCommentDateComparator;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 public class BoardViewActivity extends AppCompatActivity {
 
@@ -78,6 +86,10 @@ public class BoardViewActivity extends AppCompatActivity {
     BoardPictureRecyclerAdapter pictureRecyclerAdapter;
     ArrayList<StorageReference> boardImgRefs;
 
+    RecyclerView rv_board_comments;
+    BoardCommentsRecyclerAdapter commentsRecyclerAdapter;
+    ArrayList<BoardCommentItem> boardCommentItems;
+
     LinearLayout li_boardView_profile;
     ImageView iv_boardView_userImg;
     TextView iv_boardView_userName;
@@ -88,6 +100,12 @@ public class BoardViewActivity extends AppCompatActivity {
     LottieAnimationView lottie_boardView_like;
     LottieAnimationView lottie_boardView_cart;
     TextView tv_boardView_price;
+
+    EditText et_board_comment;
+    ImageButton ib_board_comment_send;
+
+
+
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,6 +136,8 @@ public class BoardViewActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         storage = FirebaseStorage.getInstance();
         boardImgRefs = new ArrayList<>();
+        boardCommentItems = new ArrayList<>();
+
         intent = getIntent();
         intentBoardItem = (BoardItem) intent.getSerializableExtra("BoardItem");
         boardDataRef = database.getReference().child("Board").child(intentBoardItem.getBoardID());
@@ -128,11 +148,19 @@ public class BoardViewActivity extends AppCompatActivity {
         tv_boardView_title = findViewById(R.id.tv_boardView_title);
         iv_boardview_etc = findViewById(R.id.iv_boardview_etc);
 
-        //릴레이티브 레이아웃 초기화 및 어댑터
+        //게시글 이미지 리사이클러뷰 레이아웃 초기화 및 어댑터
         rv_boardViewImg = findViewById(R.id.rv_boardViewImg);
         pictureRecyclerAdapter = new BoardPictureRecyclerAdapter(BoardViewActivity.this, boardImgRefs);
+        rv_boardViewImg.setLayoutManager(new LinearLayoutManager(BoardViewActivity.this, RecyclerView.HORIZONTAL, false));
         rv_boardViewImg.setAdapter(pictureRecyclerAdapter);
         new LinearSnapHelper().attachToRecyclerView(rv_boardViewImg);
+
+        //게시글 댓글 리사이클러뷰 레이아웃 초기화 및 어댑터
+        rv_board_comments = findViewById(R.id.rv_board_comments);
+        commentsRecyclerAdapter = new BoardCommentsRecyclerAdapter(BoardViewActivity.this, boardCommentItems);
+        rv_board_comments.setAdapter(commentsRecyclerAdapter);
+        rv_board_comments.setLayoutManager(new LinearLayoutManager(BoardViewActivity.this));
+        new LinearSnapHelper().attachToRecyclerView(rv_board_comments);
 
         li_boardView_profile = findViewById(R.id.li_boardView_profile);
         iv_boardView_userImg = findViewById(R.id.iv_boardView_userImg);
@@ -143,6 +171,8 @@ public class BoardViewActivity extends AppCompatActivity {
         lottie_boardView_cart = findViewById(R.id.lottie_boardView_cart);
         li_buyBtn = findViewById(R.id.li_buyBtn);
         tv_boardView_price = findViewById(R.id.tv_boardView_price);
+        et_board_comment = findViewById(R.id.et_board_comment);
+        ib_board_comment_send = findViewById(R.id.ib_board_comment_send);
 
         database.getReference().child("Users").child(intentBoardItem.getUid()).get()
                 .addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
@@ -197,7 +227,6 @@ public class BoardViewActivity extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                         @Override
                         public void onSuccess(DataSnapshot dataSnapshot) {
-
                             BoardItem item = (BoardItem)dataSnapshot.getValue(BoardItem.class);
                             if(item != null){
                                 refresh();
@@ -276,69 +305,81 @@ public class BoardViewActivity extends AppCompatActivity {
                 }).show();
             }
         });
+        ib_board_comment_send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                writeComment();
+            }
+        });
+    }
+    void setViews(){
+        boardCommentItems.clear();
+        boardDataRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if(task.isSuccessful()){
+                    Log.d("보드 키", task.getResult().getKey());
+                    BoardItem item = task.getResult().getValue(BoardItem.class);
+                    if(item != null){
+                        intentBoardItem = null;
+                        intentBoardItem = item;
+                        Log.d("업데이트 된 가격", Integer.toString(intentBoardItem.getPrice()));
+                    }
+                    try {
+                        for(String key : item.getComments().keySet()){
+                            HashMap<String, Object> obj = (HashMap<String, Object>) item.getComments().get(key);
+                            String uid = obj.get("uid").toString();
+                            String username = obj.get("username").toString();
+                            String comment = obj.get("comment").toString();
+                            String dateString = obj.get("dateString").toString();
+                            BoardCommentItem commentItem = new BoardCommentItem(uid, username, comment, dateString);
+                            commentItem.setBoardID(intentBoardItem.getBoardID());
+                            commentItem.setCommentID(obj.get("commentID").toString());
+                            boardCommentItems.add(commentItem);
+                        }
+                        Collections.sort(boardCommentItems, new BoardCommentDateComparator());
+                        commentsRecyclerAdapter.notifyDataSetChanged();
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+                    tv_boardView_title.setText(item.getTitle());
+                    tv_boardView_body.setText(item.getBody());
+                    buyCheck();
+                }
+            }
+        });
     }
 
-    private void buy(){
-        new AlertDialog.Builder(BoardViewActivity.this)
-                .setTitle("구매")
-                .setMessage("정말 구매하시겠습니까?")
-                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+
+    void getBoardImg(){
+        StorageReference storageRef = storage.getReference();
+        storageRef.child("Board/"+intentBoardItem.getBoardID()+"/")
+                .listAll()
+                .addOnSuccessListener(new OnSuccessListener<ListResult>() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        loadingDialog.show();
-                        database.getReference("Users").child(mAuth.getCurrentUser().getUid()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                            @Override
-                            public void onSuccess(DataSnapshot dataSnapshot) {
-                                User mUser = dataSnapshot.getValue(User.class);
-                                Log.d("얼마를 들고있니?1", String.valueOf(mUser.getCoin()));
-                                if(intentBoardItem.getPrice() > mUser.getCoin()){
-                                    Toast.makeText(BoardViewActivity.this, "코인이 부족합니다. 충전 후 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-                                else{
-                                    mUser.setCoin(mUser.getCoin() - intentBoardItem.getPrice());
-                                    dataSnapshot.getRef().setValue(mUser).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void unused) {
-                                            database.getReference("Sales").child(intentBoardItem.getBoardID()).runTransaction(new Transaction.Handler() {
-                                                @NonNull
-                                                @Override
-                                                public Transaction.Result doTransaction(@NonNull MutableData currentData) {
-                                                    if (currentData == null) {
-                                                        return Transaction.success(currentData);
-                                                    }
-                                                    currentData.child(mAuth.getCurrentUser().getUid()).setValue(intentBoardItem.getPrice());
-                                                    return Transaction.success(currentData);
-                                                }
-
-                                                @Override
-                                                public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
-                                                    database.getReference("Users").child(intentBoardItem.getUid()).get()
-                                                            .addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                                                                @Override
-                                                                public void onSuccess(DataSnapshot dataSnapshot) {
-                                                                    User seller = dataSnapshot.getValue(User.class);
-                                                                    seller.setCoin(seller.getCoin() + intentBoardItem.getPrice());
-                                                                    dataSnapshot.getRef().setValue(seller).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                        @Override
-                                                                        public void onSuccess(Void unused) {
-                                                                            loadingDialog.dismiss();
-                                                                            Toast.makeText(BoardViewActivity.this, "구매되었습니다.", Toast.LENGTH_SHORT).show();
-                                                                            refresh();
-                                                                        }
-                                                                    });
-                                                                }
-                                                            });
-                                                }
-                                            });
-                                        }
-                                    });
-                                }
-                            }
-                        });
-
+                    public void onSuccess(ListResult listResult) {
+                        boardImgRefs.clear();
+                        for(StorageReference item : listResult.getItems()){
+                            boardImgRefs.add(item);
+                            Log.d("이미지 레퍼런스", item.getPath());
+                        }
+                        rv_boardViewImg.setLayoutManager(new LinearLayoutManager(BoardViewActivity.this, RecyclerView.HORIZONTAL, false));
+                        pictureRecyclerAdapter.notifyDataSetChanged();
+                        loadingDialog.dismiss();
                     }
-                }).setNegativeButton("취소", null).show();
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(BoardViewActivity.this, "이미지를 불러오지 못했습니다.", Toast.LENGTH_SHORT).show();
+                loadingDialog.dismiss();
+            }
+        });
+    }
+
+    void refresh(){
+        getBoardImg();
+        setViews();
     }
 
     void buyCheck(){
@@ -432,91 +473,75 @@ public class BoardViewActivity extends AppCompatActivity {
                                         }
                                     });
                         }
-
-
-                        //여기 해야해 경매처리
-                        if(!intentBoardItem.getIsAuction()){
-                            lottie_boardView_price.setVisibility(View.VISIBLE);
-                        }
-                        else{
-                            lottie_boardView_price.setVisibility(View.GONE);
-                        }
                     }
                 });
     }
 
-    void setViews(){
-        boardDataRef.get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if(task.isSuccessful()){
-                    Log.d("보드 키", task.getResult().getKey());
-                    BoardItem item = task.getResult().getValue(BoardItem.class);
-                    if(item != null){
-                        intentBoardItem = null;
-                        intentBoardItem = item;
-                        Log.d("업데이트 된 가격", Integer.toString(intentBoardItem.getPrice()));
-                    }
-                    tv_boardView_title.setText(item.getTitle());
-                    tv_boardView_body.setText(item.getBody());
-
-
-                    buyCheck();
-                }
-            }
-        });
-    }
-
-
-    void getBoardImg(){
-        StorageReference storageRef = storage.getReference();
-        storageRef.child("Board/"+intentBoardItem.getBoardID()+"/")
-                .listAll()
-                .addOnSuccessListener(new OnSuccessListener<ListResult>() {
+    private void buy(){
+        new AlertDialog.Builder(BoardViewActivity.this)
+                .setTitle("구매")
+                .setMessage("정말 구매하시겠습니까?")
+                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onSuccess(ListResult listResult) {
-                        boardImgRefs.clear();
-                        for(StorageReference item : listResult.getItems()){
-                            boardImgRefs.add(item);
-                            Log.d("이미지 레퍼런스", item.getPath());
-                        }
-                        rv_boardViewImg.setLayoutManager(new LinearLayoutManager(BoardViewActivity.this, RecyclerView.HORIZONTAL, false));
-                        pictureRecyclerAdapter.notifyDataSetChanged();
-                        loadingDialog.dismiss();
+                    public void onClick(DialogInterface dialog, int which) {
+                        loadingDialog.show();
+                        database.getReference("Users").child(mAuth.getCurrentUser().getUid()).get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                            @Override
+                            public void onSuccess(DataSnapshot dataSnapshot) {
+                                User mUser = dataSnapshot.getValue(User.class);
+                                Log.d("얼마를 들고있니?1", String.valueOf(mUser.getCoin()));
+                                if(intentBoardItem.getPrice() > mUser.getCoin()){
+                                    Toast.makeText(BoardViewActivity.this, "코인이 부족합니다. 충전 후 다시 시도해주세요.", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                                else{
+                                    mUser.setCoin(mUser.getCoin() - intentBoardItem.getPrice());
+                                    dataSnapshot.getRef().setValue(mUser).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            database.getReference("Sales").child(intentBoardItem.getBoardID()).runTransaction(new Transaction.Handler() {
+                                                @NonNull
+                                                @Override
+                                                public Transaction.Result doTransaction(@NonNull MutableData currentData) {
+                                                    if (currentData == null) {
+                                                        return Transaction.success(currentData);
+                                                    }
+                                                    currentData.child(mAuth.getCurrentUser().getUid()).setValue(intentBoardItem.getPrice());
+                                                    return Transaction.success(currentData);
+                                                }
+
+                                                @Override
+                                                public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
+                                                    database.getReference("Users").child(intentBoardItem.getUid()).get()
+                                                            .addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                                @Override
+                                                                public void onSuccess(DataSnapshot dataSnapshot) {
+                                                                    User seller = dataSnapshot.getValue(User.class);
+                                                                    seller.setCoin(seller.getCoin() + intentBoardItem.getPrice());
+                                                                    dataSnapshot.getRef().setValue(seller).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                        @Override
+                                                                        public void onSuccess(Void unused) {
+                                                                            loadingDialog.dismiss();
+                                                                            Toast.makeText(BoardViewActivity.this, "구매되었습니다.", Toast.LENGTH_SHORT).show();
+                                                                            refresh();
+                                                                        }
+                                                                    });
+                                                                }
+                                                            });
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            }
+                        });
+
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(BoardViewActivity.this, "이미지를 불러오지 못했습니다.", Toast.LENGTH_SHORT).show();
-                loadingDialog.dismiss();
-            }
-        });
+                }).setNegativeButton("취소", null).show();
     }
 
-    void refresh(){
-        setViews();
-        getBoardImg();
-    }
 
-    private void startCountAnimation(int start, int end) {
-        ValueAnimator animator = ValueAnimator.ofInt(start, end); //0 is min number, 600 is max number
-        animator.setDuration(2000); //Duration is in milliseconds
-        animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-            }
-        });
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                tv_boardView_price.setText(animation.getAnimatedValue().toString());
-            }
-        });
-        animator.start();
-    }
-
-    //장바구니 & 좋아요
+    /* --------------------------------------- 장바구니 & 좋아요 -------------------------- */
     void like(LottieAnimationView lottie, BoardItem item){
         //좋아요 추가 & 제거
         DatabaseReference ref = database.getReference("Board/" + item.getBoardID());
@@ -651,6 +676,57 @@ public class BoardViewActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+    /*-------------------장바구니 & 좋아요 End */
+    /* Custom Function */
+    private void startCountAnimation(int start, int end) {
+        ValueAnimator animator = ValueAnimator.ofInt(start, end); //0 is min number, 600 is max number
+        animator.setDuration(2000); //Duration is in milliseconds
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+            }
+        });
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                tv_boardView_price.setText(animation.getAnimatedValue().toString());
+            }
+        });
+        animator.start();
+    }
+
+    //댓글 작성
+    private void writeComment(){
+        String commentString = et_board_comment.getText().toString();
+        if(commentString.isEmpty() || commentString.trim().equals("")){
+            Toast.makeText(BoardViewActivity.this, "댓글을 입력해주세요.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        database.getReference("Users").child(mAuth.getCurrentUser().getUid()).get()
+                .addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                    @Override
+                    public void onSuccess(DataSnapshot dataSnapshot) {
+                        User currUser = dataSnapshot.getValue(User.class);
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        Date date = Calendar.getInstance().getTime();
+                        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+                        BoardCommentItem commentItem = new BoardCommentItem(currUser.getUid(), currUser.getUsername(), commentString, sdf.format(date));
+                        DatabaseReference ref = database.getReference("Board").child(intentBoardItem.getBoardID()).child("comments").push();
+                        commentItem.setCommentID(ref.getKey());
+                        commentItem.setBoardID(intentBoardItem.getBoardID());
+
+                        ref.setValue(commentItem).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                Toast.makeText(BoardViewActivity.this, "작성되었습니다.", Toast.LENGTH_SHORT).show();
+                                et_board_comment.setText("");
+                                refresh();
+                            }
+                        });
+                    }
+                });
     }
 
     @Override

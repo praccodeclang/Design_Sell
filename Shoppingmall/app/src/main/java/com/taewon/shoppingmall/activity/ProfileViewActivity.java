@@ -52,6 +52,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class ProfileViewActivity extends AppCompatActivity {
+    enum FollowState{
+        FollowNone,
+        FollowSend,
+        FollowReceived,
+        FollowBoth
+    }
 
     SwipeRefreshLayout swipe_profile_wrap;
     TableRow tr_profile_interaction_layout;
@@ -62,6 +68,7 @@ public class ProfileViewActivity extends AppCompatActivity {
     TextView tv_profile_followerCount;
 
     ImageView iv_profile_follow;
+    TextView tv_profile_follow;
     ImageView iv_profile_chat;
 
     LinearLayout li_profile_info;
@@ -86,6 +93,7 @@ public class ProfileViewActivity extends AppCompatActivity {
     ArrayList<BoardItem> newerItems;
 
     User profileUser;
+    FollowState followState = FollowState.FollowNone;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -121,6 +129,7 @@ public class ProfileViewActivity extends AppCompatActivity {
         tv_profile_user_phone.setText(profileUser.getPhone());
         tr_profile_interaction_layout = findViewById(R.id.tr_profile_interaction_layout);
         iv_profile_follow = findViewById(R.id.iv_profile_follow);
+        tv_profile_follow = findViewById(R.id.tv_profile_follow);
         iv_profile_chat = findViewById(R.id.iv_profile_chat);
         tv_profile_followingCount = findViewById(R.id.tv_profile_followingCount);
         tv_profile_followerCount = findViewById(R.id.tv_profile_followerCount);
@@ -168,6 +177,12 @@ public class ProfileViewActivity extends AppCompatActivity {
                 swipe_profile_wrap.setRefreshing(true);
                 refresh();
                 swipe_profile_wrap.setRefreshing(false);
+            }
+        });
+        iv_profile_follow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                follow();
             }
         });
     }
@@ -230,73 +245,100 @@ public class ProfileViewActivity extends AppCompatActivity {
     }
 
     private void refresh(){
-        database.getReference().child("Users").child(mAuth.getCurrentUser().getUid()).get()
-                .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DataSnapshot> task) {
-                        if(task.isSuccessful()){
-                            //현재 사용자
-                            User user = task.getResult().getValue(User.class);
-                            if(user.getUid().equals(profileUser.getUid())){
-                                //내 프로필이면?
-                                tr_profile_interaction_layout.setVisibility(View.GONE);
-                                li_profile_info.setVisibility(View.VISIBLE);
-                            }
-                            followCheck(profileUser);
-                        }
-                    }
-                });
+        //현재 사용자 가져오기.
+        if(mAuth.getCurrentUser().getUid().equals(profileUser.getUid())){
+            tr_profile_interaction_layout.setVisibility(View.GONE);
+            li_profile_info.setVisibility(View.VISIBLE);
+        }
+        followCheck();
         getBoard();
     }
 
-    private void followCheck(User user){
-        iv_profile_follow.setImageResource(R.drawable.ic_baseline_person_add_24);
-        iv_profile_follow.setOnClickListener(new View.OnClickListener() {
+    private void followCheck(){
+        DatabaseReference currUserFollowersDataRef = database.getReference("Followers").child(mAuth.getCurrentUser().getUid());
+        DatabaseReference currUserFollowingDataRef = database.getReference("Following").child(mAuth.getCurrentUser().getUid());
+        DatabaseReference profileUserFollowersDataRef = database.getReference("Followers").child(profileUser.getUid());
+        DatabaseReference profileUserFollowingDataRef = database.getReference("Following").child(profileUser.getUid());
+
+        profileUserFollowersDataRef.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
             @Override
-            public void onClick(View v) {
-                follow();
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    if(snapshot.getKey().equals(mAuth.getCurrentUser().getUid())){
+                        if(snapshot.getValue(Boolean.class).booleanValue()){
+                            followState = FollowState.FollowBoth;
+                        }
+                        else{
+                            followState = FollowState.FollowSend;
+                        }
+                        followStateUpdate();
+                        break;
+                    }
+                }
             }
         });
-        li_profile_info.setVisibility(View.GONE);
 
-        DatabaseReference followersDataRef = database.getReference("Followers").child(user.getUid());
-        followersDataRef.get()
-                .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+        currUserFollowersDataRef.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                for(DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    if(snapshot.getKey().equals(profileUser.getUid())){
+
+                    }
+                }
+            }
+        });
+
+    }
+
+    private void followStateUpdate(){
+        switch (followState){
+            case FollowNone:
+                tv_profile_follow.setText("follow");
+                iv_profile_follow.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onComplete(@NonNull Task<DataSnapshot> task) {
-                        if(task.isSuccessful()){
-                            int i = 0;
-                            for(DataSnapshot snapshot : task.getResult().getChildren()){
-                                if(snapshot.getKey().equals(mAuth.getCurrentUser().getUid())){
-                                    iv_profile_follow.setImageResource(R.drawable.ic_baseline_check_24);
-                                    li_profile_info.setVisibility(View.VISIBLE);
-                                    iv_profile_follow.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            unfollow();
-                                        }
-                                    });
-                                }
-                                i++;
-                            }
-                            tv_profile_followerCount.setText(Integer.toString(i));
-                        }
+                    public void onClick(View view) {
+                        follow();
                     }
                 });
-        DatabaseReference followingsDataRef = database.getReference("Followings").child(user.getUid());
-        followingsDataRef.get()
-                .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                break;
+            case FollowSend:
+                iv_profile_follow.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onComplete(@NonNull Task<DataSnapshot> task) {
-                        if(task.isSuccessful()){
-                            int i=0;
-                            for(DataSnapshot snapshot : task.getResult().getChildren()){
-                                i++;
-                            }
-                            tv_profile_followingCount.setText(Integer.toString(i));
-                        }
+                    public void onClick(View view) {
+                        Toast.makeText(ProfileViewActivity.this, "follow", Toast.LENGTH_SHORT).show();
+                        follow();
                     }
                 });
+                tv_profile_follow.setText("팔로우 요청을 보냄.");
+                break;
+            case FollowBoth:
+                iv_profile_follow.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        unfollow();
+                    }
+                });
+                tv_profile_follow.setText("맞팔로우");
+                break;
+            case FollowReceived:
+                tv_profile_follow.setText("팔로우 요청을 받음.");
+                iv_profile_follow.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        follow();
+                    }
+                });
+                break;
+            default:
+                iv_profile_follow.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        follow();
+                    }
+                });
+
+        }
     }
 
 
@@ -324,13 +366,12 @@ public class ProfileViewActivity extends AppCompatActivity {
                 if(currentData == null){
                     return Transaction.success(currentData);
                 }
-                currentData.child(mAuth.getCurrentUser().getUid()).setValue(true);
+                currentData.child(mAuth.getCurrentUser().getUid()).setValue(false);
                 return  Transaction.success(currentData);
             }
-
             @Override
             public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
-                refresh();
+
             }
         });
     }
