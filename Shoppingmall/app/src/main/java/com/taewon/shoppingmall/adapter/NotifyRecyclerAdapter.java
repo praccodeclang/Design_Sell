@@ -26,13 +26,16 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.taewon.shoppingmall.R;
 import com.taewon.shoppingmall.activity.BoardViewActivity;
+import com.taewon.shoppingmall.activity.ProfileViewActivity;
 import com.taewon.shoppingmall.item.BoardItem;
 import com.taewon.shoppingmall.item.NotifyItem;
+import com.taewon.shoppingmall.item.User;
 import com.taewon.shoppingmall.util.DateUtil;
 
 import java.text.SimpleDateFormat;
@@ -45,9 +48,11 @@ public class NotifyRecyclerAdapter extends RecyclerView.Adapter<NotifyRecyclerAd
 
     Context context;
     ArrayList<NotifyItem> items;
+    FirebaseDatabase database;
     public NotifyRecyclerAdapter(Context context, ArrayList<NotifyItem> items){
         this.context = context;
         this.items = items;
+        database = FirebaseDatabase.getInstance();
     }
     @NonNull
     @Override
@@ -69,6 +74,48 @@ public class NotifyRecyclerAdapter extends RecyclerView.Adapter<NotifyRecyclerAd
         holder.tv_notify_dateString.setText(DateUtil.calUploadDate(now.format(date1), item.getDateString()));
         if(item.getIsRead()){
             holder.iv_isRead_circle.setVisibility(View.GONE);
+        }
+
+        switch (item.getKind()){
+            case "follow" :
+                holder.card_notify_wrap.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        database.getReference("Users").child(item.getUid()).get()
+                                .addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DataSnapshot dataSnapshot) {
+                                        User user = dataSnapshot.getValue(User.class);
+                                        Intent intent = new Intent(context, ProfileViewActivity.class);
+                                        intent.putExtra("UserData", user);
+                                        context.startActivity(intent);
+                                        ((Activity)context).overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                                    }
+                                });
+                    }
+                });
+                break;
+            case "buy" :
+            case "comment":
+                holder.card_notify_wrap.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        database.getReference("Board").child(item.getBoardID()).get()
+                                .addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DataSnapshot dataSnapshot) {
+                                        BoardItem boardItem = dataSnapshot.getValue(BoardItem.class);
+                                        Intent intent = new Intent(context, BoardViewActivity.class);
+                                        intent.putExtra("BoardItem", boardItem);
+                                        context.startActivity(intent);
+                                        ((Activity)context).overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
+                                    }
+                                });
+                    }
+                });
+                break;
+            default:
+                break;
         }
     }
 

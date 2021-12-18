@@ -1,19 +1,47 @@
 package com.taewon.shoppingmall.item;
 
 public class NotifyItem {
-    private String uid, notifyText, notifyTitle, dateString;
+    private String uid, notifyText, notifyTitle, dateString, kind, boardID;
     private boolean isRead;
 
     public NotifyItem(){
 
     }
 
-    public NotifyItem(String uid, String notifyTitle, String notifyText, String dateString, boolean isRead){
+    public NotifyItem(String uid, String notifyTitle, String notifyText, String dateString, String kind,boolean isRead){
         this.uid = uid;
         this.notifyTitle = notifyTitle;
         this.notifyText = notifyText;
         this.dateString = dateString;
         this.isRead = isRead;
+        this.kind = kind;
+        this.boardID = "";
+    }
+
+    public NotifyItem(String uid, String boardID, String notifyTitle, String notifyText, String dateString, String kind, boolean isRead){
+        this.uid = uid;
+        this.notifyTitle = notifyTitle;
+        this.notifyText = notifyText;
+        this.dateString = dateString;
+        this.isRead = isRead;
+        this.kind = kind;
+        this.boardID = boardID;
+    }
+
+    public String getBoardID() {
+        return boardID;
+    }
+
+    public void setBoardID(String boardID) {
+        this.boardID = boardID;
+    }
+
+    public String getKind() {
+        return kind;
+    }
+
+    public void setKind(String kind) {
+        this.kind = kind;
     }
 
     public String getDateString() {

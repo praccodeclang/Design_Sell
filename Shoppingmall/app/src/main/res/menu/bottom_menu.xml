@@ -8,15 +8,15 @@
         android:title=""
         app:labelVisibilityMode="unlabeled"/>
     <item
-        android:id="@+id/bottom_home"
-        android:enabled="true"
-        android:icon="@drawable/ic_baseline_home_24"
-        android:title=""
-        app:labelVisibilityMode="unlabeled"/>
-    <item
         android:id="@+id/bottom_myinfo"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_person_basic"
+        android:title=""
+        app:labelVisibilityMode="unlabeled"/>
+    <item
+        android:id="@+id/bottom_home"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_home_24"
         android:title=""
         app:labelVisibilityMode="unlabeled"/>
     <item

@@ -533,9 +533,11 @@ public class BoardViewActivity extends AppCompatActivity {
                                                                             sdf.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
                                                                             NotifyItem notifyItem = new NotifyItem(
                                                                                     mUser.getUid(),
+                                                                                    intentBoardItem.getBoardID(),
                                                                                     "구매 알림",
                                                                                     mUser.getUsername() +"님이 \"" + intentBoardItem.getTitle() +"\" 아이템을 구매했습니다.",
                                                                                     sdf.format(date),
+                                                                                    "buy",
                                                                                     false
                                                                             );
                                                                             database.getReference("Notify").child(intentBoardItem.getUid()).push().setValue(notifyItem);
@@ -587,7 +589,7 @@ public class BoardViewActivity extends AppCompatActivity {
 
             @Override
             public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
-
+                refresh();
             }
         });
     }
@@ -619,6 +621,7 @@ public class BoardViewActivity extends AppCompatActivity {
                             public void onSuccess(Void unused) {
                                 cartAnim(lottie, false);
                                 Toast.makeText(BoardViewActivity.this, "장바구니에서 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                                refresh();
                             }
                         });
 
@@ -630,6 +633,7 @@ public class BoardViewActivity extends AppCompatActivity {
                             public void onSuccess(Void unused) {
                                 cartAnim(lottie, true);
                                 Toast.makeText(BoardViewActivity.this, "장바구니에 추가되었습니다.", Toast.LENGTH_SHORT).show();
+                                refresh();
                             }
                         });
                     }
@@ -738,7 +742,40 @@ public class BoardViewActivity extends AppCompatActivity {
                             public void onSuccess(Void unused) {
                                 Toast.makeText(BoardViewActivity.this, "작성되었습니다.", Toast.LENGTH_SHORT).show();
                                 et_board_comment.setText("");
-                                refresh();
+                                if(!intentBoardItem.getUid().equals(currUser.getUid())){
+
+                                    database.getReference("Users").child(intentBoardItem.getUid()).get()
+                                            .addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                                                @Override
+                                                public void onSuccess(DataSnapshot dataSnapshot) {
+                                                    User seller = dataSnapshot.getValue(User.class);
+                                                    dataSnapshot.getRef().setValue(seller).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void unused) {
+                                                            loadingDialog.dismiss();
+                                                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                                            Date date = Calendar.getInstance().getTime();
+                                                            sdf.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+                                                            NotifyItem notifyItem = new NotifyItem(
+                                                                    currUser.getUid(),
+                                                                    intentBoardItem.getBoardID(),
+                                                                    "댓글 알림",
+                                                                    currUser.getUsername() +" : " + commentString,
+                                                                    sdf.format(date),
+                                                                    "comment",
+                                                                    false
+                                                            );
+                                                            database.getReference("Notify").child(seller.getUid()).push().setValue(notifyItem);
+                                                            refresh();
+                                                        }
+                                                    });
+                                                }
+                                            });
+
+                                }
+                                else{
+                                    refresh();
+                                }
                             }
                         });
                     }

@@ -106,7 +106,6 @@ public class FeedRecyclerAdapter extends RecyclerView.Adapter<FeedRecyclerAdapte
                 intent.putExtra("BoardItem", boardItems.get(position));
                 context.startActivity(intent);
                 ((Activity)context).overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
-                ((Activity) context).finish();
             }
         });
     }
