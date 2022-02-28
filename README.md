@@ -1,2 +1,2 @@
-# shoppingmall_lastexam
+# 안드로이드 쇼핑몰 제작(기말 대체 프로젝트)
  
